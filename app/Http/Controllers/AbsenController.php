@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AbsenController extends Controller
 {
@@ -19,8 +20,6 @@ class AbsenController extends Controller
          // $posts = Post::latest()->get();
  
          //return view
-         return inertia('Index', [
- 
-         ]);
+         return Inertia::render('absence');
      }
 }

@@ -9,13 +9,13 @@ export default function Dashboard({ user}) {
         <AuthenticatedLayout
         >
             <Head title="Dashboard" />
-            <div className="mt-6">
+            <div className="mt-6 md:px-40">
               <div className='ml-8'>
                 <h1 className="text-xl font-bold text-gray-800">Selamat Datang,</h1>
                 <h1 className="text-xl font-bold text-gray-800">{name}</h1>
               </div>
               <div className='mx-8 mt-4'>
-                <div className="flex items-center bg-blue-800 text-white rounded-lg overflow-hidden shadow-md">
+                <div className="flex items-center bg-blue-800 text-white rounded-lg overflow-hidden shadow-md border-b-4 border-[#fdb714]">
                   {/* Profile Picture */}
                   <div className="w-20 h-20 bg-gray-300 rounded-full m-4 flex-shrink-0"></div>
 
@@ -28,7 +28,7 @@ export default function Dashboard({ user}) {
                 </div>
 
                 <div className='flex flex-col my-4 mt-4'>
-                  <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md">
+                  <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md border-l-4 border-[#fdb714]">
                     {/* Text Content */}
                     <div className="flex justify-between items-center flex-grow px-6 py-6">
                       <svg class="w-10 h-10" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
@@ -42,7 +42,7 @@ export default function Dashboard({ user}) {
                     </div>
                   </div>
 
-                  <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md">
+                  <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md border-l-4 border-[#fdb714]">
                     {/* Text Content */}
                     <div className="flex justify-between flex-grow px-6 py-6">
                       <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-building-fill-x w-9 h-9" viewBox="0 0 16 16">
@@ -56,7 +56,7 @@ export default function Dashboard({ user}) {
                     </div>
                   </div>
 
-                  <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg">
+                  <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-4 border-[#fdb714]">
                     {/* Text Content */}
                     <div className="flex justify-between flex-grow px-6 py-6">
                       <svg class="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
