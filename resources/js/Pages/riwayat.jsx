@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar } from 'lucide-react';
+// import { Calendar } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const Riwayat = () => {
@@ -80,7 +80,7 @@ const Riwayat = () => {
                   <div>{record.checkIn}</div>
                   <div>{record.checkOut}</div>
                   <div>
-                    <span class="bg-green-100 text-green-800 text-xs ml-[12.5%] px-2 py-1 rounded-xl dark:bg-green-900 dark:text-green-300">{record.status}</span>
+                    <span className="bg-green-100 text-green-800 text-xs ml-[12.5%] px-2 py-1 rounded-xl dark:bg-green-900 dark:text-green-300">{record.status}</span>
                   </div>
                 </div>
               ))}
