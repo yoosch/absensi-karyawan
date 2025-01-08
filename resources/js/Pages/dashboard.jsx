@@ -5,11 +5,14 @@ export default function Dashboard({ user}) {
 
     const { name, email, role } = user;
 
+    const navigateToRiwayat = () => {
+        window.location.href = '/riwayat';
+    };
+
     return (
-        <AuthenticatedLayout
-        >
+        <AuthenticatedLayout>
             <Head title="Dashboard" />
-            <div className="mt-6 md:px-40">
+            <div className="mt-6 px-32">
               <div className='ml-8'>
                 <h1 className="text-xl font-bold text-gray-800">Selamat Datang,</h1>
                 <h1 className="text-xl font-bold text-gray-800">{name}</h1>
@@ -56,18 +59,20 @@ export default function Dashboard({ user}) {
                     </div>
                   </div>
 
-                  <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-4 border-[#fdb714]">
-                    {/* Text Content */}
-                    <div className="flex justify-between flex-grow px-6 py-6">
-                      <svg class="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"/>
-                      </svg>
-                      <div className='flex flex-col'>
-                        <h2 className="font-semibold text-lg text-end">Riwayat</h2>
-                        <h3 className="  font-light text-xs text-end ">Riwayat presensi dan izin</h3>
-                      </div>
-                    </div>
-                  </div>
+                    <button  onClick={navigateToRiwayat}>
+                        <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg">
+                            {/* Text Content */}
+                            <div className="flex justify-between flex-grow px-6 py-6">
+                            <svg class="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"/>
+                            </svg>
+                            <div className='flex flex-col'>
+                                <h2 className="font-semibold text-lg text-end">Riwayat</h2>
+                                <h3 className="  font-light text-xs text-end ">Riwayat presensi dan izin</h3>
+                            </div>
+                            </div>
+                        </div>
+                    </button>
                 </div>
               </div>
           </div>
