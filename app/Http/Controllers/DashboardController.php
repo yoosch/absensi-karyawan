@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -13,11 +14,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Anda bisa menambahkan data yang ingin ditampilkan di dashboard
-        // Misalnya data statistik atau data dari database
-        return inertia('dashboard', [
- 
-        ]);
+        $user = auth()->user();
+        return Inertia::render('dashboard',['user' => $user]);   
     }
 }
 
