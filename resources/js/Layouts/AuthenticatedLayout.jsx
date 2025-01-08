@@ -12,7 +12,7 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100 overflow-x-hidden">
+        <div className="min-h-screen bg-white  overflow-x-hidden">
             <nav className="border-b border-gray-100 bg-white">
                 <div className="mx-auto max-w-full px-4 sm:px-6">
                     <div className="flex h-16 justify-between">
@@ -21,15 +21,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <Link href="/">
                                     <ApplicationLogo className="block h-9 w-auto fill-current" />
                                 </Link>
-                            </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
                             </div>
                         </div>
 

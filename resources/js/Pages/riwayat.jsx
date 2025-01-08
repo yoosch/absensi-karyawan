@@ -16,21 +16,24 @@ const Riwayat = () => {
   };
 
   const attendanceHistory = [
-    { date: '31-12-2024', checkIn: '06:57', checkOut: '17:51', status: 'Hadir (WFO)' },
-    { date: '30-12-2024', checkIn: '06:53', checkOut: '16:02', status: 'Hadir (WFO)' },
-    { date: '27-12-2024', checkIn: '07:34', checkOut: '18:43', status: 'Hadir (WFO)' },
-    { date: '24-12-2024', checkIn: '07:05', checkOut: '17:52', status: 'Hadir (WFO)' },
-    { date: '23-12-2024', checkIn: '07:06', checkOut: '18:22', status: 'Hadir (WFO)' },
-    { date: '20-12-2024', checkIn: '07:13', checkOut: '17:11', status: 'Hadir (WFO)' },
-    { date: '19-12-2024', checkIn: '06:48', checkOut: '16:28', status: 'Hadir (WFO)' },
+    { date: '31-12-2024', checkIn: '06:57', checkOut: '17:51', status: 'Hadir' },
+    { date: '30-12-2024', checkIn: '06:53', checkOut: '16:02', status: 'Hadir' },
+    { date: '27-12-2024', checkIn: '07:34', checkOut: '18:43', status: 'Hadir' },
+    { date: '24-12-2024', checkIn: '07:05', checkOut: '17:52', status: 'Hadir' },
+    { date: '23-12-2024', checkIn: '07:06', checkOut: '18:22', status: 'Hadir' },
+    { date: '20-12-2024', checkIn: '07:13', checkOut: '17:11', status: 'Hadir' },
+    { date: '19-12-2024', checkIn: '06:48', checkOut: '16:28', status: 'Hadir' },
   ];
+
+  const handleBackClick = () => {
+    window.history.back();  
+  };
 
   return (
     <AuthenticatedLayout>
-      <div className="w-full h-full bg-gray-50 min-h-screen flex justify-center items-center">
-        <div className="w-full max-w-4xl p-8 bg-white shadow-md rounded-lg">
+      <div className="mt-6 px-8 md:px-32 flex justify-center items-center">
+        <div className="w-full bg-white">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold mb-4">Riwayat</h1>
             
             {/* Period Selector */}
             <div className="bg-gray-100 rounded-lg p-4 shadow-sm mb-6">
@@ -45,36 +48,40 @@ const Riwayat = () => {
 
             {/* Attendance Stats */}
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-navy-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-black">{attendanceStats.hadir}</div>
-                <div className="text-sm text-black">Hadir</div>
+              <div className="bg-navy-700 rounded-lg p-4 bg-blue-900">
+                <div className="text-2xl font-bold text-white">{attendanceStats.hadir}</div>
+                <div className="text-sm text-white">Hadir</div>
               </div>
-              <div className="bg-navy-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-black">{attendanceStats.izin}</div>
-                <div className="text-sm text-black">Izin</div>
+              <div className="bg-navy-700 rounded-lg p-4 bg-blue-900">
+                <div className="text-2xl font-bold text-white">{attendanceStats.izin}</div>
+                <div className="text-sm text-white">Izin</div>
               </div>
-              <div className="bg-navy-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-black">{attendanceStats.alpha}</div>
-                <div className="text-sm text-black">Alpha</div>
+              <div className="bg-navy-700 rounded-lg p-4 bg-blue-900">
+                <div className="text-2xl font-bold text-white">{attendanceStats.alpha}</div>
+                <div className="text-sm text-white">Alpha</div>
               </div>
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-2 bg-navy-700 text-black p-2 rounded-lg text-sm mb-2">
-              <div>Tanggal</div>
-              <div>Masuk</div>
-              <div>Keluar</div>
-              <div>Status</div>
+            <div className="grid grid-cols-4 bg-navy-700 text-black rounded-lg text-sm mb-2">
+              <div className="bg-blue-900 rounded-lg mr-2 py-2 text-white">Tanggal</div>
+              <div className="bg-blue-900 rounded-lg mx-2 p-2 text-white">Masuk</div>
+              <div className="bg-blue-900 rounded-lg mx-2 p-2 text-white">Keluar</div>
+              <div className="bg-blue-900 rounded-lg ml-2 pl-2 py-2 text-white">Status</div>
             </div>
 
             {/* Attendance List */}
             <div className="space-y-2">
               {attendanceHistory.map((record, index) => (
-                <div key={index} className="grid grid-cols-4 gap-2 bg-white p-2 rounded-lg text-sm">
+                <div key={index} 
+                  className="grid grid-cols-4 bg-white p-4 rounded-lg text-sm border border-gray-200"
+                >
                   <div>{record.date}</div>
                   <div>{record.checkIn}</div>
                   <div>{record.checkOut}</div>
-                  <div className="text-navy-700 font-medium">{record.status}</div>
+                  <div>
+                    <span class="bg-green-100 text-green-800 text-xs ml-[12.5%] px-2 py-1 rounded-xl dark:bg-green-900 dark:text-green-300">{record.status}</span>
+                  </div>
                 </div>
               ))}
             </div>
