@@ -5,6 +5,10 @@ export default function Dashboard({ user}) {
 
     const { name, email, role } = user;
 
+    const navigateToAbsensi = () => {
+        window.location.href = '/absen';
+    }
+
     const navigateToRiwayat = () => {
         window.location.href = '/riwayat';
     };
@@ -31,6 +35,7 @@ export default function Dashboard({ user}) {
                 </div>
 
                 <div className='flex flex-col my-4 mt-4'>
+                <button onClick={navigateToAbsensi} >
                   <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md">
                     {/* Text Content */}
                     <div className="flex justify-between items-center flex-grow px-6 py-6">
@@ -44,6 +49,7 @@ export default function Dashboard({ user}) {
                       </div>
                     </div>
                   </div>
+                  </button>
 
                   <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md">
                     {/* Text Content */}
