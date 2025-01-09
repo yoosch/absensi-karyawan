@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Inertia\Inertia;
 
 class PegawaiController extends Controller
 {
@@ -11,7 +13,9 @@ class PegawaiController extends Controller
      */
     public function index()
     {
-        //
+
+        $data = User::all();
+        return Inertia::render('Admin/adminPegawai', ['data' => $data]);
     }
 
     /**
@@ -27,7 +31,21 @@ class PegawaiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        // dd($request->all());
+        $request -> validate([
+            'nama' => 'required',
+            'email' => 'required',
+        ]);
+        
+        $data = [
+            'name' => $request->nama,
+            'email' => $request->email,
+            'password' => '12345678',
+        ];
+        // dd($data);
+        User::create($data);
+        return redirect()->route('pegawai.index');
     }
 
     /**
@@ -59,6 +77,7 @@ class PegawaiController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        User::destroy($id);
+        return redirect()->route('pegawai.index');
     }
 }
