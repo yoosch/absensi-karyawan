@@ -24,4 +24,16 @@ Route::get('/riwayat', function () {
     return Inertia::render('riwayat');
 });
 
+Route::get('/preview', function () {
+    return Inertia::render('preview');
+});
+
+Route::get('/dashboardAdmin', function () {
+    return Inertia::render('Admin/dashboardAdmin');
+});
+
+Route::get('adminPegawai', function () {
+    return Inertia::render('Admin/adminPegawai');
+});
+
 require __DIR__.'/auth.php';

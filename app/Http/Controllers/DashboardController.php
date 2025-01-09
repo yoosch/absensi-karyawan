@@ -15,7 +15,13 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-        return Inertia::render('dashboard',['user' => $user]);   
+
+
+        if($user->role == 'admin'){
+            return Inertia::render('Admin/dashboard',['user' => $user]);
+        }else{
+            return Inertia::render('dashboard',['user' => $user]);   
+        }
     }
 }
 
