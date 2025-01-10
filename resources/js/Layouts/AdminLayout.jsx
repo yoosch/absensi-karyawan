@@ -44,7 +44,7 @@ export default function AdminLayout({ header, children }) {
                                 </a>
                             </li>
                             <li className="mb-4">
-                                <a href="/adminPegawai" className="text-lg font-semibold">
+                                <a href="/pegawai" className="text-lg font-semibold">
                                 Pegawai
                                 </a>
                             </li>

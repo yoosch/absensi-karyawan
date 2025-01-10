@@ -4,6 +4,7 @@ use App\Http\Controllers\IzinController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AbsenController;
+use App\Http\Controllers\PegawaiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,9 +35,7 @@ Route::get('/dashboardAdmin', function () {
     return Inertia::render('Admin/dashboardAdmin');
 });
 
-Route::get('adminPegawai', function () {
-    return Inertia::render('Admin/adminPegawai');
-});
+Route::resource('/pegawai', PegawaiController::class);
 
 Route::get('/absenCuti', [IzinController::class, 'indexCuti'])->middleware(['auth', 'verified']);
 Route::get('/absenDinas', [IzinController::class, 'indexDinas'])->middleware(['auth', 'verified']);
