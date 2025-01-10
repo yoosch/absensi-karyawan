@@ -162,6 +162,11 @@ export default function AuthenticatedLayout({ header, children }) {
             )}
 
             <main>{children}</main>
+        
+            <div class="flex flex-col items-center justify-center bottom-0 fixed w-full p-4">
+                <span class="text-sm text-gray-500 text-center sm:text-center dark:text-gray-400">© 2025 <a href="https://flowbite.com/" class="hover:underline">nippotisme™</a>. All Rights Reserved.
+                </span>
+            </div>
         </div>
     );
 }

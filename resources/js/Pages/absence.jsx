@@ -1,13 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import preview from '@/Pages/preview';
 import { Inertia } from '@inertiajs/inertia';
+import Swal from "sweetalert2";
+import withReactContent from 'sweetalert2-react-content'
 
+const MySwal = withReactContent(Swal)
 
 const Absence = () => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const [capturedPhoto, setCapturedPhoto] = useState(null);
+    const [coordinates, setCoordinates] = useState({ latitude: 0.0, longitude: 0.0 });
     const [message, setMessage] = useState("");
 
     const startCamera = () => {
@@ -37,6 +40,7 @@ const Absence = () => {
             const dataUrl = canvas.toDataURL("image/png");
             setCapturedPhoto(dataUrl);
             stopCamera();
+            getCoordinates(); // Get GPS location
         }
     };
 
@@ -47,28 +51,84 @@ const Absence = () => {
             videoRef.current.srcObject = null;
         }
     };
+    
+
+    const getCoordinates = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setCoordinates({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                    });
+                },
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    setMessage("Unable to access location.");
+                }
+            );
+        } else {
+            setMessage("Geolocation is not supported by this browser.");
+        }
+    };
+
+    
+
 
     const handleSubmit = () => {
-        if (!capturedPhoto) {
-            setMessage("Please capture a photo before submitting.");
+        if (!capturedPhoto || !coordinates) {
+            setMessage("Please capture a photo and allow location access before submitting.");
             return;
         }
-        // Mock submission
-        setMessage("Absence submitted successfully!");
 
-        // Stop the camera after submission
-        stopCamera();
+        const absenceData = {
+            photo_url: capturedPhoto,
+            koordinat_masuk: JSON.stringify(coordinates),
+            koordinat_keluar: JSON.stringify(coordinates),
+            waktu_masuk: new Date(new Date().getTime() + 7 * 60 * 60 * 1000).toISOString().substr(11, 8),
+            waktu_keluar : new Date(new Date().getTime() + 7 * 60 * 60 * 1000).toISOString().substr(11, 8),
+        };
 
+        Inertia.post('/absen/store', absenceData, {
+            onSuccess: (response) => {
+                if (response.props.message) {
+                    withReactContent(Swal).fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'response.props.message',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        setCapturedPhoto(null);
+                        setCoordinates(null);
+                    });
+                }
+            },
+            onError: () => {
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to submit absence.',
+                    confirmButtonText: 'Retry',
+                });
+            }
+        });
     };
 
     useEffect(() => {
+
         startCamera();
 
+        const interval = setInterval(() => {
+            getCoordinates();
+        }, 1000);
+
         return () => {
+            clearInterval(interval);
             stopCamera();
         };
-    }, []);
+    }, []); 
 
+    
     return (
         <AuthenticatedLayout>
             <div className="flex flex-col items-center justify-center bg-gray-100 p-4">
@@ -135,25 +195,47 @@ const Absence = () => {
                 )}
 
                 {/* Addresss */}
-                <div className="flex flex-col items-center mt-4">
-                    <label className="text-gray-700">Address</label>
-                    <p className="text-gray-800 text-center">
-                        Jl. Raya Bogor, No. 123, Jakarta, Indonesia
-                    </p>
+                <div className='grid grid-cols-[10%,45%,45%] justify-center items-center mt-4 border-2 rounded-lg p-3 '>
+                    <div className='mr-6'>
+                        <svg
+                            class='w-6 h-6 text-[#fdb714]'
+                            aria-hidden='true'
+                            xmlns='http://www.w3.org/2000/svg'
+                            width='24'
+                            height='24'
+                            fill='currentColor'
+                            viewBox='0 0 24 24'
+                        >
+                            <path
+                            fill-rule='evenodd'
+                            d='M11.906 1.994a8.002 8.002 0 0 1 8.09 8.421 7.996 7.996 0 0 1-1.297 3.957.996.996 0 0 1-.133.204l-.108.129c-.178.243-.37.477-.573.699l-5.112 6.224a1 1 0 0 1-1.545 0L5.982 15.26l-.002-.002a18.146 18.146 0 0 1-.309-.38l-.133-.163a.999.999 0 0 1-.13-.202 7.995 7.995 0 0 1 6.498-12.518ZM15 9.997a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z'
+                            clip-rule='evenodd'
+                            />
+                        </svg>
+                    </div>
+                    <div className="text-gray-800 text-left mr-3 font-semibold">
+                        <h1>Longitude</h1>
+                        <h1>Latitude</h1>
+                    </div>
+                    <div className="font-mono font-light">
+                        {/* check if null */}
+                        <h1>:{coordinates.longitude.toFixed(6)}</h1>
+                        <h1>:{coordinates.latitude.toFixed(6)} </h1>
+                    </div>
                 </div>
 
                 {/* Submission */}
                 {capturedPhoto ? (
                     <button
-                    onClick={handleSubmit}
+                    onClick={() => handleSubmit()}
                     className="mt-4 w-44 px-4 py-2 bg-[#213468] text-white rounded-lg hover:bg-purple-600"
                 >
                     Presensi
                 </button>
                 ) : (<button
-                    onClick={handleSubmit}
+                    onClick={() => handleSubmit()}
                     className="mt-4 w-44 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 hidden"
-                >
+                >   
                     Submit Absence
                 </button>)
 

@@ -21,10 +21,10 @@ export default function DashboardAdmin() {
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 
             'September', 'Oktober', 'November', 'Desember'
         ];
+        const month = monthsOfYear[currentDate.getMonth()];
       
         const dayOfWeek = daysOfWeek[currentDate.getDay()];
         const dayOfMonth = currentDate.getDate();
-        const month = monthsOfYear[currentDate.getMonth()];
         const year = currentDate.getFullYear();
         const hours = currentDate.getHours();
         const minutes = currentDate.getMinutes();

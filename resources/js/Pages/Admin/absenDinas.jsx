@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
-import DataTable from 'datatables.net-react';
-import DT from 'datatables.net-dt';
+// import DataTable from 'datatables.net-react';
+// import DT from 'datatables.net-dt';
 
 DataTable.use(DT);
 

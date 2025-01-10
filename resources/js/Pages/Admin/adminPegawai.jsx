@@ -66,9 +66,6 @@ export default function adminPegawai({data}) {
                                     <td className="border border-gray-300 p-2">{pegawai.email}</td>
                                     <td className="border border-gray-300 p-2">111111111</td>
                                     <td className="border border-gray-300 p-2 flex justify-around">
-                                        <button className="bg-[#FECE00] px-[10%] py-[2%] rounded-sm font-bold text-sm">
-                                            Edit
-                                        </button>
                                         <button
                                             onClick={() => handleDeleteClick(pegawai)}
                                             className="bg-red-500 px-[10%] py-[2%] rounded-sm font-bold text-sm"

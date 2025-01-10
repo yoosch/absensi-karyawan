@@ -24,17 +24,16 @@
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-react": "^0.8.1",
         "@inertiajs/progress": "^0.2.7",
-<<<<<<< HEAD
-        "datatables.net-dt": "^2.2.0",
-        "datatables.net-react": "^1.0.0",
-=======
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
->>>>>>> fe60f7f11d6b3d40733ef0c07d01eaeaa1174f6a
+        "datatables.net-dt": "^2.2.0",
+        "datatables.net-react": "^1.0.0",
         "lucide-react": "^0.469.0",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-dropzone": "^14.3.5",
+        "sweetalert2": "^11.15.10",
+        "sweetalert2-react-content": "^5.1.0",
         "tailwind-merge": "^2.6.0",
         "tailwindcss-animate": "^1.0.7"
     }

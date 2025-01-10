@@ -9,7 +9,7 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, canResetPassword}) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -34,12 +34,12 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="bg-white w-full max-w-md mx-8 px-8 py-12 shadow-lg rounded-lg md:max-w-lg">
+            <div className="flex items-center justify-center min-h-screen relative">
+                <img src="/logo.png" alt="Background Logo" className="absolute w-[70%] opacity-10 object-cover z-0 mx-auto my-auto" />
+                <div className=" w-full max-w-md mx-2 px-6 py-12 md:max-w-lg relative z-10">
                     <div className="flex flex-col items-center">
                         <img src="/putech.png" alt="Putech Logo" className="w-44" />
                     </div>
-
                     <h1 className="mt-6 text-2xl font-bold text-center text-gray-800">
                         Log in to your account
                     </h1>
@@ -49,13 +49,14 @@ export default function Login({ status, canResetPassword }) {
 
                     <form className="mt-6" onSubmit={submit}>
                         <div>
-                            <InputLabel htmlFor="email" value="Email" />
+                            <InputLabel htmlFor="email" value="" />
                             <TextInput
                                 id="email"
                                 type="email"
                                 name="email"
                                 value={data.email}
-                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
+                                placeholder="Enter your email"
+                                className="w-full bg-[#DBDBDB] px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
                                 autoComplete="username"
                                 isFocused={true}
                                 onChange={(e) => setData('email', e.target.value)}
@@ -63,14 +64,15 @@ export default function Login({ status, canResetPassword }) {
                             <InputError message={errors.email} className="mt-2" />
                         </div>
 
-                        <div className="mt-4">
-                            <InputLabel htmlFor="password" value="Password" />
+                        <div className="mt-2">
+                            <InputLabel htmlFor="password" value="" />
                             <TextInput
                                 id="password"
                                 type="password"
                                 name="password"
                                 value={data.password}
-                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
+                                placeholder="Enter your password"
+                                className="w-full bg-[#DBDBDB] px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
                                 autoComplete="current-password"
                                 onChange={(e) => setData('password', e.target.value)}
                             />
@@ -92,7 +94,7 @@ export default function Login({ status, canResetPassword }) {
                             </label>
                         </div>
 
-                        <div className="mt-4 items-center justify-end">
+                        <div className="mt-4 items-center text-center justify-end">
                             <PrimaryButton className="" disabled={processing}>
                                 Log in
                             </PrimaryButton>

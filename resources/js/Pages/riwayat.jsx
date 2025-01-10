@@ -1,29 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Calendar } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-const Riwayat = () => {
-  const [currentPeriod, setCurrentPeriod] = useState({
-    month: 'Desember 2024',
-    startDate: '01-12-2024',
-    endDate: '31-12-2024'
-  });
+  const Riwayat = ({dataAbsen}) => {
+            
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const monthsOfYear = [
+      'Januari', 
+      'Februari', 
+      'Maret', 
+      'April', 
+      'Mei', 
+      'Juni', 
+      'Juli', 
+      'Agustus', 
+      'September', 
+      'Oktober', 
+      'November', 
+      'Desember'
+  ];
+  const month = monthsOfYear[currentDate.getMonth()];
+  const year = currentDate.getFullYear();
+
+  const tanggalAwal = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const tanggalAkhir = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
   const attendanceStats = {
-    hadir: 28,
-    izin: 3,
-    alpha: 0
+    hadir: null,
+    izin: null,
+    alpha: null
   };
-
-  const attendanceHistory = [
-    { date: '31-12-2024', checkIn: '06:57', checkOut: '17:51', status: 'Hadir' },
-    { date: '30-12-2024', checkIn: '06:53', checkOut: '16:02', status: 'Hadir' },
-    { date: '27-12-2024', checkIn: '07:34', checkOut: '18:43', status: 'Hadir' },
-    { date: '24-12-2024', checkIn: '07:05', checkOut: '17:52', status: 'Hadir' },
-    { date: '23-12-2024', checkIn: '07:06', checkOut: '18:22', status: 'Hadir' },
-    { date: '20-12-2024', checkIn: '07:13', checkOut: '17:11', status: 'Hadir' },
-    { date: '19-12-2024', checkIn: '06:48', checkOut: '16:28', status: 'Hadir' },
-  ];
 
   const handleBackClick = () => {
     window.history.back();  
@@ -39,9 +45,9 @@ const Riwayat = () => {
             <div className="bg-gray-100 rounded-lg p-4 shadow-sm mb-6">
               <div className="text-left">
                 <p className="text-sm text-gray-500">Periode</p>
-                <p className="text-lg font-bold text-black">{currentPeriod.month}</p>
+                <p className="text-lg font-bold text-black">{month} {year}</p>
                 <p className="text-xs text-gray-500">
-                  {currentPeriod.startDate} - {currentPeriod.endDate}
+                  { tanggalAwal.getDate() } {month} {year} - { tanggalAkhir.getDate() } {month} {year}
                 </p>
               </div>
             </div>
@@ -72,15 +78,15 @@ const Riwayat = () => {
 
             {/* Attendance List */}
             <div className="space-y-2">
-              {attendanceHistory.map((record, index) => (
+              {dataAbsen.map((record, index) => (
                 <div key={index} 
                   className="grid grid-cols-4 bg-white p-4 rounded-lg text-sm border border-gray-200"
                 >
-                  <div>{record.date}</div>
-                  <div>{record.checkIn}</div>
-                  <div>{record.checkOut}</div>
+                  <div>{record.tanggal}</div>
+                  <div>{record.waktu_masuk}</div>
+                  <div>{record.waktu_keluar ?? '00:00'}</div>
                   <div>
-                    <span className="bg-green-100 text-green-800 text-xs ml-[12.5%] px-2 py-1 rounded-xl dark:bg-green-900 dark:text-green-300">{record.status}</span>
+                    <span className="bg-green-100 text-green-800 text-xs ml-[12.5%] px-2 py-1 rounded-xl dark:bg-green-900 dark:text-green-300">Hadir</span>
                   </div>
                 </div>
               ))}

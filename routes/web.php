@@ -5,6 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\RiwayatController;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -14,7 +16,10 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/absen', [AbsenController::class, 'index'])->middleware(['auth', 'verified'])->name('absen.index');
+Route::post('/absen/store', [AbsenController::class, 'store']);
+
 Route::get('/izin', [IzinController::class, 'index'])->middleware(['auth', 'verified'])->name('izin.index');
 
 Route::middleware('auth')->group(function () {
@@ -23,13 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/riwayat', function () {
-    return Inertia::render('riwayat');
-});
+Route::get('/riwayat', [RiwayatController::class, 'index'])->middleware(['auth', 'verified'])->name('riwayat.index');
 
-Route::get('/preview', function () {
-    return Inertia::render('preview');
-});
 
 Route::get('/dashboardAdmin', function () {
     return Inertia::render('Admin/dashboardAdmin');

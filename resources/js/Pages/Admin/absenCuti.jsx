@@ -6,7 +6,7 @@ import DT from 'datatables.net-dt';
 
 DataTable.use(DT);
 
-export default function adminPegawai() {
+export default function adminPegawai({data}) {
 
     const [selectedOption, setSelectedOption] = useState('');
 
@@ -78,15 +78,31 @@ export default function adminPegawai() {
                             <thead className="bg-[#04042A] text-white">
                                 <tr>
                                     <th className="border border-gray-300 p-2 w-[10%]">No</th>
-                                    <th className="border border-gray-300 p-2">Nama</th>
-                                    <th className="border border-gray-300 p-2">Email</th>
+                                    {/* <th className="border border-gray-300 p-2">Nama</th> */}
+                                    {/* <th className="border border-gray-300 p-2">Email</th> */}
                                     <th className="border border-gray-300 p-2">No Induk</th>
                                     <th className="border border-gray-300 p-2">Tanggal Mulai</th>
                                     <th className="border border-gray-300 p-2">Tanggal Selesai</th>
                                     <th className="border border-gray-300 p-2">Deskripsi</th>
+                                    <th className="border border-gray-300 p-2">Alamat</th>
                                     <th className="border border-gray-300 p-2">Surat sakit</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                {data.map((pegawai, index) =>(
+                                    <tr key={index}>
+                                        <td className="border border-gray-300 p-2">{index + 1}</td>
+                                        {/* <td className="border border-gray-300 p-2">{pegawai.name}</td> */}
+                                        {/* <td className="border border-gray-300 p-2">{pegawai.email}</td> */}
+                                        <td className="border border-gray-300 p-2">{pegawai.NIK}</td>
+                                        <td className="border border-gray-300 p-2">{pegawai.tanggal_mulai}</td>
+                                        <td className="border border-gray-300 p-2">{pegawai.tanggal_selesai}</td>
+                                        <td className="border border-gray-300 p-2">{pegawai.deskripsi}</td>
+                                        <td className="border border-gray-300 p-2">{pegawai.alamat}</td>
+                                        <td className="border border-gray-300 p-2">{pegawai.surat_path}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
                         </table>   
                     )}
                 </div>             

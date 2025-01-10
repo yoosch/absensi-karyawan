@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Izin;
 
 class IzinController extends Controller
 {
@@ -12,15 +13,23 @@ class IzinController extends Controller
      *
      * @return void
      */
+      public function index()
+      {
+          //get all posts
+          // $posts = Post::latest()->get();
+  
+          //return view
+          return Inertia::render('izin');
+      }
     
 
      public function indexCuti()
      {
          //get all posts
-         // $posts = Post::latest()->get();
+         $izins = Izin::all();
  
          //return view
-         return Inertia::render('Admin/absenCuti');
+         return Inertia::render('Admin/absenCuti', ['data' => $izins]);
      }
 
      public function indexDinas(){
