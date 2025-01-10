@@ -19,6 +19,18 @@ export default function AdminLayout({ header, children }) {
         setIsPresensiClicked(!isPresensiClicked); // Toggle visibility
     };
 
+    const navigateToCuti = () => {
+        window.location.href = '/absenCuti';
+    }
+
+    const navigateToDinas = () => {
+        window.location.href = '/absenDinas';
+    }
+
+    const navigateToLupaAbsen = () => {
+        window.location.href = '/absenLupaAbsen';
+    }
+
     return (
         <div className="min-h-screen bg-white overflow-x-hidden">
             <div className='flex'>
@@ -54,20 +66,26 @@ export default function AdminLayout({ header, children }) {
                                     Log absensi
                                     </a>
                                 </li>
-                                <li className="ml-4 mb-2">
-                                    <a href="#" className="text-md">
-                                    Dinas
-                                    </a>
+                                <li className="ml-4 mb-2" >
+                                    <button onClick={navigateToDinas}>
+                                        <a className="text-md">
+                                        Dinas
+                                        </a>
+                                    </button>
                                 </li>
-                                <li className="ml-4 mb-2">
-                                    <a href="#" className="text-md">
-                                    Cuti
-                                    </a>
+                                <li className="ml-4 mb-2" >
+                                    <button onClick={navigateToCuti}>
+                                        <a className="text-md">
+                                        Cuti
+                                        </a>
+                                    </button>
                                 </li>
-                                <li className="ml-4 mb-2">
-                                    <a href="#" className="text-md">
-                                    Lupa Absen
-                                    </a>
+                                <li className="ml-4 mb-2" >
+                                    <button onClick={navigateToLupaAbsen}>
+                                        <a className="text-md">
+                                        Lupa Absen
+                                        </a>
+                                    </button>
                                 </li>
                                 </>
                             )}

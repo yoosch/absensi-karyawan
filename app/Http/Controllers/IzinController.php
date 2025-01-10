@@ -14,13 +14,21 @@ class IzinController extends Controller
      */
     
 
-     public function index()
+     public function indexCuti()
      {
          //get all posts
          // $posts = Post::latest()->get();
  
          //return view
-         return Inertia::render('izin');
+         return Inertia::render('Admin/absenCuti');
+     }
+
+     public function indexDinas(){
+        return Inertia::render('Admin/absenDinas');
+     }
+
+     public function indexLupaAbsen(){
+        return Inertia::render('Admin/absenLupaAbsen');
      }
 
     

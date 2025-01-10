@@ -38,4 +38,8 @@ Route::get('adminPegawai', function () {
     return Inertia::render('Admin/adminPegawai');
 });
 
+Route::get('/absenCuti', [IzinController::class, 'indexCuti'])->middleware(['auth', 'verified']);
+Route::get('/absenDinas', [IzinController::class, 'indexDinas'])->middleware(['auth', 'verified']);
+Route::get('/absenLupaAbsen ', [IzinController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
+
 require __DIR__.'/auth.php';
