@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useDropzone } from 'react-dropzone';
+import { DateRangePicker } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Textarea } from "@nextui-org/react";
 
 const Izin = () => {
     const [izin, setIzin] = useState({
@@ -15,6 +17,10 @@ const Izin = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileUploaded, setFileUploaded] = useState(false);
 
+    const capitalizeFirstLetter = (text) => {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setIzin({
@@ -26,6 +32,25 @@ const Izin = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(izin);
+    };
+
+
+    const getSuratLabel = () => {
+        if (izin.tipeIzin === "cuti") {
+            if (izin.jenisCuti === "tahunan") {
+                return "Surat Izin";
+            } else if(izin.jenisCuti === "sakit") {
+                return "Surat Sakit";
+            }else{
+                return "Dokumen Pendukung";
+            }
+        } else if(izin.tipeIzin === "dinas") {
+            return "Surat Dinas";
+        } else if(izin.tipeIzin === "lupa absen") {
+            return "Surat Dispensasi";
+        }else{
+            return "Dokumen Pendukung";
+        }
     };
 
     const { getRootProps, getInputProps } = useDropzone({
@@ -49,140 +74,102 @@ const Izin = () => {
         maxSize: 500 * 1024,
     });
 
-    const handleBackClick = () => {
-        window.history.back();  
-      };
-
     return (
         <AuthenticatedLayout>
             <div className="mt-6 px-8 md:px-32">
                 <form onSubmit={handleSubmit}>
                     <div className="mt-6">
-                        <label className="block text-sm text-gray-600" htmlFor="tipeIzin">Tipe Izin</label>
-                        <div className="w-full px-4 py-2 mt-2 text-gray-700 bg-[#213468] rounded-lg focus:outline-none focus:bg-white">
-                            <select
-                                className="w-full bg-[#213468] outline-none focus:outline-none text-white"
-                                id="tipeIzin"
-                                name="tipeIzin"
-                                value={izin.tipeIzin}
-                                onChange={handleInputChange}
+                        <label className="block text-sm text-gray-600 mb-2">Tipe Izin</label>
+                        <Dropdown backdrop="blur">
+                            <DropdownTrigger>
+                                <Button className="w-full bg-[#213468] text-white">{izin.tipeIzin ? capitalizeFirstLetter(izin.tipeIzin) : "Pilih Alasan"}</Button>
+                            </DropdownTrigger>
+                            <DropdownMenu
+                                aria-label="Tipe Izin"
+                                onAction={(key) => {
+                                    setIzin({ ...izin, tipeIzin: key })
+                                    }
+                                }
                             >
-                                <option value="">-- Pilih Alasan --</option>
-                                <option value="dinas">Dinas</option>
-                                <option value="cuti">Cuti</option>
-                                <option value="lupaabsen">Lupa Absen</option>
-                            </select>
-                        </div>
+                                <DropdownItem key="dinas">Dinas</DropdownItem>
+                                <DropdownItem key="cuti">Cuti</DropdownItem>
+                                <DropdownItem key="lupa absen">Lupa Absen</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
                     </div>
 
-                    {izin.tipeIzin !== "" && izin.tipeIzin === "cuti" && (
+                    {izin.tipeIzin === "cuti" && (
                         <div className="mt-6">
-                            <label className="block text-sm text-gray-600" htmlFor="jenisCuti">Jenis Cuti</label>
-                            <div className="w-full px-4 py-2 mt-2 text-gray-700 bg-[#213468] rounded-lg focus:outline-none focus:bg-white">
-                                <select
-                                    className="w-full bg-[#213468] outline-none focus:outline-none text-white"
-                                    id="jenisCuti"
-                                    name="jenisCuti"
-                                    value={izin.jenisCuti}
-                                    onChange={handleInputChange}
+                            <label className="block text-sm text-gray-600 mb-2 ">Jenis Cuti</label>
+                            <Dropdown backdrop="blur">
+                                <DropdownTrigger>
+                                    <Button className="w-full bg-[#213468] text-white">{izin.jenisCuti ? capitalizeFirstLetter(izin.jenisCuti) : "Pilih Jenis Cuti"}</Button>
+                                </DropdownTrigger>
+                                <DropdownMenu
+                                    aria-label="Jenis Cuti"
+                                    onAction={(key) => setIzin({ ...izin, jenisCuti: key })}
                                 >
-                                    <option value="">-- Pilih Jenis Cuti --</option>
-                                    <option value="tahunan">Tahunan</option>
-                                    <option value="sakit">Sakit</option>
-                                </select>
-                            </div>
+                                    <DropdownItem key="tahunan">Tahunan</DropdownItem>
+                                    <DropdownItem key="sakit">Sakit</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
                         </div>
                     )}
 
-                    {izin.tipeIzin !== "" && (
-                        <div className="mt-6">
-                            <label className="block text-sm text-gray-600" htmlFor="tanggalMulai">Tanggal Mulai</label>
-                            <input
-                                type="date"
-                                id="tanggalMulai"
-                                name="tanggalMulai"
-                                value={izin.tanggalMulai}
-                                onChange={handleInputChange}
-                                className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:bg-white"
-                            />
-                            <small className="text-gray-500 italic">Pilih tanggal mulai</small>
-                        </div>
-                    )}
+                    <div className="mt-6">
+                        <label className="block text-sm text-gray-600 mb-2">Tanggal</label>
+                        <DateRangePicker
+                            className="w-full rounded-lg"
+                            size="lg"
+                            onChange={(dates) => {
+                                setIzin({
+                                    ...izin,
+                                    tanggalMulai: dates.start,
+                                    tanggalSelesai: dates.end,
+                                });
+                            }}
+                        />
+                        <small className="text-gray-500 italic">Pilih tanggal mulai dan selesai</small>
+                    </div>
 
-                    {izin.tanggalMulai !== "" && (
+                    {izin.jenisCuti === "tahunan" && izin.tipeIzin === "cuti" && (
                         <div className="mt-6">
-                            <label className="block text-sm text-gray-600" htmlFor="tanggalSelesai">Tanggal Selesai</label>
-                            <input
-                                type="date"
-                                id="tanggalSelesai"
-                                name="tanggalSelesai"
-                                value={izin.tanggalSelesai}
-                                onChange={handleInputChange}
-                                className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:bg-white"
-                            />
-                            <small className="text-gray-500 italic">Pilih tanggal selesai</small>
-                        </div>
-                    )}
-
-                    {izin.tanggalSelesai !== "" && (
-                        <div className="mt-6">
-                            <label className="block text-sm text-gray-600" htmlFor="deskripsi">Deskripsi</label>
-                            <textarea
-                                id="deskripsi"
-                                name="deskripsi"
-                                value={izin.deskripsi}
-                                placeholder="Deskripsikan disini"
-                                onChange={handleInputChange}
-                                className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:bg-white"
-                            />
-                        </div>
-                    )}
-
-                    {izin.deskripsi !=="" && izin.jenisCuti === "tahunan" && (
-                        <div className="mt-6">
-                            <label className="block text-sm text-gray-600" htmlFor="alasan">Alamat</label>
-                            <textarea
-                                id="alamat"
+                            <label className="block text-sm text-gray-600 mb-2">Alamat</label>
+                            <Textarea
                                 name="alamat"
                                 value={izin.alamat}
-                                placeholder="Jelaskan alamat izin Anda"
+                                placeholder="Jl. Contoh No. 123, Kota Contoh"
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 mt-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:bg-white"
+                                fullWidth
+                                startContent={<svg class=" my-auto w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M11.906 1.994a8.002 8.002 0 0 1 8.09 8.421 7.996 7.996 0 0 1-1.297 3.957.996.996 0 0 1-.133.204l-.108.129c-.178.243-.37.477-.573.699l-5.112 6.224a1 1 0 0 1-1.545 0L5.982 15.26l-.002-.002a18.146 18.146 0 0 1-.309-.38l-.133-.163a.999.999 0 0 1-.13-.202 7.995 7.995 0 0 1 6.498-12.518ZM15 9.997a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z" clip-rule="evenodd"/>
+                                  </svg>
+                                  }
                             />
+                            <small className="text-gray-500 italic">Tulis alamat menjalani Cuti</small>
                         </div>
                     )}
 
-                    {izin.deskripsi !== "" && (
-                        <div className="mt-6">
-                            {izin.tipeIzin === "cuti" && izin.jenisCuti === "tahunan" &&(
-                                <label className="block text-sm text-gray-600">Surat Cuti</label>
-                            )}
-
-                            {izin.tipeIzin === "cuti" && izin.jenisCuti === "sakit" &&(
-                                <label className="block text-sm text-gray-600">Surat Sakit</label>
-                            )}
-
-                            {izin.tipeIzin === "dinas" &&(
-                                <label className="block text-sm text-gray-600">Surat Keterangan Dinas</label>
-                            )}
-
-                            {izin.tipeIzin === "lupaabsen" &&(
-                                <label className="block text-sm text-gray-600">Surat Dispensasi Kehadiran</label>
-                            )}
-
+                    <div className="mt-6">
+                        <label className="block text-sm text-gray-600 mb-2">Deskripsi</label>
+                            <Textarea
+                                variant="flat"
+                                name="deskripsi"
+                                value={izin.deskripsi}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                        <small className="text-gray-500 italic">Tulis Deskrpsi singkat</small>
+                    </div>
+                    
+                    <div className="mt-6">
+                            <label className="block text-sm text-gray-600 mb-2">{getSuratLabel()}
+                            </label>
                             <div
-                                className="mt-2 border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer"
                                 {...getRootProps()}
-                                style={{ minHeight: '150px' }}
+                                className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer"
                             >
-                                <input
-                                    {...getInputProps()}
-                                    type="file"
-                                    name="file"
-                                    className="hidden"
-                                    accept=".pdf"
-                                    required
-                                />
+                                <input {...getInputProps()} type="file" className="hidden" />
                                 <p className="text-gray-500">Drag & Drop file PDF disini, atau pilih file</p>
                                 {selectedFile && (
                                     <p className="mt-1 text-sm text-gray-600">
@@ -193,16 +180,12 @@ const Izin = () => {
                             {fileUploaded && (
                                 <p className="mt-2 text-green-500 text-sm">File berhasil diunggah!</p>
                             )}
-                        </div>
-                    )}
+                    </div>
 
                     <div className="mt-6">
-                        <button
-                            type="submit"
-                            className="w-full my-10 px-4 py-2 text-sm text-white bg-[#213468] rounded-lg hover:bg-blue-700"
-                        >
+                        <Button type="submit" className="w-full bg-[#213468] text-white" >
                             Submit
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>
