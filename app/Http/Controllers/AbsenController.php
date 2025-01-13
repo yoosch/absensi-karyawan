@@ -18,10 +18,11 @@ class AbsenController extends Controller
 
     $user = auth()->user();
 
+    
     Absen::where('nik', $request->input('nik'))
-        ->where('waktu_masuk', $request->input('waktu_masuk'))
-        ->first();
-
+    ->where('waktu_masuk', $request->input('waktu_masuk'))
+    ->first();
+    
     $image = $request->input('photo_url');
     $imagePath = null;
 
@@ -29,10 +30,11 @@ class AbsenController extends Controller
         $image = str_replace('data:image/png;base64,', '', $image);
         $image = str_replace(' ', '+', $image);
         $imageName = 'images/absence/' . date('H-i-s') . '-' . uniqid() . '.png';
-        Storage::put($imageName, base64_decode($image));
+        Storage::disk('public')->put($imageName, base64_decode($image)); 
         $imagePath = Storage::url($imageName);
     }
-
+    // return response()->json(['data' => $request->all()]);
+    
     $absen = Absen::where('nik',$user->nik)
         ->where('tanggal', Carbon::now()->format('Y-m-d'))
         ->first();
@@ -55,9 +57,7 @@ class AbsenController extends Controller
     
 
     /*return back to other page with route*/
-    return redirect()->route('dashboard');
-
-    
+    return response()->json(['message' => 'Absen Berhasil'],201);
 
 
 }

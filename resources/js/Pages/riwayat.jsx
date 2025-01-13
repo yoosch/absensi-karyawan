@@ -88,6 +88,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
                   <div>
                     <span className="bg-green-100 text-green-800 text-xs ml-[12.5%] px-2 py-1 rounded-xl dark:bg-green-900 dark:text-green-300">Hadir</span>
                   </div>
+                  <div>
+                    <img src={record.photo_keluar_url} alt="" />
+                  </div>
                 </div>
               ))}
             </div>
