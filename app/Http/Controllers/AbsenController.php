@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Absen;
+use App\Models\User;
 use Inertia\Inertia;
 use Carbon\Carbon;
 
@@ -12,6 +13,11 @@ class AbsenController extends Controller
 {
     public function index(){
         return Inertia::render('absence');
+    }
+
+    public function index2(){
+        $data = User::all();
+        return Inertia::render('Admin/rekap', ['data' => $data]);
     }
 
     public function store(Request $request){

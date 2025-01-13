@@ -3,10 +3,13 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SearchableDropdown from '@/Components/SearchableDropdown';
-import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
+// import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 
-export default function rekap() {
+
+export default function rekap({data}) {
 
     const [value, setValue] = useState("Select option...");
     const myFilter = (textValue, inputValue) => {
@@ -22,15 +25,26 @@ export default function rekap() {
         return textValue.slice(0, inputValue.length) === inputValue;
       };
 
+    const [selectedNik, setSelectedNik] = useState(null);
+    const [selectedName, setSelectedName] = useState(null);
 
-    const pegawai = [
-        { id: 1, name: 'Aldi', nik: '123456' },
-        { id: 2, name: 'Budi', nik: '123457' },
-        { id: 3, name: 'Caca', nik: '123458' },
-        { id: 4, name: 'Dedi', nik: '123459' },
-        { id: 5, name: 'Eka', nik: '123460' },
+    const handleNikChange = (event, value) => {
+        setSelectedNik(value);
+        if (value) {
+            setSelectedName(data.find((item) => item.nik === value.nik) || null);
+        } else {
+            setSelectedName(null);
+        }
+    };
 
-    ]
+    const handleNameChange = (event, value) => {
+        setSelectedName(value);
+        if (value) {
+            setSelectedNik(data.find((item) => item.name === value.name) || null);
+        } else {
+            setSelectedNik(null);
+        }
+    };
 
     return (
         <AdminLayout>
@@ -43,29 +57,49 @@ export default function rekap() {
                         <label htmlFor='nik' className='block text-sm font-medium text-gray-700'>
                             NIK
                         </label>
-                        <input
-                            type='text'
-                            id='nik'
-                            name='nik'
-                            className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                        <Autocomplete
+                            disablePortal
+                            options={data}
+                            getOptionLabel={(option) => option.nik || ''}
+                            value={selectedNik}
+                            onChange={handleNikChange}
+                            renderInput={(params) => (
+                                <div ref={params.InputProps.ref} className="relative mt-1">
+                                    <input
+                                        {...params.inputProps}
+                                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        placeholder="Cari NIK"
+                                    />
+                                </div>
+                            )}
+                            classes={{
+                                paper: 'shadow-md rounded-md',
+                                option: 'px-3 py-2 hover:bg-gray-100',
+                            }}
                         />
                         <label htmlFor='nama' className='block text-sm font-medium text-gray-700'>
                             Nama
                         </label>
                         <Autocomplete
-                        allowsCustomValue = {true}
-                        classNames={{
-                            mainWrapper: "h-full",
-                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
-                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-                        }}
-                        defaultFilter={myFilter}
-                        defaultItems={pegawai}
-                        label="Search an animal"
-                        variant="bordered"
-                        >
-                        {(item) => <AutocompleteItem key={item.name}>{item.name}</AutocompleteItem>}
-                        </Autocomplete>
+                            disablePortal
+                            options={data}
+                            getOptionLabel={(option) => option.name || ''}
+                            value={selectedName}
+                            onChange={handleNameChange}
+                            renderInput={(params) => (
+                                <div ref={params.InputProps.ref} className="relative mt-1">
+                                    <input
+                                        {...params.inputProps}
+                                        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        placeholder="Cari Pegawai"
+                                    />
+                                </div>
+                            )}
+                            classes={{
+                                paper: 'shadow-md rounded-md',
+                                option: 'px-3 py-2 hover:bg-gray-100',
+                            }}
+                        />
                     </div>
                     <div className='mt-4'>
                         <label htmlFor='option' className='block text-sm font-medium text-gray-700'>

@@ -36,9 +36,7 @@ Route::get('/dashboardAdmin', function () {
 });
 
 Route::resource('/pegawai', PegawaiController::class);
-Route::get('/rekap', function () {
-    return Inertia::render('Admin/rekap');
-});
+Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
 
 Route::get('/absenCuti', [IzinController::class, 'indexCuti'])->middleware(['auth', 'verified']);
 Route::get('/absenDinas', [IzinController::class, 'indexDinas'])->middleware(['auth', 'verified']);
