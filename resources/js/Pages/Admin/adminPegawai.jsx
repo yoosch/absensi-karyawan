@@ -510,7 +510,20 @@ export default function adminPegawai({data}) {
                                             inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
                                     }}
                                      />
+                                    <div className="col-span-1 pb-[3%] ">
+                                    <Input
+                                        key={"outside"}
+                                        labelPlacement={"outside"}
+                                        placeholder="Masukkan NIK"
+                                        label="NIK" type="text" name="nik" id="nik" 
+                                        classNames={{
+                                            mainWrapper: "h-full",
+                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                    }}
+                                     />
                                     </div>
+
 
                                 </div>
                                     <ModalFooter>

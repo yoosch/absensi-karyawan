@@ -1,10 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useDropzone } from 'react-dropzone';
 import { DateRangePicker } from "@nextui-org/react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Textarea } from "@nextui-org/react";
+import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
+import {Spinner} from "@nextui-org/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@nextui-org/react";
+
 
 const Izin = () => {
+    const [fileInfo, setFileInfo] = useState(null);
+    const [error, setError] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
+  
+    const handleFileUpload = (file) => {
+      const maxFileSize = 5 * 1024 * 1024; 
+      setIsUploading(true);
+      
+      setTimeout(() => {
+        if (file && file.type === "application/pdf") {
+          if (file.size <= maxFileSize) {
+            setFileInfo(file.name);
+            setError("");
+          } else {
+            setError("Ukuran file maksimal 5MB.");
+            setFileInfo(null);
+          }
+        } else {
+          setError("File yang diunggah harus berformat .pdf.");
+          setFileInfo(null);
+        }
+        setIsUploading(false);
+      }, 1500); 
+    };
+  
+    const handleDrop = useCallback((event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const file = event.dataTransfer.files[0];
+      handleFileUpload(file);
+    }, []);
+  
+    const handleDragOver = useCallback((event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }, []);
+
+
     const [izin, setIzin] = useState({
         tipeIzin: '',
         jenisCuti: '',
@@ -13,9 +62,6 @@ const Izin = () => {
         deskripsi: '',
         alamat: '',
     });
-
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [fileUploaded, setFileUploaded] = useState(false);
 
     const capitalizeFirstLetter = (text) => {
         return text.charAt(0).toUpperCase() + text.slice(1);
@@ -46,7 +92,7 @@ const Izin = () => {
             }
         } else if(izin.tipeIzin === "dinas") {
             return "Surat Dinas";
-        } else if(izin.tipeIzin === "lupaabsen") {
+        } else if(izin.tipeIzin === "lupa absen") {
             return "Surat Dispensasi";
         }else{
             return "Dokumen Pendukung";
@@ -93,7 +139,7 @@ const Izin = () => {
                             >
                                 <DropdownItem key="dinas">Dinas</DropdownItem>
                                 <DropdownItem key="cuti">Cuti</DropdownItem>
-                                <DropdownItem key="lupaabsen">Lupa Absen</DropdownItem>
+                                <DropdownItem key="lupa absen">Lupa Absen</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                     </div>
@@ -173,25 +219,42 @@ const Izin = () => {
                             />
                         <small className="text-gray-500 italic">Tulis Deskrpsi singkat</small>
                     </div>
-                    
+
                     <div className="mt-6">
-                            <label className="block text-sm text-gray-600 mb-2">{getSuratLabel()}
-                            </label>
-                            <div
-                                {...getRootProps()}
-                                className="border-2 border-dashed border-gray-300 p-4 rounded-lg cursor-pointer"
+                        <Card className="py-4 mb-4">
+                            <CardHeader className="pb- 3pt-2 px-4 flex flex-col items-center justify-center relative">
+                                <p className="text-tiny-800 font-bold text-center">Unggah Dokumen Pendukung</p>
+                                <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
+                            </CardHeader>
+
+                            <CardBody 
+                            className="overflow-visible py-2 items-center"
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
                             >
-                                <input {...getInputProps()} type="file" className="hidden" />
-                                <p className="text-gray-500">Drag & Drop file PDF disini, atau pilih file</p>
-                                {selectedFile && (
-                                    <p className="mt-1 text-sm text-gray-600">
-                                        File yang dipilih: {selectedFile.name}
-                                    </p>
-                                )}
-                            </div>
-                            {fileUploaded && (
-                                <p className="mt-2 text-green-500 text-sm">File berhasil diunggah!</p>
-                            )}
+                            <label 
+                                htmlFor="file-upload" 
+                                className="cursor-pointer flex flex-col items-center bg-gray-100 border-2 border-dashed border-gray-500 rounded-lg py-10 px-6 hover:bg-gray-300 transition-colors duration-300 w-full"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-upload" viewBox="0 0 16 16">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                                </svg>
+                                <p className="mt-2 text-gray-600">Drag & drop atau klik untuk unggah file</p>
+                                <input 
+                                id="file-upload" 
+                                type="file" 
+                                accept=".pdf" 
+                                onChange={(e) => handleFileUpload(e.target.files[0])} 
+                                className="hidden"
+                                />
+                                {isUploading && <Spinner color="warning" label="Loading..." />}
+                            </label>
+                            {fileInfo && <p className="mt-4 text-green-600">File berhasil diunggah: {fileInfo}</p>}
+                            {error && <p className="mt-4 text-red-600">{error}</p>}
+                            </CardBody>
+                        </Card>
+
                     </div>
 
                     <div className="mt-6">

@@ -3,10 +3,18 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
 import DataTable from 'datatables.net-react';
 import DT from 'datatables.net-dt';
+import {Select, SelectItem} from "@nextui-org/react";
 
 DataTable.use(DT);
 
+export const animals = [
+    {key: "tahunan", label: "Tahunan"},
+    {key: "sakit", label: "Sakit"},
+  ];
+
 export default function adminPegawai({data}) {
+
+    const colors = ["default"];
 
     const [selectedOption, setSelectedOption] = useState('');
 
@@ -30,22 +38,32 @@ export default function adminPegawai({data}) {
         <AdminLayout>
             <div className='mt-[3%] mx-[5%] flex flex-col items-center'>
                 <div className='w-full flex gap-x-8 justify-between'>
-                    <input 
-                        className='bg-[#04042A] w-[75%] rounded-lg text-white' 
-                        type="search" 
-                        placeholder='Cari Pegawai / NIP' 
-                        name="" 
-                        id="" 
-                    />
-                    <select 
-                        className='bg-[#04042A] w-[25%] rounded-lg text-white px-4' 
-                        onChange={handleOptionChange}
-                    >
-                        <option value="">-- Pilih Jenis Cuti --</option>
-                        <option value="tahunan">Tahunan</option>
-                        <option value="sakit">Sakit</option>
-                    </select>
+                <input 
+                    className='bg-[#04042A] w-[75%] rounded-lg text-white' 
+                    type="search" 
+                    placeholder='Cari Pegawai / NIP' 
+                    name="" 
+                    id="" 
+                />
+                <div className="w-[25%] flex flex-row flex-wrap gap-4 border border-[#04042A] rounded-lg">
+                    {colors.map((color) => (
+                        <Select
+                            key={color}
+                            className={`max-w-xs ${color}`}
+                            defaultSelectedKeys={["Tahunan"]}
+                            label="Kategori Cuti"
+                            placeholder="Pilih kategori cuti"
+                            selectionVariant="filled"
+                        >
+                            {animals.map((animal) => (
+                                <SelectItem key={animal.key} className="bg-[#04042A] text-white">
+                                    {animal.label}
+                                </SelectItem>
+                            ))}
+                        </Select>
+                    ))}
                 </div>
+            </div>
 
                 <div className='mt-[5%] w-full'>
 

@@ -1,0 +1,18 @@
+@keyframes typing {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+.animate-typing {
+    font-family: 'Courier New', Courier, monospace;
+    display: inline-block;
+    width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid black;
+    animation: typing 4s steps(30) 1s forwards, blink 0.75s step-end infinite;
+}

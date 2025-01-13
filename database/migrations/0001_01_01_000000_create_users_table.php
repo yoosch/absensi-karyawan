@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nik')->unique()->nullable();
             $table->string('role')->default('pegawai');
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('path_foto')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

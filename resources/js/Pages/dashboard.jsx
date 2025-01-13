@@ -1,7 +1,58 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import '../../css/dashboard.css';
+import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
+import { useState, useCallback } from 'react';
+import {Spinner} from "@nextui-org/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 
 export default function Dashboard({ user}) {
+  const [fileInfo, setFileInfo] = useState(null);
+  const [error, setError] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+  const handleFileUpload = (file) => {
+    const maxFileSize = 5 * 1024 * 1024; 
+    setIsUploading(true);
+    
+    setTimeout(() => {
+      if (file && file.type === "application/pdf") {
+        if (file.size <= maxFileSize) {
+          setFileInfo(file.name);
+          setError("");
+        } else {
+          setError("Ukuran file maksimal 5MB.");
+          setFileInfo(null);
+        }
+      } else {
+        setError("File yang diunggah harus berformat .pdf.");
+        setFileInfo(null);
+      }
+      setIsUploading(false);
+    }, 1500); 
+  };
+
+  const handleDrop = useCallback((event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const file = event.dataTransfer.files[0];
+    handleFileUpload(file);
+  }, []);
+
+  const handleDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  }, []);
 
     const { name, email, role } = user;
 
@@ -21,9 +72,11 @@ export default function Dashboard({ user}) {
         <AuthenticatedLayout>
             <Head title="Dashboard" />
             <div className="mt-6 md:px-32">
-              <div className='ml-8'>
-                <h1 className="text-xl font-bold text-gray-800">Selamat Datang,</h1>
-                <h1 className="text-xl font-bold text-gray-800">{name}</h1>
+              <div className='ml-8 flex justify-left items-center'>
+                <h1 className="animate-typing text-xl font-bold text-gray-800 whitespace-nowrap animate-marquee">
+                    Selamat Datang, {name}
+                </h1>
+                <span className="text-2xl" aria-label="Waving Hand" role="img">👋</span>
               </div>
               <div className='mx-8 mt-4'>
                 <div className="flex items-center bg-blue-800 text-white rounded-lg overflow-hidden shadow-md border-b-4 border-[#fdb714]">
@@ -74,20 +127,76 @@ export default function Dashboard({ user}) {
                     </div>
                   </button>
 
-                    <button  onClick={navigateToRiwayat}>
-                        <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-2 border-[#fdb714]">
-                            {/* Text Content */}
-                            <div className="flex justify-between flex-grow px-6 py-6">
-                            <svg className="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"/>
-                            </svg>
-                            <div className='flex flex-col'>
-                                <h2 className="font-semibold text-lg text-end">Riwayat</h2>
-                                <h3 className="  font-light text-xs text-end ">Riwayat presensi dan izin</h3>
-                            </div>
-                            </div>
-                        </div>
-                    </button>
+                  <button  onClick={navigateToRiwayat} className = "mb-4">
+                      <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-2 border-[#fdb714]">
+                          {/* Text Content */}
+                          <div className="flex justify-between flex-grow px-6 py-6">
+                          <svg className="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"/>
+                          </svg>
+                          <div className='flex flex-col'>
+                              <h2 className="font-semibold text-lg text-end">Riwayat</h2>
+                              <h3 className="  font-light text-xs text-end ">Riwayat presensi dan izin</h3>
+                          </div>
+                          </div>
+                      </div>
+                  </button>
+                  <Card className="py-4 mb-4">
+                  <CardHeader className="pb- 3pt-2 px-4 flex flex-col items-center justify-center relative">
+                    <p className="text-tiny-800 font-bold text-center">Unggah Laporan Bulanan</p>
+                    <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
+                    <Button onPress={onOpen} className="absolute left-4 bottom-4"> Recent Upload</Button>
+
+                    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                      <ModalContent>
+                        {(onClose) => (
+                          <>
+                            <ModalHeader className="flex flex-col gap-1">Histori Unggahan File Anda</ModalHeader>
+                            <ModalBody>
+                              <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non
+                                risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor
+                                quam.
+                              </p>
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button color="danger" variant="light" onPress={onClose}>
+                                Close
+                              </Button>
+                            </ModalFooter>
+                          </>
+                        )}
+                      </ModalContent>
+                    </Modal>
+                  </CardHeader>
+
+                    <CardBody 
+                      className="overflow-visible py-2 items-center"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                    >
+                      <label 
+                        htmlFor="file-upload" 
+                        className="cursor-pointer flex flex-col items-center bg-gray-100 border-2 border-dashed border-gray-500 rounded-lg py-10 px-6 hover:bg-gray-300 transition-colors duration-300 w-full"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-upload" viewBox="0 0 16 16">
+                          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                          <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                        </svg>
+                        <p className="mt-2 text-gray-600">Drag & drop atau klik untuk unggah file</p>
+                        <input 
+                          id="file-upload" 
+                          type="file" 
+                          accept=".pdf" 
+                          onChange={(e) => handleFileUpload(e.target.files[0])} 
+                          className="hidden"
+                        />
+                        {isUploading && <Spinner color="warning" label="Loading..." />}
+                      </label>
+                      {fileInfo && <p className="mt-4 text-green-600">File berhasil diunggah: {fileInfo}</p>}
+                      {error && <p className="mt-4 text-red-600">{error}</p>}
+                    </CardBody>
+                  </Card>
                 </div>
               </div>
           </div>

@@ -30,15 +30,15 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/riwayat', [RiwayatController::class, 'index'])->middleware(['auth', 'verified'])->name('riwayat.index');
 
+Route::get('/rekap-individu/{nik}/{bulan}/{tahun}',[AbsenController::class, 'rekapIndividu'])->middleware(['auth', 'verified']);
+
 
 Route::get('/dashboardAdmin', function () {
     return Inertia::render('Admin/dashboardAdmin');
 });
 
 Route::resource('/pegawai', PegawaiController::class);
-Route::get('/rekap', function () {
-    return Inertia::render('Admin/rekap');
-});
+Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
 
 Route::get('/absenCuti', [IzinController::class, 'indexCuti'])->middleware(['auth', 'verified']);
 Route::get('/absenDinas', [IzinController::class, 'indexDinas'])->middleware(['auth', 'verified']);
