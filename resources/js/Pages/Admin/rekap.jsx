@@ -3,11 +3,24 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SearchableDropdown from '@/Components/SearchableDropdown';
+import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
 
 
 export default function rekap() {
 
     const [value, setValue] = useState("Select option...");
+    const myFilter = (textValue, inputValue) => {
+        if (inputValue.length === 0) {
+          return true;
+        }
+    
+        // Normalize both strings so we can slice safely
+        // take into account the ignorePunctuation option as well...
+        textValue = textValue.normalize("NFC").toLocaleLowerCase();
+        inputValue = inputValue.normalize("NFC").toLocaleLowerCase();
+    
+        return textValue.slice(0, inputValue.length) === inputValue;
+      };
 
 
     const pegawai = [
@@ -36,16 +49,23 @@ export default function rekap() {
                             name='nik'
                             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
                         />
-                        <label htmlFor='nik' className='block text-sm font-medium text-gray-700'>
+                        <label htmlFor='nama' className='block text-sm font-medium text-gray-700'>
                             Nama
                         </label>
-                        <SearchableDropdown
-                            data={pegawai}
-                            placeholder='Pilih Pegawai'
-                            label='name'
-                            value='id'
-                            handleChange={(val) => setValue(val)}
-                        />
+                        <Autocomplete
+                        allowsCustomValue = {true}
+                        classNames={{
+                            mainWrapper: "h-full",
+                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                        }}
+                        defaultFilter={myFilter}
+                        defaultItems={pegawai}
+                        label="Search an animal"
+                        variant="bordered"
+                        >
+                        {(item) => <AutocompleteItem key={item.name}>{item.name}</AutocompleteItem>}
+                        </Autocomplete>
                     </div>
                     <div className='mt-4'>
                         <label htmlFor='option' className='block text-sm font-medium text-gray-700'>
