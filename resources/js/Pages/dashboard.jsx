@@ -54,10 +54,6 @@ export default function Dashboard({ user}) {
     event.stopPropagation();
   }, []);
 
-  const handleSumit = () => {
-    onOpen();
-  }
-
     const { name, email, role } = user;
 
     const navigateToAbsensi = () => {
