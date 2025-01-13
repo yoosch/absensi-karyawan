@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import '../../css/dashboard.css';
 
 export default function Dashboard({ user}) {
 
@@ -21,9 +22,11 @@ export default function Dashboard({ user}) {
         <AuthenticatedLayout>
             <Head title="Dashboard" />
             <div className="mt-6 md:px-32">
-              <div className='ml-8'>
-                <h1 className="text-xl font-bold text-gray-800">Selamat Datang,</h1>
-                <h1 className="text-xl font-bold text-gray-800">{name}</h1>
+              <div className='ml-8 flex justify-left items-center'>
+                <h1 className="animate-typing text-xl font-bold text-gray-800 whitespace-nowrap animate-marquee">
+                    Selamat Datang, {name}
+                </h1>
+                <span className="text-2xl" aria-label="Waving Hand" role="img">👋</span>
               </div>
               <div className='mx-8 mt-4'>
                 <div className="flex items-center bg-blue-800 text-white rounded-lg overflow-hidden shadow-md border-b-4 border-[#fdb714]">
