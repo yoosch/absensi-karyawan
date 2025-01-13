@@ -29,6 +29,7 @@
         "clsx": "^2.1.1",
         "datatables.net-dt": "^2.2.0",
         "datatables.net-react": "^1.0.0",
+        "flowbite-react": "^0.10.2",
         "framer-motion": "^11.17.0",
         "lucide-react": "^0.469.0",
         "react": "^17.0.2",

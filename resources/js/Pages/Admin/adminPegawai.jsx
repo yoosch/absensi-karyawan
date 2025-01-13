@@ -16,17 +16,21 @@ import {
   Chip,
   User,
   Pagination,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@nextui-org/react";
 import AdminLayout from "@/Layouts/AdminLayout";
+import { Inertia } from "@inertiajs/inertia";
 
 export const columns = [
   {name: "ID", uid: "id", sortable: true},
   {name: "NAME", uid: "name", sortable: true},
-  {name: "AGE", uid: "age", sortable: true},
-  {name: "ROLE", uid: "role", sortable: true},
-  {name: "TEAM", uid: "team"},
+  {name: "NIK", uid: "nik", sortable: true},
   {name: "EMAIL", uid: "email"},
-  {name: "STATUS", uid: "status", sortable: true},
   {name: "ACTIONS", uid: "actions"},
 ];
 
@@ -148,7 +152,7 @@ const statusColorMap = {
   vacation: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["name", "nik", "actions"];
 
 export default function adminPegawai({data}) {
   const [filterValue, setFilterValue] = React.useState("");
@@ -161,208 +165,13 @@ export default function adminPegawai({data}) {
     direction: "ascending",
   });
 
-  const users = [
-    {
-      id: 1,
-      name: "Tony Reichert",
-      role: "CEO",
-      team: "Management",
-      status: "active",
-      age: "29",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-      email: "tony.reichert@example.com",
-    },
-    {
-      id: 2,
-      name: "Zoey Lang",
-      role: "Tech Lead",
-      team: "Development",
-      status: "paused",
-      age: "25",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-      email: "zoey.lang@example.com",
-    },
-    {
-      id: 3,
-      name: "Jane Fisher",
-      role: "Sr. Dev",
-      team: "Development",
-      status: "active",
-      age: "22",
-      avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-      email: "jane.fisher@example.com",
-    },
-    {
-      id: 4,
-      name: "William Howard",
-      role: "C.M.",
-      team: "Marketing",
-      status: "vacation",
-      age: "28",
-      avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-      email: "william.howard@example.com",
-    },
-    {
-      id: 5,
-      name: "Kristen Copper",
-      role: "S. Manager",
-      team: "Sales",
-      status: "active",
-      age: "24",
-      avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-      email: "kristen.cooper@example.com",
-    },
-    {
-      id: 6,
-      name: "Brian Kim",
-      role: "P. Manager",
-      team: "Management",
-      age: "29",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-      email: "brian.kim@example.com",
-      status: "active",
-    },
-    {
-      id: 7,
-      name: "Michael Hunt",
-      role: "Designer",
-      team: "Design",
-      status: "paused",
-      age: "27",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29027007d",
-      email: "michael.hunt@example.com",
-    },
-    {
-      id: 8,
-      name: "Samantha Brooks",
-      role: "HR Manager",
-      team: "HR",
-      status: "active",
-      age: "31",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e27027008d",
-      email: "samantha.brooks@example.com",
-    },
-    {
-      id: 9,
-      name: "Frank Harrison",
-      role: "F. Manager",
-      team: "Finance",
-      status: "vacation",
-      age: "33",
-      avatar: "https://i.pravatar.cc/150?img=4",
-      email: "frank.harrison@example.com",
-    },
-    {
-      id: 10,
-      name: "Emma Adams",
-      role: "Ops Manager",
-      team: "Operations",
-      status: "active",
-      age: "35",
-      avatar: "https://i.pravatar.cc/150?img=5",
-      email: "emma.adams@example.com",
-    },
-    {
-      id: 11,
-      name: "Brandon Stevens",
-      role: "Jr. Dev",
-      team: "Development",
-      status: "active",
-      age: "22",
-      avatar: "https://i.pravatar.cc/150?img=8",
-      email: "brandon.stevens@example.com",
-    },
-    {
-      id: 12,
-      name: "Megan Richards",
-      role: "P. Manager",
-      team: "Product",
-      status: "paused",
-      age: "28",
-      avatar: "https://i.pravatar.cc/150?img=10",
-      email: "megan.richards@example.com",
-    },
-    {
-      id: 13,
-      name: "Oliver Scott",
-      role: "S. Manager",
-      team: "Security",
-      status: "active",
-      age: "37",
-      avatar: "https://i.pravatar.cc/150?img=12",
-      email: "oliver.scott@example.com",
-    },
-    {
-      id: 14,
-      name: "Grace Allen",
-      role: "M. Specialist",
-      team: "Marketing",
-      status: "active",
-      age: "30",
-      avatar: "https://i.pravatar.cc/150?img=16",
-      email: "grace.allen@example.com",
-    },
-    {
-      id: 15,
-      name: "Noah Carter",
-      role: "IT Specialist",
-      team: "I. Technology",
-      status: "paused",
-      age: "31",
-      avatar: "https://i.pravatar.cc/150?img=15",
-      email: "noah.carter@example.com",
-    },
-    {
-      id: 16,
-      name: "Ava Perez",
-      role: "Manager",
-      team: "Sales",
-      status: "active",
-      age: "29",
-      avatar: "https://i.pravatar.cc/150?img=20",
-      email: "ava.perez@example.com",
-    },
-    {
-      id: 17,
-      name: "Liam Johnson",
-      role: "Data Analyst",
-      team: "Analysis",
-      status: "active",
-      age: "28",
-      avatar: "https://i.pravatar.cc/150?img=33",
-      email: "liam.johnson@example.com",
-    },
-    {
-      id: 18,
-      name: "Sophia Taylor",
-      role: "QA Analyst",
-      team: "Testing",
-      status: "active",
-      age: "27",
-      avatar: "https://i.pravatar.cc/150?img=29",
-      email: "sophia.taylor@example.com",
-    },
-    {
-      id: 19,
-      name: "Lucas Harris",
-      role: "Administrator",
-      team: "Information Technology",
-      status: "paused",
-      age: "32",
-      avatar: "https://i.pravatar.cc/150?img=50",
-      email: "lucas.harris@example.com",
-    },
-    {
-      id: 20,
-      name: "Mia Robinson",
-      role: "Coordinator",
-      team: "Operations",
-      status: "active",
-      age: "26",
-      avatar: "https://i.pravatar.cc/150?img=45",
-      email: "mia.robinson@example.com",
-    },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [selectedPegawai, setSelectedPegawai] = useState(null);
+
+
+  const users = data;
 
   const [page, setPage] = React.useState(1);
 
@@ -384,14 +193,33 @@ export default function adminPegawai({data}) {
         user.name.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
-      );
-    }
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [users, filterValue]);
+
+  const handleDeleteClick = (pegawai) => {
+    setSelectedPegawai(pegawai);
+    setIsModalDeleteOpen(true);
+    console.log(pegawai);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedPegawai(null);
+    };
+
+    const handleDeleteConfirm = (id) => {
+
+        // console.log('Deleting pegawai with email : ${selectedPegawai.email}');
+        Inertia.delete(route('pegawai.destroy', id), {
+            onSuccess: () => alert('Item deleted successfully'),
+        });
+
+
+        setIsModalOpen(false);
+        selectedPegawai(null);
+
+    }
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -427,23 +255,11 @@ export default function adminPegawai({data}) {
             {user.email}
           </User>
         );
-      case "role":
+      case "nik":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-500">{user.team}</p>
+            <p className="text-bold text-small capitalize">{user.nik}</p>
           </div>
-        );
-      case "status":
-        return (
-          <Chip
-            className="capitalize border-none gap-1 text-default-600"
-            color={statusColorMap[user.status]}
-            size="sm"
-            variant="dot"
-          >
-            {cellValue}
-          </Chip>
         );
       case "actions":
         return (
@@ -455,9 +271,8 @@ export default function adminPegawai({data}) {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem key="view">View</DropdownItem>
                 <DropdownItem key="edit">Edit</DropdownItem>
-                <DropdownItem key="delete">Delete</DropdownItem>
+                <DropdownItem onPress={() => handleDeleteClick(user)} key="delete">Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -512,31 +327,6 @@ export default function adminPegawai({data}) {
                   size="sm"
                   variant="flat"
                 >
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  size="sm"
-                  variant="flat"
-                >
                   Columns
                 </Button>
               </DropdownTrigger>
@@ -555,8 +345,8 @@ export default function adminPegawai({data}) {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button className="bg-foreground text-background" endContent={<PlusIcon />} size="sm">
-              Add New
+            <Button className="bg-foreground text-background" endContent={<PlusIcon />} size="sm" onPress={onOpen}>
+              Tambahkan Pegawai
             </Button>
           </div>
         </div>
@@ -631,7 +421,7 @@ export default function adminPegawai({data}) {
 
   return (
     <AdminLayout>
-        <div className="m-4">
+        <div className="m-4 px-4 py-3 rounded-lg bg-white">
         <Table
         isCompact
         removeWrapper
@@ -672,6 +462,117 @@ export default function adminPegawai({data}) {
         </TableBody>
         </Table>
         </div>
+        <>
+            <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+                        <ModalContent>
+                        {(onClose) => (
+                            <>
+                            <ModalHeader className="flex flex-col gap-1">Tambah Pegawai</ModalHeader>
+                            <ModalBody>
+                                <form action="/pegawai" method = "POST">
+                                <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} />
+                                <div className='gap-2'>
+                                    <div className="col-span-1 pb-[3%] ">
+                                    <Input
+                                        key={"outside"}
+                                        labelPlacement={"outside"}
+                                        placeholder="Masukkan nama"
+                                        label="Nama" type="text" name="nama" id="nama"
+                                        classNames={{
+                                            mainWrapper: "h-full",
+                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                     }}
+                                     />
+                                    </div>
+                                    <div className="col-span-1 pb-[3%] ">
+                                    <Input
+                                        key={"outside"}
+                                        labelPlacement={"outside"}
+                                        placeholder="Masukkan email"
+                                        label="Email" type="email" name="email" id="email" 
+                                        classNames={{
+                                            mainWrapper: "h-full",
+                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                        }}
+                                     />
+                                    </div>
+                                    <div className="col-span-1 pb-[3%] ">
+                                    <Input
+                                        key={"outside"}
+                                        labelPlacement={"outside"}
+                                        placeholder="Masukkan NIK"
+                                        label="NIK" type="text" name="nik" id="nik" 
+                                        classNames={{
+                                            mainWrapper: "h-full",
+                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                    }}
+                                     />
+                                    </div>
+
+                                </div>
+                                    <ModalFooter>
+                                        <Button type='submit' color="primary" >
+                                        Submit
+                                        </Button>
+                                    </ModalFooter>
+                                </form>
+                            </ModalBody>
+                            </>
+                        )}
+                        </ModalContent>
+            </Modal>
+        </>
+        {isModalDeleteOpen && selectedPegawai && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="relative p-4 w-full max-w-md max-h-full">
+                            <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
+                                <button
+                                    type="button"
+                                    onClick={handleCloseModal}
+                                    className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5"
+                                >
+                                    <span className="sr-only">Close modal</span>
+                                </button>
+                                <div className="p-4 text-center">
+                                    <svg
+                                        className="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto"
+                                        aria-hidden="true"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                            clipRule="evenodd"
+                                        ></path>
+                                    </svg>
+                                    <p className="mb-4 text-gray-500 dark:text-gray-300">
+                                        Apakah anda yakin ingin menghapus pegawai{' '}
+                                        <span className="font-bold">{selectedPegawai.name}</span>?
+                                    </p>
+                                    <div className="flex justify-center items-center space-x-4">
+                                        <button
+                                            onClick={handleCloseModal}
+                                            className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border hover:bg-gray-100"
+                                        >
+                                            Tidak
+                                        </button>
+                                        {/* <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} /> */}
+                                            <button
+                                                onClick={() => handleDeleteConfirm(selectedPegawai.id)}
+                                                className="py-2 px-3 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+                                            >
+                                                Yakin
+                                            </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
     </AdminLayout>
   );
 }

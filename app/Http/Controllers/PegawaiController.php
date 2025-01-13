@@ -15,6 +15,15 @@ class PegawaiController extends Controller
     {
 
         $data = User::all();
+
+
+        foreach($data as $item){
+            $item->avatar = 'https://i.pravatar.cc/150?u=a042581f4e29026024d';
+        }
+
+        // dd($data);
+
+        
         return Inertia::render('Admin/adminPegawai', ['data' => $data]);
     }
 
@@ -36,11 +45,13 @@ class PegawaiController extends Controller
         $request -> validate([
             'nama' => 'required',
             'email' => 'required',
+            'nik' => 'required',
         ]);
         
         $data = [
             'name' => $request->nama,
             'email' => $request->email,
+            'nik' => $request->nik,
             'password' => '12345678',
         ];
         // dd($data);

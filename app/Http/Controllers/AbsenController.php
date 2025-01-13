@@ -17,11 +17,6 @@ class AbsenController extends Controller
     public function store(Request $request){
 
     $user = auth()->user();
-
-    
-    Absen::where('nik', $request->input('nik'))
-    ->where('waktu_masuk', $request->input('waktu_masuk'))
-    ->first();
     
     $image = $request->input('photo_url');
     $imagePath = null;
@@ -33,7 +28,7 @@ class AbsenController extends Controller
         Storage::disk('public')->put($imageName, base64_decode($image)); 
         $imagePath = Storage::url($imageName);
     }
-    // return response()->json(['data' => $request->all()]);
+
     
     $absen = Absen::where('nik',$user->nik)
         ->where('tanggal', Carbon::now()->format('Y-m-d'))
@@ -42,6 +37,9 @@ class AbsenController extends Controller
     if ($absen){
         $absen->waktu_keluar = $request->input('waktu_keluar');
         $absen->koordinat_keluar = $request->input('koordinat_keluar');
+
+        Storage::disk('public')->delete(str_replace('/storage', '', $absen->photo_keluar_url));
+
         $absen->photo_keluar_url = $imagePath;
         $absen->save();
     }else{

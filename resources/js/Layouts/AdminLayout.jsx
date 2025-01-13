@@ -2,6 +2,8 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from "react-icons/hi";
+import { Sidebar } from "flowbite-react";
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -31,67 +33,96 @@ export default function AdminLayout({ header, children }) {
         window.location.href = '/absenLupaAbsen';
     }
 
-    return (
-        <div className="min-h-screen bg-white overflow-x-hidden">
-            <div className='flex'>
-                <aside className='min-h-screen hidden sm:flex sm:flex-col bg-[#D9D9D9] w-[17%] items-center'>
-                    <div className='mx-[10%] mt-[5%]'>
-                        <img src="putech.png" className='w-48 mx-auto' alt="" />
-                        <ul className='mt-[30%] mx-auto'>
-                            <li className="mb-4">
-                                <a href="/dashboardAdmin" className="text-lg font-semibold">
-                                Dashboard
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a href="/pegawai" className="text-lg font-semibold">
-                                Pegawai
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a
-                                href="#"
-                                className="text-lg font-semibold"
-                                onClick={handlePresensiClick} // Attach click handler
-                                >
-                                Presensi
-                                </a>
-                            </li>
+    // <aside className='min-h-screen hidden sm:flex sm:flex-col bg-[#D9D9D9] w-[17%] items-center'>
+    //                 <div className='mx-[10%] mt-[5%]'>
+    //                     <img src="putech.png" className='w-48 mx-auto' alt="" />
+    //                     <ul className='mt-[30%] mx-auto'>
+    //                         <li className="mb-4">
+    //                             <a href="/dashboardAdmin" className="text-lg font-semibold">
+    //                             Dashboard
+    //                             </a>
+    //                         </li>
+    //                         <li className="mb-4">
+    //                             <a href="/pegawai" className="text-lg font-semibold">
+    //                             Pegawai
+    //                             </a>
+    //                         </li>
+    //                         <li className="mb-4">
+    //                             <a
+    //                             href="#"
+    //                             className="text-lg font-semibold"
+    //                             onClick={handlePresensiClick} // Attach click handler
+    //                             >
+    //                             Presensi
+    //                             </a>
+    //                         </li>
 
-                            {/* Conditional rendering of submenu items */}
-                            {isPresensiClicked && (
-                                <>
-                                <li className="ml-4 mb-2">
-                                    <a href="#" className="text-md">
-                                    Log absensi
-                                    </a>
-                                </li>
-                                <li className="ml-4 mb-2" >
-                                    <button onClick={navigateToDinas}>
-                                        <a className="text-md">
-                                        Dinas
-                                        </a>
-                                    </button>
-                                </li>
-                                <li className="ml-4 mb-2" >
-                                    <button onClick={navigateToCuti}>
-                                        <a className="text-md">
-                                        Cuti
-                                        </a>
-                                    </button>
-                                </li>
-                                <li className="ml-4 mb-2" >
-                                    <button onClick={navigateToLupaAbsen}>
-                                        <a className="text-md">
-                                        Lupa Absen
-                                        </a>
-                                    </button>
-                                </li>
-                                </>
-                            )}
-                            </ul>
+    //                         {/* Conditional rendering of submenu items */}
+    //                         {isPresensiClicked && (
+    //                             <>
+    //                             <li className="ml-4 mb-2">
+    //                                 <a href="#" className="text-md">
+    //                                 Log absensi
+    //                                 </a>
+    //                             </li>
+    //                             <li className="ml-4 mb-2" >
+    //                                 <button onClick={navigateToDinas}>
+    //                                     <a className="text-md">
+    //                                     Dinas
+    //                                     </a>
+    //                                 </button>
+    //                             </li>
+    //                             <li className="ml-4 mb-2" >
+    //                                 <button onClick={navigateToCuti}>
+    //                                     <a className="text-md">
+    //                                     Cuti
+    //                                     </a>
+    //                                 </button>
+    //                             </li>
+    //                             <li className="ml-4 mb-2" >
+    //                                 <button onClick={navigateToLupaAbsen}>
+    //                                     <a className="text-md">
+    //                                     Lupa Absen
+    //                                     </a>
+    //                                 </button>
+    //                             </li>
+    //                             </>
+    //                         )}
+    //                         <li className="mb-4">
+    //                             <a href="/rekap" className="text-lg font-semibold">
+    //                             Rekap
+    //                             </a>
+    //                         </li>
+    //                         </ul>
+    //                 </div>
+    //             </aside>
+
+    return (
+        <div className="min-h-screen overflow-x-hidden">
+            <div className='flex bg-gray-50'>
+                <Sidebar aria-label="Sidebar with logo branding example">
+                    <div className='flex justify-center my-4'>
+                        <img src="putech.png" className='w-[80%]' alt="" />
                     </div>
-                </aside>
+                    <Sidebar.Items>
+                        <Sidebar.ItemGroup>
+                        <Sidebar.Item href="/dashboardAdmin" icon={HiChartPie}>
+                            Dashboard
+                        </Sidebar.Item>
+                        <Sidebar.Item href="/pegawai" icon={HiUser}>
+                            Pegawai
+                        </Sidebar.Item>
+                        <Sidebar.Collapse icon={HiInbox} label="Presensi">
+                            <Sidebar.Item href="#">Log Absensi</Sidebar.Item>
+                            <Sidebar.Item href="#">Dinas</Sidebar.Item>
+                            <Sidebar.Item href="#">Cuti</Sidebar.Item>
+                            <Sidebar.Item href="#">Lupa Absen</Sidebar.Item>
+                        </Sidebar.Collapse>
+                        </Sidebar.ItemGroup>
+                    </Sidebar.Items>
+                </Sidebar>
+
+                
                 <div className='flex flex-col w-[83%]'>
                     <nav className='py-2 pr-4 bg-[#04042A] border-[#FECE00] border-b-4'>
                     <div className="hidden sm:flex sm:items-center sm:justify-end">
@@ -153,6 +184,7 @@ export default function AdminLayout({ header, children }) {
                     )}
                     <main className='bg-[#F0F0F0] h-screen'>{children}</main>
                 </div>
+                
             </div>
 
         </div>
