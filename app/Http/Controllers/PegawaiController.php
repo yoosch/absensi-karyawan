@@ -36,11 +36,13 @@ class PegawaiController extends Controller
         $request -> validate([
             'nama' => 'required',
             'email' => 'required',
+            'nik' => 'required',
         ]);
         
         $data = [
             'name' => $request->nama,
             'email' => $request->email,
+            'nik' => $request->nik,
             'password' => '12345678',
         ];
         // dd($data);
