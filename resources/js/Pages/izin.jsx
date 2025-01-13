@@ -5,14 +5,7 @@ import { DateRangePicker } from "@nextui-org/react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Textarea } from "@nextui-org/react";
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
 import {Spinner} from "@nextui-org/react";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Inertia } from '@inertiajs/inertia';
 
 
 const Izin = () => {
@@ -21,25 +14,30 @@ const Izin = () => {
     const [isUploading, setIsUploading] = useState(false);
   
     const handleFileUpload = (file) => {
-      const maxFileSize = 5 * 1024 * 1024; 
-      setIsUploading(true);
+        const maxFileSize = 5 * 1024 * 1024; // Maksimal ukuran file 5MB
+        setIsUploading(true);
       
-      setTimeout(() => {
-        if (file && file.type === "application/pdf") {
-          if (file.size <= maxFileSize) {
-            setFileInfo(file.name);
-            setError("");
+        setTimeout(() => {
+          if (file && file.type === "application/pdf") {
+            if (file.size <= maxFileSize) {
+              setFileInfo(file.name);
+              setIzin((prevIzin) => ({
+                ...prevIzin,
+                pathSurat: file,
+              }));
+              setError("");
+            } else {
+              setError("Ukuran file maksimal 5MB.");
+              setFileInfo(null);
+            }
           } else {
-            setError("Ukuran file maksimal 5MB.");
+            setError("File yang diunggah harus berformat .pdf.");
             setFileInfo(null);
           }
-        } else {
-          setError("File yang diunggah harus berformat .pdf.");
-          setFileInfo(null);
-        }
-        setIsUploading(false);
-      }, 1500); 
-    };
+          setIsUploading(false);
+        }, 1500);
+      };
+      
   
     const handleDrop = useCallback((event) => {
       event.preventDefault();
@@ -61,6 +59,7 @@ const Izin = () => {
         tanggalSelesai: '',
         deskripsi: '',
         alamat: '',
+        pathSurat: '',
     });
 
     const capitalizeFirstLetter = (text) => {
@@ -78,9 +77,28 @@ const Izin = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(izin);
+    
+        const tanggalMulai = new Date(izin.tanggalMulai);
+        const tanggalSelesai = new Date(izin.tanggalSelesai);
+    
+        if (!isNaN(tanggalMulai) && !isNaN(tanggalSelesai)) {
+            izin.tanggalMulai = tanggalMulai.toISOString().split('T')[0];
+            izin.tanggalSelesai = tanggalSelesai.toISOString().split('T')[0];
+        } else {
+            console.error('Tanggal tidak valid');
+            return;
+        }
+    
+        Inertia.post(route('izin.store'), izin, {
+            onSuccess: () => {
+                console.log('Izin berhasil diajukan');
+            },
+            onError: (errors) => {
+                console.log('Terjadi kesalahan:', errors);
+            }
+        });
     };
-
-
+    
     const getSuratLabel = () => {
         if (izin.tipeIzin === "cuti") {
             if (izin.jenisCuti === "tahunan") {
@@ -98,27 +116,6 @@ const Izin = () => {
             return "Dokumen Pendukung";
         }
     };
-
-    const { getRootProps, getInputProps } = useDropzone({
-        accept: '.pdf',
-        onDrop: (acceptedFiles) => {
-            const file = acceptedFiles[0];
-            const fileSize = file.size / 1024;
-            if (file.type !== 'application/pdf') {
-                alert("Hanya file PDF yang diperbolehkan.");
-                setSelectedFile(null);
-                setFileUploaded(false);
-            } else if (fileSize > 500) {
-                alert("Ukuran file tidak boleh lebih dari 500KB.");
-                setSelectedFile(null);
-                setFileUploaded(false);
-            } else {
-                setSelectedFile(file);
-                setFileUploaded(true);
-            }
-        },
-        maxSize: 500 * 1024,
-    });
 
     return (
         <AuthenticatedLayout>
@@ -153,8 +150,8 @@ const Izin = () => {
                                 </DropdownTrigger>
                                 <DropdownMenu
                                     aria-label="Jenis Cuti"
-                                    onAction={(key) => setIzin({ ...izin, jenisCuti: key })}
-                                >
+                                    onAction={(key) => setIzin({ ...izin, jenisCuti: key })}>
+                                    <DropdownItem key=""></DropdownItem>
                                     <DropdownItem key="tahunan">Tahunan</DropdownItem>
                                     <DropdownItem key="sakit">Sakit</DropdownItem>
                                 </DropdownMenu>
@@ -210,39 +207,38 @@ const Izin = () => {
 
                     <div className="mt-6">
                         <Card className="py-4 mb-4">
-                            <CardHeader className="pb- 3pt-2 px-4 flex flex-col items-center justify-center relative">
+                            <CardHeader className="pb-3pt-2 px-4 flex flex-col items-center justify-center relative">
                                 <p className="text-tiny-800 font-bold text-center">Unggah Dokumen Pendukung</p>
                                 <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
                             </CardHeader>
 
                             <CardBody 
-                            className="overflow-visible py-2 items-center"
-                            onDrop={handleDrop}
-                            onDragOver={handleDragOver}
+                                className="overflow-visible py-2 items-center"
+                                onDrop={handleDrop}
+                                onDragOver={handleDragOver}
                             >
-                            <label 
-                                htmlFor="file-upload" 
-                                className="cursor-pointer flex flex-col items-center bg-gray-100 border-2 border-dashed border-gray-500 rounded-lg py-10 px-6 hover:bg-gray-300 transition-colors duration-300 w-full"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-upload" viewBox="0 0 16 16">
-                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-                                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
-                                </svg>
-                                <p className="mt-2 text-gray-600">Drag & drop atau klik untuk unggah file</p>
-                                <input 
-                                id="file-upload" 
-                                type="file" 
-                                accept=".pdf" 
-                                onChange={(e) => handleFileUpload(e.target.files[0])} 
-                                className="hidden"
-                                />
-                                {isUploading && <Spinner color="warning" label="Loading..." />}
-                            </label>
-                            {fileInfo && <p className="mt-4 text-green-600">File berhasil diunggah: {fileInfo}</p>}
-                            {error && <p className="mt-4 text-red-600">{error}</p>}
+                                <label 
+                                    htmlFor="file-upload" 
+                                    className="cursor-pointer flex flex-col items-center bg-gray-100 border-2 border-dashed border-gray-500 rounded-lg py-10 px-6 hover:bg-gray-300 transition-colors duration-300 w-full"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-upload" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                                    </svg>
+                                    <p className="mt-2 text-gray-600">Drag & drop atau klik untuk unggah file</p>
+                                    <input 
+                                        id="file-upload" 
+                                        type="file" 
+                                        accept=".pdf" 
+                                        onChange={(e) => handleFileUpload(e.target.files[0])} 
+                                        className="hidden"
+                                    />
+                                    {isUploading && <Spinner color="warning" label="Loading..." />}
+                                </label>
+                                {fileInfo && <p className="mt-4 text-green-600">File berhasil diunggah: {fileInfo}</p>}
+                                {error && <p className="mt-4 text-red-600">{error}</p>}
                             </CardBody>
                         </Card>
-
                     </div>
 
                     <div className="mt-6">

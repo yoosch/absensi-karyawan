@@ -21,6 +21,7 @@ Route::get('/absen', [AbsenController::class, 'index'])->middleware(['auth', 've
 Route::post('/absen/store', [AbsenController::class, 'store']);
 
 Route::get('/izin', [IzinController::class, 'index'])->middleware(['auth', 'verified'])->name('izin.index');
+Route::post('/izin/store', [IzinController::class, 'store'])->name('izin.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
