@@ -4,12 +4,49 @@ import { Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SearchableDropdown from '@/Components/SearchableDropdown';
 // import {Autocomplete, AutocompleteItem} from "@nextui-org/react";
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import {TextField, 
+    Autocomplete, 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableContainer, 
+    TableHead, 
+    TableRow, 
+    Paper,
+} from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import {Spinner, Button} from "@nextui-org/react";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
 
+import axios from 'axios';
 
-export default function rekap({data}) {
+const ExportTable = ({ filteredRows, loading }) => {
+    const exportToXLSX = () => {
+      const ws = XLSX.utils.json_to_sheet(filteredRows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  
+      // Export the XLSX file
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const file = new Blob([excelBuffer], { bookType: 'xlsx', type: 'application/octet-stream' });
+      saveAs(file, 'table_data.xlsx');
+    };
+  
+    return (
+      <div>
+        
+        <PrimaryButton onClick={exportToXLSX}>
+          Download as XLSX
+        </PrimaryButton>
+      </div>
+    );
+  };
+  
+
+export default function rekap({data, absen}) {
 
     const [value, setValue] = useState("Select option...");
     const myFilter = (textValue, inputValue) => {
@@ -25,8 +62,23 @@ export default function rekap({data}) {
         return textValue.slice(0, inputValue.length) === inputValue;
       };
 
-    const [selectedNik, setSelectedNik] = useState(null);
-    const [selectedName, setSelectedName] = useState(null);
+      
+      const rows = absen.map((item) => {
+        return {
+          hari: item.hari,
+          tanggal: item.tanggal,
+          inn: item.waktu_masuk,
+          out: item.waktu_keluar,
+        };
+      });
+      
+
+      const [selectedNik, setSelectedNik] = useState(null);
+      const [selectedName, setSelectedName] = useState(null);
+      const [selectedPeriode, setSelectedPeriode] = useState("2022");
+      const [selectedBulan, setSelectedBulan] = useState("january");
+      const [filteredRows, setFilteredRows] = useState([]);
+      const [loading, setLoading] = useState(false);
 
     const handleNikChange = (event, value) => {
         setSelectedNik(value);
@@ -46,13 +98,35 @@ export default function rekap({data}) {
         }
     };
 
+    const handlePeriodeChange = (event) => setSelectedPeriode(event.target.value);
+    const handleBulanChange = (event) => setSelectedBulan(event.target.value);
+
+    const handleFilter = () => {
+
+        setLoading(true); // Start loading
+        axios
+        .get(`/rekap-individu/${selectedNik.nik}/${selectedBulan}/${selectedPeriode}`)
+        .then((response) => {
+            console.log(response.data);
+            setFilteredRows(response.data); // Set fetched data
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        })
+        .finally(() => {
+            setLoading(false); // Stop loading
+        });
+            
+        };
+      
+
     return (
         <AdminLayout>
             <div className='mt-[3%] mx-[5%]'>
                 <div className='w-full border-b-2'>
                     <h1 className='font-bold'>FILTER</h1>
                 </div>
-                <div className='grid grid-cols-2  gap-8'>
+                <div className='grid grid-cols-2 gap-8'>
                     <div className='mt-4'>
                         <label htmlFor='nik' className='block text-sm font-medium text-gray-700'>
                             NIK
@@ -109,11 +183,12 @@ export default function rekap({data}) {
                             id='option'
                             name='option'
                             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            value={selectedPeriode} onChange={handlePeriodeChange}
                         >
-                            <option value="2022">2022</option>
                             <option value="2023">2023</option>
                             <option value="2024">2024</option>
                             <option value="2025">2025</option>
+                            <option value="2026">2026</option>
                         </select>
                         <label htmlFor='option' className='block text-sm font-medium text-gray-700'>
                             Bulan
@@ -122,6 +197,7 @@ export default function rekap({data}) {
                             id='option'
                             name='option'
                             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
+                            value={selectedBulan} onChange={handleBulanChange}
                         >
                             <option value='january'>January</option>
                             <option value='february'>February</option>
@@ -139,10 +215,64 @@ export default function rekap({data}) {
                     </div>
                 </div>
                 <div className='mt-[3%]'>
-                    <PrimaryButton>
+                    <PrimaryButton onClick={handleFilter}>
                         Tampilkan
                     </PrimaryButton>
                 </div>
+            </div>
+            <div className='mt-[3%] mx-[5%]'>
+                <div className='flex flex-col'>
+                    <div className='flex flex-grow overflow-hidden'>
+                        <TableContainer
+                            component={Paper}
+                            className='max-h-[40vh] overflow-y-auto'
+                        >
+                            <Table size="small" stickyHeader aria-label="a dense table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center">Hari</TableCell>
+                                        <TableCell align="center">Tanggal</TableCell>
+                                        <TableCell align="center">In</TableCell>
+                                        <TableCell align="center">Out</TableCell>
+                                        <TableCell align="center">Masuk</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {loading && <Spinner />}
+                                {filteredRows.length > 0 ? (
+                                    filteredRows.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell align="center">{row.hari}</TableCell>
+                                        <TableCell align="center">{row.tanggal}</TableCell>
+                                        <TableCell align="center">{row.inn}</TableCell>
+                                        <TableCell align="center">{row.out}</TableCell>
+                                        <TableCell align="center">
+                                        {row.status == 'hadir' ? (
+                                            <CheckIcon style={{ color: 'green' }} />
+                                        ) : (
+                                            <CloseIcon style={{ color: 'red' }} />
+                                        )}
+                                        </TableCell>
+                                    </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell align="center" colSpan={5}>
+                                            Tidak ada Data
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                </div>
+
+            </div>
+            {/* Export to XLSX Button */}
+            <div className='flex mx-[5%] justify-end'>
+                <ExportTable filteredRows={filteredRows} loading={loading} />
+
             </div>
         </AdminLayout>
     )

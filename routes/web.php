@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/riwayat', [RiwayatController::class, 'index'])->middleware(['auth', 'verified'])->name('riwayat.index');
 
+Route::get('/rekap-individu/{nik}/{bulan}/{tahun}',[AbsenController::class, 'rekapIndividu'])->middleware(['auth', 'verified']);
+
 
 Route::get('/dashboardAdmin', function () {
     return Inertia::render('Admin/dashboardAdmin');
