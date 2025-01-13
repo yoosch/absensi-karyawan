@@ -40,6 +40,8 @@
         "react-spreadsheet": "^0.9.5",
         "react-table": "^7.8.0",
         "scheduler": "^0.25.0",
+        "react-icons": "^5.4.0",
+        "styled-components": "^6.1.14",
         "sweetalert2": "^11.15.10",
         "sweetalert2-react-content": "^5.1.0",
         "tailwind-merge": "^2.6.0",
