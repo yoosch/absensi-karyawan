@@ -20,31 +20,19 @@ import AdminLayout from "@/Layouts/AdminLayout";
 
 export const columns = [
   {name: "NIK", uid: "nik",},
-  {name: "NAME", uid: "name", sortable: true},
+  {name: "NAMA", uid: "nama", sortable: true},
   {name: "EMAIL", uid: "email"},
   {name: "TANGGAL MULAI", uid: "tanggal_mulai", sortable: true},
   {name: "TANGGAL SELESAI", uid: "tanggal_selesai", sortable: true},
   {name: "DESKRIPSI", uid: "deskripsi"},
   {name: "ALAMAT CUTI", uid: "alamat_cuti"},
   {name: "SURAT PENDUKUNG", uid: "surat_pendukung"},
+  {name: "JENIS CUTI", uid: "jenis_cuti"},
 ];
 
 export const statusOptions = [
-  {name: "Tahunan", uid: "tahunan"},
-  {name: "Sakit", uid: "sakit"},
-];
-
-export const users = [
-  {
-    id: 1,
-    name: "Tony Reichert",
-    role: "CEO",
-    team: "Management",
-    status: "active",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "tony.reichert@example.com",
-  },
+  {name: "Tahunan", uid: "cuti tahunan"},
+  {name: "Sakit", uid: "cuti sakit"},
 ];
 
 export function capitalize(s) {
@@ -157,9 +145,9 @@ const statusColorMap = {
   vacation: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["nik", "nama", "email", "jenis_cuti", "deskripsi"];
 
-export default function App() {
+export default function absenCuti({cutiData}) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -169,6 +157,10 @@ export default function App() {
     column: "age",
     direction: "ascending",
   });
+
+  const users = cutiData;
+  // console.log(users);
+
   const [page, setPage] = React.useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
@@ -184,12 +176,15 @@ export default function App() {
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
+        user.nama.toLowerCase().includes(filterValue.toLowerCase()) ||
+        user.email.toLowerCase().includes(filterValue.toLowerCase()) ||
+        user.nik.toLowerCase().includes(filterValue.toLowerCase()) ||
+        user.deskripsi.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
+        Array.from(statusFilter).includes(user.jenis_cuti),
       );
     }
 
@@ -219,48 +214,18 @@ export default function App() {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
-      case "name":
+      case "surat_pendukung":
         return (
-          <User
-            avatarProps={{radius: "lg", src: user.avatar}}
-            description={user.email}
-            name={cellValue}
-          >
-            {user.email}
-          </User>
+          <div>
+          <a href={cellValue} download>Unduh</a>
+          {" | "}
+          <button onClick={() => window.open(cellValue, '_blank')}>Lihat</button>
+        </div>
         );
-      case "role":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
-          </div>
-        );
-      case "status":
-        return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-            {cellValue}
-          </Chip>
-        );
-      case "actions":
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem key="view">View</DropdownItem>
-                <DropdownItem key="edit">Edit</DropdownItem>
-                <DropdownItem key="delete">Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
+
       default:
         return cellValue;
+
     }
   }, []);
 
@@ -298,17 +263,20 @@ export default function App() {
   const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+        <div className="flex justify-between gap-4 items-end">
           <Input
             isClearable
-            className="w-full sm:max-w-[44%]"
-            placeholder="Search by name..."
+            classNames={{
+              mainWrapper: "h-full",
+              input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+              inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20"}}
+            placeholder="Search by name / nik / email / description"
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
             onValueChange={onSearchChange}
           />
-          <div className="flex gap-3">
+        <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
@@ -358,7 +326,7 @@ export default function App() {
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
-              className="bg-transparent outline-none text-default-400 text-small"
+              className="rounded outline-none text-default-400 text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0"
               onChange={onRowsPerPageChange}
             >
               <option value="5">5</option>
@@ -410,42 +378,44 @@ export default function App() {
 
   return (
     <AdminLayout>
-    <Table
-      isHeaderSticky
-      aria-label="Example table with custom cells, pagination and sorting"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-      classNames={{
-        wrapper: "max-h-[382px]",
-      }}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-      className="p-5"
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+      <div className="mt-[3%] mx-[5%]">
+
+        <Table
+          isHeaderSticky
+          aria-label="Example table with custom cells, pagination and sorting"
+          bottomContent={bottomContent}
+          bottomContentPlacement="outside"
+          classNames={{
+            wrapper: "max-h-[382px]",
+          }}
+          selectedKeys={selectedKeys}
+          selectionMode="multiple"
+          sortDescriptor={sortDescriptor}
+          topContent={topContent}
+          topContentPlacement="outside"
+          onSelectionChange={setSelectedKeys}
+          onSortChange={setSortDescriptor}
+        >
+          <TableHeader columns={headerColumns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+                allowsSorting={column.sortable}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody emptyContent={"No users found"} items={sortedItems}>
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </AdminLayout>
   );
 }
