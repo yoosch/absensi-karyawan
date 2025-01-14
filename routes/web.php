@@ -7,6 +7,7 @@ use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\Admin\AbsenCutiController;
+use App\Http\Controllers\Admin\AbsenDinasController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -44,7 +45,7 @@ Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'v
 
 Route::get('/absenCuti', [AbsenCutiController::class, 'indexCuti'])->middleware(['auth', 'verified']);
 
-Route::get('/absenDinas', [IzinController::class, 'indexDinas'])->middleware(['auth', 'verified']);
+Route::get('/absenDinas', [AbsenDinasController::class, 'index'])->middleware(['auth', 'verified']);
 Route::get('/absenLupaAbsen ', [IzinController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';
