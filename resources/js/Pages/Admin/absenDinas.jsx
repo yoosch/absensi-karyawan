@@ -16,6 +16,12 @@ import {
     Chip,
     User,
     Pagination,
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerBody,
+    DrawerFooter,
+    useDisclosure,
 } from "@nextui-org/react";
 
 export const columns = [
@@ -133,6 +139,14 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }) => {
     );
 };
 
+export const EyeIcon = ({fill = "currentColor", size, height, width, ...props}) => {
+    return (
+        <svg class="w-6 h-6 text-[#FDB714]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
+      </svg>
+    );
+  };
+
 const statusColorMap = {
     active: "success",
     paused: "danger",
@@ -152,7 +166,8 @@ export default function App({dinasData}) {
         direction: "ascending",
     });
     const [page, setPage] = React.useState(1);
-    const[]
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const [urlIzin, setUrlIzin] = React.useState("");
     const user = dinasData;
     console.log(user);
 
@@ -208,14 +223,16 @@ export default function App({dinasData}) {
             case "surat_pendukung":
                 const filePath = user.surat_pendukung;
                 return filePath ? (
-                    <a
-                        href={filePath}
-                        target="_blank"  // Opens in a new tab
-                        rel="noopener noreferrer"  // Security best practice
-                        className="text-blue-500 underline"
-                    >
-                        View PDF
-                    </a>
+                    <>
+                        <Button isIconOnly  onPress={() => {
+                                    onOpen(); // First action
+                                    setUrlIzin(filePath); // Second action
+                                }}  
+                                variant="flat" 
+                                size="sm">
+                            <EyeIcon />
+                        </Button>   
+                    </>
                 ) : (
                     "No File"
                 );
@@ -389,10 +406,37 @@ export default function App({dinasData}) {
                         {(item) => (
                             <TableRow key={item.id}>
                                 {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                                
                             </TableRow>
+                            
                         )}
                     </TableBody>
                 </Table>
+
+                {/* Drawer */}
+                <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size= "2xl" backdrop="blur">    
+                    <DrawerContent>
+                        {(onClose) => (
+                            <>
+                                <DrawerHeader className="flex flex-col gap-1">
+                                    Detail Surat
+                                </DrawerHeader>
+                                <DrawerBody className="h-full">
+                                    <iframe 
+                                        src={urlIzin} 
+                                        className="w-full h-full" 
+                                        style={{ border: 'none' }}
+                                    ></iframe>
+                                </DrawerBody>
+                                <DrawerFooter>
+                                    <Button color="danger" variant="light" onPress={onClose}>
+                                        Close
+                                    </Button>
+                                </DrawerFooter>
+                            </>
+                        )}
+                    </DrawerContent>
+                </Drawer>
             </div>
         </AdminLayout>
     )

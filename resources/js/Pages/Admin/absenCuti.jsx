@@ -211,19 +211,26 @@ export default function absenCuti({cutiData}) {
   }, [sortDescriptor, items]);
 
   const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
 
     switch (columnKey) {
       case "surat_pendukung":
+      const filePath = user.url_izin
         return (
           <div>
-          <a href={cellValue} download>Unduh</a>
-          {" | "}
+            <a
+                href={filePath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+            >
+                    Unduh
+                </a>
           <button onClick={() => window.open(cellValue, '_blank')}>Lihat</button>
         </div>
         );
 
       default:
+        const cellValue = user[columnKey];
         return cellValue;
 
     }

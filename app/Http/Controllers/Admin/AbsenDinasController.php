@@ -14,7 +14,7 @@ class AbsenDinasController extends Controller
         $dinasData = Izin::where('jenis_izin', 'dinas')->get();
         foreach ($dinasData as $dinas) {
             $dinas->nama = User::where('nik', $dinas->nik)->first()->name;
-            $dinas->surat_pendukung = asset("storage/{$dinas->surat_pendukung}");
+            $dinas->surat_pendukung = url("/preview/" . urlencode($dinas->surat_pendukung));
         }
         // dd($dinasData);
 

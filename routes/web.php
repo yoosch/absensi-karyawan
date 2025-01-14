@@ -1,17 +1,18 @@
 <?php
 
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
 use App\Http\Controllers\IzinController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\ProfileController;
+
 use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AbsenCutiController;
 use App\Http\Controllers\Admin\AbsenDinasController;
-
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\Admin\FileController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -42,6 +43,10 @@ Route::get('/dashboardAdmin', function () {
 
 Route::resource('/pegawai', PegawaiController::class);
 Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
+
+
+Route::get('/preview/{filePath}', [FileController::class, 'previewFile'])->where('filePath', '.*');
+
 
 Route::get('/absenCuti', [AbsenCutiController::class, 'indexCuti'])->middleware(['auth', 'verified']);
 
