@@ -73,8 +73,6 @@ const Absence = () => {
     };
 
     
-
-
     const handleSubmit = () => {
         if (!capturedPhoto || !coordinates) {
             setMessage("Please capture a photo and allow location access before submitting.");

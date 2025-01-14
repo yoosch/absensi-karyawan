@@ -37,11 +37,37 @@ class IzinController extends Controller
     $user = Auth::user();
     $izin = $request->tipeIzin . ' ' . $request->jenisCuti;
 
-    $filePath = $request->file('pathSurat')->storeAs(
-        'Surat_Pendukung_Izin/' . $user->nik . '_' . $user->name,
-        $request->file('pathSurat')->getClientOriginalName(),
-        'public' 
-    );
+    if ($request->tipeIzin == 'cuti') {
+        if ($request->jenisCuti == 'tahunan'){
+            $filePath = $request->file('pathSurat')->storeAs(
+                'Surat_Pendukung_Cuti/Tahunan/' . $user->nik . '_' . $user->name, 
+                $request->file('pathSurat')->getClientOriginalName(), 
+                'public'
+            );  
+        }
+        else if ($request->jenisCuti == 'sakit'){
+            $filePath = $request->file('pathSurat')->storeAs(
+                'Surat_Pendukung_Cuti/Sakit/' . $user->nik . '_' . $user->name, 
+                $request->file('pathSurat')->getClientOriginalName(), 
+                'public'
+            );
+        } 
+    }
+    else if ($request->tipeIzin == 'dinas') {
+        $filePath = $request->file('pathSurat')->storeAs(
+            'Surat_Pendukung_Dinas/' . $user->nik . '_' . $user->name, 
+            $request->file('pathSurat')->getClientOriginalName(), 
+            'public'
+        );
+    }
+    else if ($request->tipeIzin == 'lupa absen') {
+        $filePath = $request->file('pathSurat')->storeAs(
+            'Surat_Pendukung_LupaAbsen/' . $user->nik . '_' . $user->name, 
+            $request->file('pathSurat')->getClientOriginalName(), 
+            'public'
+        );
+    }
+
 
     Izin::create([
         'nik' => $user->nik,
@@ -55,17 +81,6 @@ class IzinController extends Controller
 
     return redirect()->route('izin.index');
 }
-
-    
-
-     public function indexCuti()
-     {
-         //get all posts
-         $izins = Izin::all();
- 
-         //return view
-         return Inertia::render('Admin/absenCuti', ['data' => $izins]);
-     }
 
      public function indexDinas(){
         return Inertia::render('Admin/absenDinas');

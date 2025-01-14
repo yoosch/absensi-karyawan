@@ -66,14 +66,8 @@ class AbsenController extends Controller
         $absence->status = 'hadir';
         $absence->save();
     }
-    
-    
 
-    /*return back to other page with route*/
     return redirect()->route('dashboard');
-
-    
-
 
 }
 

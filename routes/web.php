@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\Admin\AbsenCutiController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -41,7 +42,8 @@ Route::get('/dashboardAdmin', function () {
 Route::resource('/pegawai', PegawaiController::class);
 Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
 
-Route::get('/absenCuti', [IzinController::class, 'indexCuti'])->middleware(['auth', 'verified']);
+Route::get('/absenCuti', [AbsenCutiController::class, 'indexCuti'])->middleware(['auth', 'verified']);
+
 Route::get('/absenDinas', [IzinController::class, 'indexDinas'])->middleware(['auth', 'verified']);
 Route::get('/absenLupaAbsen ', [IzinController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
 
