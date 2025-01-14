@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('izin_record', function (Blueprint $table) {
             $table->id();
-            $table->string('nik')->index(); 
-            $table->string('jenis');
+            $table->string('nik')->foreign('nik')->references('nik')->on('users'); 
+            $table->string('jenis_izin');
             $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai')->nullable();
-            $table->text('deskripsi'); 
-            $table->string('alamat')->nullable(); 
-            $table->string('surat_path');
+            $table->date('tanggal_selesai');
+            $table->string('deskripsi');
+            $table->string('alamat_cuti')->nullable();
+            $table->string('surat_pendukung');
             $table->timestamps();
         });
     }
