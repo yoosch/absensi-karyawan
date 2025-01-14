@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Absen;
 use Inertia\Inertia;
+use App\Models\Absen;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RiwayatController extends Controller
 {
@@ -13,6 +14,9 @@ class RiwayatController extends Controller
         
         $user = auth()->user();
         $dataAbsen = Absen::where('nik', $user->nik)->get();
+
+        
+        // dd($dataAbsen);
 
         return Inertia::render('riwayat', [
             'dataAbsen' => $dataAbsen

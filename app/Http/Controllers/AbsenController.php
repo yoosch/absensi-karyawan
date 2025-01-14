@@ -31,11 +31,7 @@ class AbsenController extends Controller
     public function store(Request $request){
 
     $user = auth()->user();
-
-    Absen::where('nik', $request->input('nik'))
-        ->where('waktu_masuk', $request->input('waktu_masuk'))
-        ->first();
-
+    
     $image = $request->input('photo_url');
     $imagePath = null;
 
@@ -43,10 +39,11 @@ class AbsenController extends Controller
         $image = str_replace('data:image/png;base64,', '', $image);
         $image = str_replace(' ', '+', $image);
         $imageName = 'images/absence/' . date('H-i-s') . '-' . uniqid() . '.png';
-        Storage::put($imageName, base64_decode($image));
+        Storage::disk('public')->put($imageName, base64_decode($image)); 
         $imagePath = Storage::url($imageName);
     }
 
+    
     $absen = Absen::where('nik',$user->nik)
         ->where('tanggal', Carbon::now()->format('Y-m-d'))
         ->first();
@@ -54,6 +51,9 @@ class AbsenController extends Controller
     if ($absen){
         $absen->waktu_keluar = $request->input('waktu_keluar');
         $absen->koordinat_keluar = $request->input('koordinat_keluar');
+
+        Storage::disk('public')->delete(str_replace('/storage', '', $absen->photo_keluar_url));
+
         $absen->photo_keluar_url = $imagePath;
         $absen->save();
     }else{
@@ -66,9 +66,8 @@ class AbsenController extends Controller
         $absence->status = 'hadir';
         $absence->save();
     }
-
-    return redirect()->route('dashboard');
-
+    
+    return response()->json(['message' => 'Absen Berhasil'],201);
 }
 
 
@@ -78,25 +77,22 @@ public function rekapIndividu($nik, $bulan, $tahun){
     $startDate = Carbon::createFromDate($tahun, Carbon::parse($bulan)->format('m'), 1);
     $endDate = $startDate->copy()->endOfMonth();
 
-    // Generate all dates in the month
     $dataAbsen = collect();
     for ($date = $startDate->copy(); $date <= $endDate; $date->addDay()) {
         $dataAbsen->push([
             'tanggal' => $date->toDateString(),
-            'hari' => $date->locale('id')->translatedFormat('l'), // Day name in Indonesian
+            'hari' => $date->locale('id')->translatedFormat('l'), 
             'inn' => null,
             'out' => null,
             'status' => 'alpha',
         ]);
     }
 
-    // Fetch attendance records for the given NIK, month, and year
     $absen = Absen::where('nik', $nik)
         ->whereYear('tanggal', $tahun)
         ->whereMonth('tanggal', Carbon::parse($bulan)->format('m'))
         ->get();
-
-    // Map the attendance data into the generated dates
+        
     $dataAbsen = $dataAbsen->map(function ($item) use ($absen) {
         $match = $absen->firstWhere('tanggal', $item['tanggal']);
         if ($match) {
@@ -106,8 +102,6 @@ public function rekapIndividu($nik, $bulan, $tahun){
         }
         return $item;
     });
-
-    // Return the final JSON response
     return response()->json($dataAbsen);
 }
 

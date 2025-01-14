@@ -33,6 +33,70 @@ export default function AdminLayout({ header, children }) {
         window.location.href = '/absenLupaAbsen';
     }
 
+    // <aside className='min-h-screen hidden sm:flex sm:flex-col bg-[#D9D9D9] w-[17%] items-center'>
+    //                 <div className='mx-[10%] mt-[5%]'>
+    //                     <img src="putech.png" className='w-48 mx-auto' alt="" />
+    //                     <ul className='mt-[30%] mx-auto'>
+    //                         <li className="mb-4">
+    //                             <a href="/dashboardAdmin" className="text-lg font-semibold">
+    //                             Dashboard
+    //                             </a>
+    //                         </li>
+    //                         <li className="mb-4">
+    //                             <a href="/pegawai" className="text-lg font-semibold">
+    //                             Pegawai
+    //                             </a>
+    //                         </li>
+    //                         <li className="mb-4">
+    //                             <a
+    //                             href="#"
+    //                             className="text-lg font-semibold"
+    //                             onClick={handlePresensiClick} // Attach click handler
+    //                             >
+    //                             Presensi
+    //                             </a>
+    //                         </li>
+
+    //                         {/* Conditional rendering of submenu items */}
+    //                         {isPresensiClicked && (
+    //                             <>
+    //                             <li className="ml-4 mb-2">
+    //                                 <a href="#" className="text-md">
+    //                                 Log absensi
+    //                                 </a>
+    //                             </li>
+    //                             <li className="ml-4 mb-2" >
+    //                                 <button onClick={navigateToDinas}>
+    //                                     <a className="text-md">
+    //                                     Dinas
+    //                                     </a>
+    //                                 </button>
+    //                             </li>
+    //                             <li className="ml-4 mb-2" >
+    //                                 <button onClick={navigateToCuti}>
+    //                                     <a className="text-md">
+    //                                     Cuti
+    //                                     </a>
+    //                                 </button>
+    //                             </li>
+    //                             <li className="ml-4 mb-2" >
+    //                                 <button onClick={navigateToLupaAbsen}>
+    //                                     <a className="text-md">
+    //                                     Lupa Absen
+    //                                     </a>
+    //                                 </button>
+    //                             </li>
+    //                             </>
+    //                         )}
+    //                         <li className="mb-4">
+    //                             <a href="/rekap" className="text-lg font-semibold">
+    //                             Rekap
+    //                             </a>
+    //                         </li>
+    //                         </ul>
+    //                 </div>
+    //             </aside>
+
     return (
         <div className="flex h-screen overflow-x-hidden">
         <Sidebar aria-label="Sidebar with logo branding example">

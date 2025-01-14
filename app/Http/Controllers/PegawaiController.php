@@ -15,6 +15,15 @@ class PegawaiController extends Controller
     {
 
         $data = User::all();
+
+
+        foreach($data as $item){
+            $item->avatar = 'https://i.pravatar.cc/150?u=a042581f4e29026024d';
+        }
+
+        // dd($data);
+
+        
         return Inertia::render('Admin/adminPegawai', ['data' => $data]);
     }
 

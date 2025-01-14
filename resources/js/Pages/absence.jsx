@@ -2,7 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Inertia } from '@inertiajs/inertia';
 import Swal from "sweetalert2";
-import withReactContent from 'sweetalert2-react-content'
+import withReactContent from 'sweetalert2-react-content';
+import axios from "axios";
+import { Toaster, toast } from 'sonner'
 
 const MySwal = withReactContent(Swal)
 
@@ -87,29 +89,22 @@ const Absence = () => {
             waktu_keluar : new Date(new Date().getTime() + 7 * 60 * 60 * 1000).toISOString().substr(11, 8),
         };
 
-        Inertia.post('/absen/store', absenceData, {
-            onSuccess: (response) => {
-                if (response.props.message) {
-                    withReactContent(Swal).fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'response.props.message',
-                        confirmButtonText: 'OK',
-                    }).then(() => {
-                        setCapturedPhoto(null);
-                        setCoordinates(null);
-                    });
-                }
-            },
-            onError: () => {
-                MySwal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to submit absence.',
-                    confirmButtonText: 'Retry',
-                });
-            }
+        console.log(absenceData);
+
+        axios.post("/absen/store", absenceData)
+        .then((response) => {
+            console.log("Success:", response.data);
+            toast.success("Absen Berhasil");
+            window.location.href = "/dashboard";
+        })
+        .catch((error) => {
+            console.error("Error submitting absence:", error);
+            setMessage("Absen Gagal");
         });
+
+
+
+        
     };
 
     useEffect(() => {
@@ -240,10 +235,11 @@ const Absence = () => {
                 }
 
                 {/* Message */}
-                {message && (
-                    <p className="mt-4 text-sm text-gray-700 text-center">{message}</p>
-                )}
-
+                <Toaster 
+                    position="top-center"
+                    richColors
+                    >
+                </Toaster>
                 {/* Canvas (hidden) */}
                 <canvas ref={canvasRef} className="hidden"></canvas>
             </div>
