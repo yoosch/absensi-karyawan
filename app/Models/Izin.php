@@ -9,12 +9,12 @@ class Izin extends Model
     protected $table = 'izin_record';
 
     protected $fillable = [
-        'NIK',
-        'jenis',
+        'nik',
+        'jenis_izin',
         'tanggal_mulai',
         'tanggal_selesai',
         'deskripsi',
-        'alamat',
-        'surat_path'
+        'alamat_cuti',
+        'surat_pendukung'
     ];
 }

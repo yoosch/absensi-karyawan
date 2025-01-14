@@ -67,12 +67,7 @@ class AbsenController extends Controller
         $absence->save();
     }
     
-    
-
-    /*return back to other page with route*/
     return response()->json(['message' => 'Absen Berhasil'],201);
-
-
 }
 
 
@@ -82,25 +77,22 @@ public function rekapIndividu($nik, $bulan, $tahun){
     $startDate = Carbon::createFromDate($tahun, Carbon::parse($bulan)->format('m'), 1);
     $endDate = $startDate->copy()->endOfMonth();
 
-    // Generate all dates in the month
     $dataAbsen = collect();
     for ($date = $startDate->copy(); $date <= $endDate; $date->addDay()) {
         $dataAbsen->push([
             'tanggal' => $date->toDateString(),
-            'hari' => $date->locale('id')->translatedFormat('l'), // Day name in Indonesian
+            'hari' => $date->locale('id')->translatedFormat('l'), 
             'inn' => null,
             'out' => null,
             'status' => 'alpha',
         ]);
     }
 
-    // Fetch attendance records for the given NIK, month, and year
     $absen = Absen::where('nik', $nik)
         ->whereYear('tanggal', $tahun)
         ->whereMonth('tanggal', Carbon::parse($bulan)->format('m'))
         ->get();
-
-    // Map the attendance data into the generated dates
+        
     $dataAbsen = $dataAbsen->map(function ($item) use ($absen) {
         $match = $absen->firstWhere('tanggal', $item['tanggal']);
         if ($match) {
@@ -110,8 +102,6 @@ public function rekapIndividu($nik, $bulan, $tahun){
         }
         return $item;
     });
-
-    // Return the final JSON response
     return response()->json($dataAbsen);
 }
 

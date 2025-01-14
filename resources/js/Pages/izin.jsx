@@ -60,8 +60,11 @@ const Izin = () => {
         deskripsi: '',
         alamat: '',
         pathSurat: '',
+<<<<<<< HEAD
         jenisLupaAbsen: '',
         jamLupaAbsen: '',
+=======
+>>>>>>> main
     });
 
     const capitalizeFirstLetter = (text) => {
@@ -263,7 +266,11 @@ const Izin = () => {
                     <div className="mt-6">
                         <Card className="py-4 mb-4">
                             <CardHeader className="pb-3pt-2 px-4 flex flex-col items-center justify-center relative">
+<<<<<<< HEAD
                                 <p className="text-tiny-800 font-bold text-center">Unggah {getSuratLabel()}</p>
+=======
+                                <p className="text-tiny-800 font-bold text-center">Unggah Dokumen Pendukung</p>
+>>>>>>> main
                                 <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
                             </CardHeader>
 

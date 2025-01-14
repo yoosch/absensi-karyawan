@@ -113,7 +113,7 @@ export default function AdminLayout({ header, children }) {
               </Sidebar.Item>
               <Sidebar.Collapse icon={HiInbox} label="Presensi">
                 <Sidebar.Item href="#">Log Absensi</Sidebar.Item>
-                <Sidebar.Item href="#">Dinas</Sidebar.Item>
+                <Sidebar.Item href="absenDinas">Dinas</Sidebar.Item>
                 <Sidebar.Item href="#">Cuti</Sidebar.Item>
                 <Sidebar.Item href="#">Lupa Absen</Sidebar.Item>
               </Sidebar.Collapse>
