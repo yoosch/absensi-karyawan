@@ -60,11 +60,8 @@ const Izin = () => {
         deskripsi: '',
         alamat: '',
         pathSurat: '',
-<<<<<<< HEAD
         jenisLupaAbsen: '',
         jamLupaAbsen: '',
-=======
->>>>>>> main
     });
 
     const capitalizeFirstLetter = (text) => {
@@ -77,6 +74,13 @@ const Izin = () => {
             ...izin,
             [name]: value
         });
+    };
+
+    const handleTimeChange = (time) => {
+        setIzin((prevState) => ({
+            ...prevState,
+            jamLupaAbsen: time, // Update the specific field directly
+        }));
     };
 
     const handleSubmit = (e) => {
@@ -156,7 +160,6 @@ const Izin = () => {
                                 <DropdownMenu
                                     aria-label="Jenis Cuti"
                                     onAction={(key) => setIzin({ ...izin, jenisCuti: key })}>
-                                    <DropdownItem key=""></DropdownItem>
                                     <DropdownItem key="tahunan">Tahunan</DropdownItem>
                                     <DropdownItem key="sakit">Sakit</DropdownItem>
                                 </DropdownMenu>
@@ -198,13 +201,14 @@ const Izin = () => {
                                     <div className="flex mt-4">
                                         <TimeInput 
                                             className="mr-[2%]"
-                                            onChange={handleInputChange}
+                                            onChange={(time) => handleTimeChange(time)}
                                             name="jamLupaAbsen"
                                             value={izin.jamLupaAbsen}
+                                            hourCycle={24}
                                         />
                                         <Dropdown backdrop="blur" className="ml-[2%]">
                                             <DropdownTrigger>
-                                                <Button className=" bg-[#213468] text-white text-sm"> Masuk/Keluar </Button>
+                                                <Button className=" bg-[#fdb714] text-white text-sm"> {izin.jenisLupaAbsen === '' ? 'Masuk/Keluar' : capitalizeFirstLetter(izin.jenisLupaAbsen)} </Button>
                                             </DropdownTrigger>
                                             <DropdownMenu
                                                 aria-label="Jenis Lupa Absen"
@@ -214,7 +218,7 @@ const Izin = () => {
                                             </DropdownMenu>
                                         </Dropdown>
                                     </div>
-                                    <small className="text-gray-500 italic">Pilih tanggal ketika lupa absen</small>
+                                    <small className="text-gray-500 italic">Pilih waktu ketika lupa absen</small>
                                 </div>
                             )
                         }
@@ -266,11 +270,7 @@ const Izin = () => {
                     <div className="mt-6">
                         <Card className="py-4 mb-4">
                             <CardHeader className="pb-3pt-2 px-4 flex flex-col items-center justify-center relative">
-<<<<<<< HEAD
                                 <p className="text-tiny-800 font-bold text-center">Unggah {getSuratLabel()}</p>
-=======
-                                <p className="text-tiny-800 font-bold text-center">Unggah Dokumen Pendukung</p>
->>>>>>> main
                                 <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
                             </CardHeader>
 
