@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Izin;
+use Inertia\Inertia;
+use App\Models\Absen;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class IzinController extends Controller
@@ -78,6 +79,23 @@ class IzinController extends Controller
         'alamat_cuti' => $request->alamat,
         'surat_pendukung' => $filePath,
     ]);
+
+
+
+    //Untuk Ubah Absen Ke Pending for date from tanggalMulai to tanggalSelesai
+    $date = $request->tanggalMulai;
+    while (strtotime($date) <= strtotime($request->tanggalSelesai)) {
+        $absen = Absen::where('nik', $user->nik)->where('tanggal', $date)->first();
+        if (!$absen) {
+            $absen = new Absen();
+            $absen->nik = $user->nik;
+            $absen->tanggal = $date;
+        }
+        $absen->status = 'pending';
+        $absen->save();
+        $date = date ("Y-m-d", strtotime("+1 day", strtotime($date)));
+    }
+    
 
     return redirect()->route('izin.index');
 }

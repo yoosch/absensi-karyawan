@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('deskripsi');
             $table->string('alamat_cuti')->nullable();
             $table->string('surat_pendukung');
+            $table->string('status_persetujuan')->default('pending');
             $table->timestamps();
         });
     }

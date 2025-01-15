@@ -20,4 +20,14 @@ class AbsenDinasController extends Controller
 
         return Inertia::render('Admin/absenDinas', ['dinasData' => $dinasData]);
     }
+
+
+    public function approvalIzin($id,$status){
+
+        $izin = Izin::find($id);
+        $izin->status_persetujuan = $status;
+        $izin->save();
+
+        return response()->json(['message' => 'Izin berhasil diupdate']);
+    }
 }

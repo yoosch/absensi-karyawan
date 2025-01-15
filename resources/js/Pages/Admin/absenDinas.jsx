@@ -23,6 +23,8 @@ import {
     DrawerFooter,
     useDisclosure,
 } from "@nextui-org/react";
+import axios from "axios";
+import { Toaster, toast } from 'sonner'
 
 export const columns = [
     { name: "NAMA", uid: "nama", sortable: true },
@@ -31,6 +33,8 @@ export const columns = [
     { name: "TANGGAL SELESAI", uid: "tanggal_selesai" },
     { name: "DESKRIPSI", uid: "deskripsi" },
     { name: "SURAT", uid: "surat_pendukung", sortable: true },
+    { name: "STATUS", uid: "status" },
+    { name: "ACTIONS", uid: "action" },
 ];
 
 
@@ -153,7 +157,7 @@ const statusColorMap = {
     vacation: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["nama", "nik", "tanggal_mulai", "tanggal_selesai", "deskripsi", "surat_pendukung"];
+const INITIAL_VISIBLE_COLUMNS = ["nama", "nik", "tanggal_mulai", "tanggal_selesai", "deskripsi", "surat_pendukung", "action"];
 
 export default function App({dinasData}) {
     const [filterValue, setFilterValue] = React.useState("");
@@ -168,6 +172,7 @@ export default function App({dinasData}) {
     const [page, setPage] = React.useState(1);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const [urlIzin, setUrlIzin] = React.useState("");
+    const [buttonDisabled, setButtonDisabled] = React.useState({});
     const user = dinasData;
     console.log(user);
 
@@ -218,6 +223,26 @@ export default function App({dinasData}) {
         });
     }, [sortDescriptor, items]);
 
+    const approvral = (id,approv) => {
+        console.log(id)
+        console.log(approv)
+        axios.get(`/approval-cuti/${id}/${approv}`)
+        .then((response) => {
+            console.log(response.data);
+            toast.success("Berhasil mengubah status persetujuan")
+
+            setButtonDisabled((prev) => ({
+                ...prev,
+                [id]: approv, 
+            }));
+
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+
+    }
+
     const renderCell = React.useCallback((user, columnKey) => {
         switch (columnKey) {
             case "surat_pendukung":
@@ -225,8 +250,8 @@ export default function App({dinasData}) {
                 return filePath ? (
                     <>
                         <Button isIconOnly  onPress={() => {
-                                    onOpen(); // First action
-                                    setUrlIzin(filePath); // Second action
+                                    onOpen(); 
+                                    setUrlIzin(filePath); 
                                 }}  
                                 variant="flat" 
                                 size="sm">
@@ -236,12 +261,34 @@ export default function App({dinasData}) {
                 ) : (
                     "No File"
                 );
+            case "action":
+                const status = user.status_persetujuan;
+                            return(
+                                <div className="flex gap-2" key={user.id}>
+                                    <Button 
+                                        onPress={()=>approvral(user.id, "Disetujui")} 
+                                        color="primary"
+                                        isDisabled={buttonDisabled[user.id] === "Disetujui"}
+                                    >
+                                        Setuju
+                                    </Button>
+                                    <Button 
+                                        color="warning"
+                                        onPress={()=>approvral(user.id, "Ditolak")} 
+                                        isDisabled={buttonDisabled[user.id] === "Ditolak"}
+                                    >
+                                        Tolak
+                                    </Button>
+                                </div>
+                            )
             default:
                 const cellValue = user[columnKey];
                 return cellValue;
         }
     }, []);
-    
+    switch (user.status) {
+
+    }
     
 
     const onNextPage = React.useCallback(() => {
@@ -437,6 +484,11 @@ export default function App({dinasData}) {
                         )}
                     </DrawerContent>
                 </Drawer>
+                <Toaster 
+                    position="top-center"
+                    richColors
+                >
+                </Toaster>
             </div>
         </AdminLayout>
     )

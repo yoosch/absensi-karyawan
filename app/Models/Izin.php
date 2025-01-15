@@ -15,6 +15,7 @@ class Izin extends Model
         'tanggal_selesai',
         'deskripsi',
         'alamat_cuti',
-        'surat_pendukung'
+        'surat_pendukung',
+        'status_persetujuan'
     ];
 }

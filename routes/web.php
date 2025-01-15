@@ -36,6 +36,7 @@ Route::get('/riwayat', [RiwayatController::class, 'index'])->middleware(['auth',
 
 Route::get('/rekap-individu/{nik}/{bulan}/{tahun}',[AbsenController::class, 'rekapIndividu'])->middleware(['auth', 'verified']);
 
+Route::get('approval-cuti/{id}/{status}', [AbsenDinasController::class, 'approvalIzin'])->middleware(['auth', 'verified']);
 
 Route::get('/dashboardAdmin', function () {
     return Inertia::render('Admin/dashboardAdmin');

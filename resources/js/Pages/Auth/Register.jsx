@@ -61,6 +61,23 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
+                    <InputLabel htmlFor="nik" value="NIK" />
+
+                    <TextInput
+                        id="nik"
+                        type="text"
+                        name="email"
+                        value={data.nik}
+                        className="mt-1 block w-full"
+                        autoComplete="nik"
+                        onChange={(e) => setData('nik', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.nik} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
