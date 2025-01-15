@@ -14,6 +14,13 @@ const Absence = () => {
     const [capturedPhoto, setCapturedPhoto] = useState(null);
     const [coordinates, setCoordinates] = useState({ latitude: 0.0, longitude: 0.0 });
     const [message, setMessage] = useState("");
+    const [isWithinRadius, setIsWithinRadius] = useState(false);
+
+    const serverLocation = {
+        latitude: -6.9772774,  
+        longitude: 110.4488306, 
+        radius: 1, 
+    };
 
     const startCamera = () => {
         navigator.mediaDevices
@@ -74,6 +81,39 @@ const Absence = () => {
         }
     };
 
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Earth radius in km
+        const dLat = (lat2 - lat1) * (Math.PI / 180); // Difference in latitude in radians
+        const dLon = (lon2 - lon1) * (Math.PI / 180); // Difference in longitude in radians
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; // Distance in kilometers
+        // console.log("Distance:", distance);
+        return distance;
+    };
+
+    // Check if the current coordinates are within the server's radius
+    const checkCoordinatesInRadius = () => {
+        if (coordinates.latitude && coordinates.longitude) {
+            const distance = calculateDistance(
+                coordinates.latitude,
+                coordinates.longitude,
+                serverLocation.latitude,
+                serverLocation.longitude
+            );
+
+            // Check if distance is less than or equal to the radius
+            if (distance <= serverLocation.radius) {
+                setIsWithinRadius(true);
+            } else {
+                setIsWithinRadius(false);
+            }
+        }
+    };
+
     
     const handleSubmit = () => {
         if (!capturedPhoto || !coordinates) {
@@ -95,11 +135,11 @@ const Absence = () => {
         .then((response) => {
             console.log("Success:", response.data);
             toast.success("Absen Berhasil");
-            window.location.href = "/dashboard";
+            // window.location.href = "/dashboard";
         })
         .catch((error) => {
             console.error("Error submitting absence:", error);
-            setMessage("Absen Gagal");
+            toast.error(error.response.data.message);
         });
 
 
@@ -113,6 +153,7 @@ const Absence = () => {
 
         const interval = setInterval(() => {
             getCoordinates();
+            checkCoordinatesInRadius(); 
         }, 1000);
 
         return () => {
@@ -235,6 +276,17 @@ const Absence = () => {
                 }
 
                 {/* Message */}
+                {
+                    isWithinRadius ? (
+                        <div className="mt-4 text-green-600 font-semibold">
+                            Anda berada dalam radius absensi.
+                        </div>
+                    ) : (
+                        <div className="mt-4 text-red-600 font-semibold">
+                            Anda berada diluar radius absensi.
+                        </div>
+                    )
+                }
                 <Toaster 
                     position="top-center"
                     richColors

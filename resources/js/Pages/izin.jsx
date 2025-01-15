@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useDropzone } from 'react-dropzone';
-import { DateRangePicker } from "@nextui-org/react";
+import { DateRangePicker, DatePicker, TimeInput } from "@nextui-org/react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Textarea } from "@nextui-org/react";
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
 import {Spinner} from "@nextui-org/react";
@@ -60,6 +60,8 @@ const Izin = () => {
         deskripsi: '',
         alamat: '',
         pathSurat: '',
+        jenisLupaAbsen: '',
+        jamLupaAbsen: '',
     });
 
     const capitalizeFirstLetter = (text) => {
@@ -72,6 +74,13 @@ const Izin = () => {
             ...izin,
             [name]: value
         });
+    };
+
+    const handleTimeChange = (time) => {
+        setIzin((prevState) => ({
+            ...prevState,
+            jamLupaAbsen: time, // Update the specific field directly
+        }));
     };
 
     const handleSubmit = (e) => {
@@ -151,7 +160,6 @@ const Izin = () => {
                                 <DropdownMenu
                                     aria-label="Jenis Cuti"
                                     onAction={(key) => setIzin({ ...izin, jenisCuti: key })}>
-                                    <DropdownItem key=""></DropdownItem>
                                     <DropdownItem key="tahunan">Tahunan</DropdownItem>
                                     <DropdownItem key="sakit">Sakit</DropdownItem>
                                 </DropdownMenu>
@@ -161,18 +169,60 @@ const Izin = () => {
 
                     <div className="mt-6">
                         <label className="block text-sm text-gray-600 mb-2">Tanggal</label>
-                        <DateRangePicker
-                            className="w-full rounded-lg"
-                            size="lg"
-                            onChange={(dates) => {
-                                setIzin({
-                                    ...izin,
-                                    tanggalMulai: dates.start,
-                                    tanggalSelesai: dates.end,
-                                });
-                            }}
-                        />
-                        <small className="text-gray-500 italic">Pilih tanggal mulai dan selesai</small>
+                        {
+                            izin.tipeIzin != 'lupa absen' ? (
+                                <div>
+                                    <DateRangePicker
+                                        className="w-full rounded-lg"
+                                        size="lg"
+                                        onChange={(dates) => {
+                                            setIzin({
+                                                ...izin,
+                                                tanggalMulai: dates.start,
+                                                tanggalSelesai: dates.end,
+                                            });
+                                        }}
+                                    />
+                                    <small className="text-gray-500 italic">Pilih tanggal mulai dan selesai</small>
+                                </div>
+                            ) : (
+                                <div>
+                                    <DatePicker
+                                    className="w-full rounded-lg"
+                                    size="lg"
+                                    onChange={(date) => {
+                                        setIzin({
+                                            ...izin,
+                                            tanggalMulai: date,
+                                            tanggalSelesai: date,
+                                        });
+                                    }}
+                                    />
+                                    <div className="flex mt-4">
+                                        <TimeInput 
+                                            className="mr-[2%]"
+                                            onChange={(time) => handleTimeChange(time)}
+                                            name="jamLupaAbsen"
+                                            value={izin.jamLupaAbsen}
+                                            hourCycle={24}
+                                        />
+                                        <Dropdown backdrop="blur" className="ml-[2%]">
+                                            <DropdownTrigger>
+                                                <Button className=" bg-[#fdb714] text-white text-sm"> {izin.jenisLupaAbsen === '' ? 'Masuk/Keluar' : capitalizeFirstLetter(izin.jenisLupaAbsen)} </Button>
+                                            </DropdownTrigger>
+                                            <DropdownMenu
+                                                aria-label="Jenis Lupa Absen"
+                                                onAction={(key) => setIzin({ ...izin, jenisLupaAbsen: key })}>
+                                                <DropdownItem key="masuk">Masuk</DropdownItem>
+                                                <DropdownItem key="keluar">Keluar</DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </div>
+                                    <small className="text-gray-500 italic">Pilih waktu ketika lupa absen</small>
+                                </div>
+                            )
+                        }
+                        
                     </div>
 
                     {izin.jenisCuti === "tahunan" && izin.tipeIzin === "cuti" && (
@@ -220,7 +270,7 @@ const Izin = () => {
                     <div className="mt-6">
                         <Card className="py-4 mb-4">
                             <CardHeader className="pb-3pt-2 px-4 flex flex-col items-center justify-center relative">
-                                <p className="text-tiny-800 font-bold text-center">Unggah Dokumen Pendukung</p>
+                                <p className="text-tiny-800 font-bold text-center">Unggah {getSuratLabel()}</p>
                                 <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
                             </CardHeader>
 
