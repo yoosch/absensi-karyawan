@@ -63,6 +63,7 @@ const Absence = () => {
     
 
     const getCoordinates = () => {
+        console.log("Getting coordinates...");
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -107,6 +108,7 @@ const Absence = () => {
 
             // Check if distance is less than or equal to the radius
             if (distance <= serverLocation.radius) {
+                console.log("You are within the radius.");
                 setIsWithinRadius(true);
             } else {
                 setIsWithinRadius(false);
@@ -136,10 +138,13 @@ const Absence = () => {
             console.log("Success:", response.data);
             toast.success("Absen Berhasil");
             // window.location.href = "/dashboard";
+
+            Inertia.visit('/dashboard');
         })
         .catch((error) => {
             console.error("Error submitting absence:", error);
             toast.error(error.response.data.message);
+            Inertia.visit('/dashboard');
         });
 
 
@@ -156,9 +161,11 @@ const Absence = () => {
             checkCoordinatesInRadius(); 
         }, 1000);
 
+        interval;
+
         return () => {
-            clearInterval(interval);
             stopCamera();
+            clearInterval(interval);
         };
     }, []); 
 

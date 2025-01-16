@@ -15,6 +15,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { Toaster, toast } from 'sonner';
+import { Link } from '@inertiajs/react';
 
 export default function Dashboard({user,laporan_bulanan}) {
   const [fileInfo, setFileInfo] = useState(null);
@@ -142,15 +143,15 @@ export default function Dashboard({user,laporan_bulanan}) {
   };
 
   const navigateToAbsensi = () => {
-      window.location.href = '/absen';
+      Inertia.visit('/absen');
   }
 
   const navigateToizin = () => {
-      window.location.href = '/izin';
+      Inertia.visit('/izin');
   }
 
   const navigateToRiwayat = () => {
-      window.location.href = '/riwayat';
+      Inertia.visit('/riwayat');
   };
 
     return (

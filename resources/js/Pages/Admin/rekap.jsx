@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
+import IndividuRecord from '@/Layouts/IndividuRecord';
 import { Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SearchableDropdown from '@/Components/SearchableDropdown';
@@ -274,8 +275,7 @@ export default function rekap({data, absen}) {
             </div>
             {/* Export to XLSX Button */}
             <div className='flex mx-[5%] justify-end'>
-                <ExportTable filteredRows={filteredRows} loading={loading} />
-
+                <IndividuRecord filteredRows={filteredRows}/>
             </div>
         </AdminLayout>
     )
