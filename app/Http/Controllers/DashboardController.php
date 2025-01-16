@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Izin;
+use App\Models\Laporan_Bulanan;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -17,8 +18,6 @@ class DashboardController extends Controller
     public function index()
     {
         $user = auth()->user();
-
-        /*Display all the file that have been uploaded before*/
         $laporan_bulanan = Laporan_Bulanan::where('nik', $user->nik)->get();
 
         if($user->role == 'admin'){
@@ -36,7 +35,7 @@ class DashboardController extends Controller
             if($user->nyawa < 0){
                 $user->nyawa = 0;
             }
-            return Inertia::render('dashboard',['user' => $user]);   
+            return Inertia::render('dashboard',['user' => $user, 'laporan_bulanan' => $laporan_bulanan]);   
         }
     }
 
