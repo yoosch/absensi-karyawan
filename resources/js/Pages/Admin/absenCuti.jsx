@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from 'react'; 
 import {
   Table,
   TableHeader,
@@ -274,8 +274,16 @@ export default function absenCuti({ cutiData }) {
 
   }
 
-  const renderCell = React.useCallback((user, columnKey) => {
+  const handleApproval = (userId, isApproved) => {
+    setApprovedStatus((prevState) => ({
+      ...prevState,
+      [userId]: isApproved ? 'approved' : 'rejected',
+    }));
 
+    console.log(`User with ID ${userId} has been ${isApproved ? 'approved' : 'rejected'}.`);
+  };
+
+  const renderCell = React.useCallback((user, columnKey) => {
     switch (columnKey) {
       case "surat_pendukung":
         const filePath = user.surat_pendukung;

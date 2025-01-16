@@ -19,6 +19,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::post('/dashboard/store', [DashboardController::class, 'store'])->name('dashboard.store');
 
 Route::get('/absen', [AbsenController::class, 'index'])->middleware(['auth', 'verified'])->name('absen.index');
 Route::post('/absen/store', [AbsenController::class, 'store']);

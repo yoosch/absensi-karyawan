@@ -84,7 +84,6 @@ class IzinController extends Controller
         );
     }
 
-
     Izin::create([
         'nik' => $user->nik,
         'jenis_izin' => $izin,
