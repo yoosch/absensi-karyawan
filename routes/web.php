@@ -38,7 +38,7 @@ Route::get('/rekap-individu/{nik}/{bulan}/{tahun}',[AbsenController::class, 'rek
 
 Route::get('approval-cuti/{id}/{status}', [AbsenDinasController::class, 'approvalIzin'])->middleware(['auth', 'verified']);
 
-Route::get('/dashboardAdmin', function () {
+Route::get('/dashboard-admin', function () {
     return Inertia::render('Admin/dashboardAdmin');
 });
 
@@ -49,9 +49,9 @@ Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'v
 Route::get('/preview/{filePath}', [FileController::class, 'previewFile'])->where('filePath', '.*');
 
 
-Route::get('/absenCuti', [AbsenCutiController::class, 'indexCuti'])->middleware(['auth', 'verified']);
+Route::get('/absen-cuti', [AbsenCutiController::class, 'indexCuti'])->middleware(['auth', 'verified']);
 
-Route::get('/absenDinas', [AbsenDinasController::class, 'index'])->middleware(['auth', 'verified']);
-Route::get('/absenLupaAbsen ', [IzinController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
+Route::get('/absen-dinas', [AbsenDinasController::class, 'index'])->middleware(['auth', 'verified']);
+Route::get('/absen-lupa-absen ', [IzinController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';

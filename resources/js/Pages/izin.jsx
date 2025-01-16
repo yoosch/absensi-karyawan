@@ -8,7 +8,7 @@ import {Spinner} from "@nextui-org/react";
 import { Inertia } from '@inertiajs/inertia';
 
 
-const Izin = () => {
+const Izin = ({user}) => {
     const [fileInfo, setFileInfo] = useState(null);
     const [error, setError] = useState("");
     const [isUploading, setIsUploading] = useState(false);
@@ -126,6 +126,25 @@ const Izin = () => {
         }
     };
 
+    const DropdownComponent = ({ nyawa }) => {
+        // Determine disabled keys based on `nyawa`
+        const disabledKeys = nyawa === 0 ? ["lupa absen"] : [];
+    
+        return (
+            <DropdownMenu
+                aria-label="Tipe Izin"
+                disabledKeys={disabledKeys} // Pass disabled keys dynamically
+                onAction={(key) => {
+                    setIzin((prevIzin) => ({ ...prevIzin, tipeIzin: key }));
+                }}
+            >
+                <DropdownItem key="dinas">Dinas</DropdownItem>
+                <DropdownItem key="cuti">Cuti</DropdownItem>
+                <DropdownItem key="lupa absen">Lupa Absen</DropdownItem>
+            </DropdownMenu>
+        );
+    };
+
     return (
         <AuthenticatedLayout>
             <div className="mt-6 px-8 md:px-32">
@@ -136,17 +155,7 @@ const Izin = () => {
                             <DropdownTrigger>
                                 <Button className="w-full bg-[#213468] text-white">{izin.tipeIzin ? capitalizeFirstLetter(izin.tipeIzin) : "Pilih Alasan"}</Button>
                             </DropdownTrigger>
-                            <DropdownMenu
-                                aria-label="Tipe Izin"
-                                onAction={(key) => {
-                                    setIzin({ ...izin, tipeIzin: key })
-                                    }
-                                }
-                            >
-                                <DropdownItem key="dinas">Dinas</DropdownItem>
-                                <DropdownItem key="cuti">Cuti</DropdownItem>
-                                <DropdownItem key="lupa absen">Lupa Absen</DropdownItem>
-                            </DropdownMenu>
+                            <DropdownComponent nyawa={user.nyawa} />;
                         </Dropdown>
                     </div>
 

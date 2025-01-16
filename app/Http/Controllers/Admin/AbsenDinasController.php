@@ -28,6 +28,10 @@ class AbsenDinasController extends Controller
         $izin->status_persetujuan = $status;
         $izin->save();
 
+
+        //change status in user record 
+        
+
         return response()->json(['message' => 'Izin berhasil diupdate']);
     }
 }

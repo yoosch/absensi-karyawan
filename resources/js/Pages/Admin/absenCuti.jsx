@@ -15,31 +15,42 @@ import {
   Chip,
   User,
   Pagination,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+  useDisclosure,
+
 } from "@nextui-org/react";
+import { Toaster, toast } from 'sonner'
 import AdminLayout from "@/Layouts/AdminLayout";
+import { Inertia } from "@inertiajs/inertia";
 
 export const columns = [
-  {name: "NIK", uid: "nik",},
-  {name: "NAMA", uid: "nama", sortable: true},
-  {name: "EMAIL", uid: "email"},
-  {name: "TANGGAL MULAI", uid: "tanggal_mulai", sortable: true},
-  {name: "TANGGAL SELESAI", uid: "tanggal_selesai", sortable: true},
-  {name: "DESKRIPSI", uid: "deskripsi"},
-  {name: "ALAMAT CUTI", uid: "alamat_cuti"},
-  {name: "SURAT PENDUKUNG", uid: "surat_pendukung"},
-  {name: "JENIS CUTI", uid: "jenis_cuti"},
+  { name: "NIK", uid: "nik", },
+  { name: "NAMA", uid: "nama", sortable: true },
+  { name: "EMAIL", uid: "email" },
+  { name: "TANGGAL MULAI", uid: "tanggal_mulai", sortable: true },
+  { name: "TANGGAL SELESAI", uid: "tanggal_selesai", sortable: true },
+  { name: "DESKRIPSI", uid: "deskripsi" },
+  { name: "ALAMAT CUTI", uid: "alamat_cuti" },
+  { name: "SURAT PENDUKUNG", uid: "surat_pendukung" },
+  { name: "JENIS CUTI", uid: "jenis_cuti" },
+  { name: "ACTIONS", uid: "actions" },
+  { name: "STATUS", uid: "status" },
 ];
 
 export const statusOptions = [
-  {name: "Tahunan", uid: "cuti tahunan"},
-  {name: "Sakit", uid: "cuti sakit"},
+  { name: "Tahunan", uid: "cuti tahunan" },
+  { name: "Sakit", uid: "cuti sakit" },
 ];
 
 export function capitalize(s) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
 }
 
-export const PlusIcon = ({size = 24, width, height, ...props}) => {
+export const PlusIcon = ({ size = 24, width, height, ...props }) => {
   return (
     <svg
       aria-hidden="true"
@@ -65,7 +76,25 @@ export const PlusIcon = ({size = 24, width, height, ...props}) => {
   );
 };
 
-export const VerticalDotsIcon = ({size = 24, width, height, ...props}) => {
+export const CheckIcon = ({ size, height, width, ...props }) => {
+  return (
+    <svg
+      fill="none"
+      height={size || height || 24}
+      viewBox="0 0 24 24"
+      width={size || width || 24}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM16.78 9.7L11.11 15.37C10.97 15.51 10.78 15.59 10.58 15.59C10.38 15.59 10.19 15.51 10.05 15.37L7.22 12.54C6.93 12.25 6.93 11.77 7.22 11.48C7.51 11.19 7.99 11.19 8.28 11.48L10.58 13.78L15.72 8.64C16.01 8.35 16.49 8.35 16.78 8.64C17.07 8.93 17.07 9.4 16.78 9.7Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const VerticalDotsIcon = ({ size = 24, width, height, ...props }) => {
   return (
     <svg
       aria-hidden="true"
@@ -115,7 +144,7 @@ export const SearchIcon = (props) => {
   );
 };
 
-export const ChevronDownIcon = ({strokeWidth = 1.5, ...otherProps}) => {
+export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }) => {
   return (
     <svg
       aria-hidden="true"
@@ -139,15 +168,23 @@ export const ChevronDownIcon = ({strokeWidth = 1.5, ...otherProps}) => {
   );
 };
 
+export const EyeIcon = ({ fill = "currentColor", size, height, width, ...props }) => {
+  return (
+    <svg class="w-6 h-6 text-[#FDB714]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+      <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
+    </svg>
+  );
+};
+
 const statusColorMap = {
   active: "success",
   paused: "danger",
   vacation: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["nik", "nama", "email", "jenis_cuti", "deskripsi"];
+const INITIAL_VISIBLE_COLUMNS = ["nik", "nama", "email", "jenis_cuti", "deskripsi","actions","status"];
 
-export default function absenCuti({cutiData}) {
+export default function absenCuti({ cutiData }) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -158,10 +195,12 @@ export default function absenCuti({cutiData}) {
     direction: "ascending",
   });
 
-  const users = cutiData;
+  const [user, setUser] = React.useState(cutiData);
   // console.log(users);
 
   const [page, setPage] = React.useState(1);
+  const [urlIzin, setUrlIzin] = React.useState("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -172,7 +211,7 @@ export default function absenCuti({cutiData}) {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredUsers = [...user];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -189,7 +228,7 @@ export default function absenCuti({cutiData}) {
     }
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [user, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -210,29 +249,88 @@ export default function absenCuti({cutiData}) {
     });
   }, [sortDescriptor, items]);
 
+  const approvral = (id, approv) => {
+    console.log(id)
+    console.log(approv)
+    axios.get(`/approval-cuti/${id}/${approv}`)
+      .then((response) => {
+        console.log(response.data);
+        toast.success("Berhasil mengubah status persetujuan")
+
+        setUser((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === id ? { ...user, status: approv } : user
+          )
+        );
+
+        Inertia.visit('/absen-cuti');
+
+
+
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+
+  }
+
   const renderCell = React.useCallback((user, columnKey) => {
 
     switch (columnKey) {
       case "surat_pendukung":
-      const filePath = user.url_izin
-        return (
-          <div>
-            <a
-                href={filePath}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-            >
-                    Unduh
-                </a>
-          <button onClick={() => window.open(cellValue, '_blank')}>Lihat</button>
-        </div>
+        const filePath = user.surat_pendukung;
+        return filePath ? (
+          <>
+            <Button isIconOnly onPress={() => {
+              onOpen();
+              setUrlIzin(filePath);
+            }}
+              variant="flat"
+              size="sm">
+              <EyeIcon />
+            </Button>
+          </>
+        ) : (
+          "No File"
         );
+      case "actions":
+        const status = user.status_persetujuan;
+        return (
+          <div className="flex gap-2">
+            <Button
+              onPress={() => approvral(user.id, "Disetujui")}
+              color="primary"
+              {...(status === "Disetujui" ? { isDisabled: true } : {})}
+            >
+              Setuju
+            </Button>
+            <Button
+              color="warning"
+              onPress={() => approvral(user.id, "Ditolak")}
+              {...(status === "Ditolak" ? { isDisabled: true } : {})}
+            >
+              Tolak
+            </Button>
 
+          </div>
+        )
+      case "status":
+        return user.status_persetujuan === "Disetujui" ? (
+          <Chip color="success" startContent={<CheckIcon size={18} />} variant="faded">
+            Disetujui
+          </Chip>
+        ) : user.status_persetujuan === "Pending" ? (
+          <Chip color="warning" startContent={<CheckIcon size={18} />} variant="faded">
+            Pending
+          </Chip>
+        ) : user.status_persetujuan === "Ditolak" ? (
+          <Chip color="danger" startContent={<CheckIcon size={18} />} variant="faded">
+            Ditolak
+          </Chip>
+        ) : null;
       default:
         const cellValue = user[columnKey];
         return cellValue;
-
     }
   }, []);
 
@@ -276,14 +374,15 @@ export default function absenCuti({cutiData}) {
             classNames={{
               mainWrapper: "h-full",
               input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
-              inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20"}}
+              inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20"
+            }}
             placeholder="Search by name / nik / email / description"
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
             onValueChange={onSearchChange}
           />
-        <div className="flex gap-3">
+          <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
@@ -329,7 +428,7 @@ export default function absenCuti({cutiData}) {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {users.length} users</span>
+          <span className="text-default-400 text-small">Total {user.length} users</span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -349,7 +448,7 @@ export default function absenCuti({cutiData}) {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    user.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -422,6 +521,35 @@ export default function absenCuti({cutiData}) {
             )}
           </TableBody>
         </Table>
+        {/* Drawer */}
+        <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" backdrop="blur">
+          <DrawerContent>
+            {(onClose) => (
+              <>
+                <DrawerHeader className="flex flex-col gap-1">
+                  Detail Surat
+                </DrawerHeader>
+                <DrawerBody className="h-full">
+                  <iframe
+                    src={urlIzin}
+                    className="w-full h-full"
+                    style={{ border: 'none' }}
+                  ></iframe>
+                </DrawerBody>
+                <DrawerFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Close
+                  </Button>
+                </DrawerFooter>
+              </>
+            )}
+          </DrawerContent>
+        </Drawer>
+        <Toaster
+          position="top-center"
+          richColors
+        >
+        </Toaster>
       </div>
     </AdminLayout>
   );

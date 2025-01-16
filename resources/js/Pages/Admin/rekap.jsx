@@ -248,7 +248,10 @@ export default function rekap({data, absen}) {
                                         <TableCell align="center">{row.out}</TableCell>
                                         <TableCell align="center">
                                         {row.status == 'hadir' ? (
-                                            <CheckIcon style={{ color: 'green' }} />
+                                            <div>
+                                                <CheckIcon style={{ color: 'green' }} />
+                                                <span className = "hidden">✓</span>
+                                            </div>
                                         ) : (
                                             <CloseIcon style={{ color: 'red' }} />
                                         )}

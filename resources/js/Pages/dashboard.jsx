@@ -14,7 +14,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
-export default function Dashboard({ user}) {
+export default function Dashboard({user}) {
   const [fileInfo, setFileInfo] = useState(null);
   const [error, setError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -56,6 +56,24 @@ export default function Dashboard({ user}) {
 
     const { name, email, role } = user;
 
+    const UserLives = ({ user }) => {
+      const imageSrc = "/heart.png"; 
+
+      const imageAlt = "Life Icon";
+      return (
+        <>
+          {Array(user.nyawa).fill().map((_, index) => (
+            <img
+                key={index}
+                src={imageSrc}
+                alt={imageAlt}
+                className="life-icon h-6"
+            />
+          ))}
+        </>
+      )
+    }
+
     const navigateToAbsensi = () => {
         window.location.href = '/absen';
     }
@@ -88,7 +106,10 @@ export default function Dashboard({ user}) {
 
                   {/* Text Content */}
                   <div className="flex flex-col justify-center flex-grow">
-                    <h2 className="font-semibold text-lg">{name}</h2>
+                  <div className='flex'>
+                  <UserLives user={user} />
+                      </div>
+                      <h2 className="font-semibold text-lg">{name}</h2>
                     <p className="text-sm">1236682443452</p>
                     <p className="text-sm text-gray-200">Kepegawaian</p>
                   </div>

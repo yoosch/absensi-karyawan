@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Izin;
 use Inertia\Inertia;
 use App\Models\Absen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class IzinController extends Controller
 {
@@ -19,9 +21,22 @@ class IzinController extends Controller
       {
           //get all posts
           // $posts = Post::latest()->get();
-  
+        $user = auth()->user();
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        $total = Izin::where('nik', $user->nik)
+        ->where('jenis_izin', 'lupa absen')
+        ->where('status_persetujuan', 'Disetujui')
+        ->whereMonth('created_at', $currentMonth)
+        ->whereYear('created_at', $currentYear)  
+        ->count();
+        $user->nyawa = 3 - $total;
+        if($user->nyawa < 0){
+            $user->nyawa = 0;
+        }
+        // dd($user);
           //return view
-          return Inertia::render('izin');
+          return Inertia::render('izin', ['user' => $user]);
       }
 
       public function store(Request $request){
