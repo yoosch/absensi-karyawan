@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Izin;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Laporan_Bulanan;
 use Carbon\Carbon;
 
@@ -44,6 +45,8 @@ class DashboardController extends Controller
         $request->validate([
             'file_laporan' => 'required|file|mimes:pdf|max:5120',
         ]);
+
+        // dd($request->all());
 
         $user = Auth::user();
 
