@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from 'react'; 
 import {
   Table,
   TableHeader,
@@ -28,6 +28,7 @@ export const columns = [
   {name: "ALAMAT CUTI", uid: "alamat_cuti"},
   {name: "SURAT PENDUKUNG", uid: "surat_pendukung"},
   {name: "JENIS CUTI", uid: "jenis_cuti"},
+  {name: "PERSETUJUAN", uid: "persetujuan"},
 ];
 
 export const statusOptions = [
@@ -145,7 +146,7 @@ const statusColorMap = {
   vacation: "warning",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["nik", "nama", "email", "jenis_cuti", "deskripsi"];
+const INITIAL_VISIBLE_COLUMNS = ["nik", "nama", "email", "jenis_cuti", "deskripsi","persetujuan"];
 
 export default function absenCuti({cutiData}) {
   const [filterValue, setFilterValue] = React.useState("");
@@ -210,30 +211,106 @@ export default function absenCuti({cutiData}) {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
+  const [approvedStatus, setApprovedStatus] = useState({});
 
+  const handleApproval = (userId, isApproved) => {
+    setApprovedStatus((prevState) => ({
+      ...prevState,
+      [userId]: isApproved ? 'approved' : 'rejected',
+    }));
+
+    console.log(`User with ID ${userId} has been ${isApproved ? 'approved' : 'rejected'}.`);
+  };
+
+  const renderCell = React.useCallback((user, columnKey) => {
     switch (columnKey) {
       case "surat_pendukung":
-      const filePath = user.url_izin
+        const filePath = user.url_izin;
         return (
           <div>
             <a
-                href={filePath}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
+              href={filePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline"
             >
-                    Unduh
-                </a>
-          <button onClick={() => window.open(cellValue, '_blank')}>Lihat</button>
-        </div>
+              Unduh
+            </a>
+            <button onClick={() => window.open(filePath, '_blank')} className="ml-2 text-blue-500 underline">
+              Lihat
+            </button>
+          </div>
         );
 
-      default:
-        const cellValue = user[columnKey];
-        return cellValue;
-
-    }
+        case "persetujuan":
+          const approvalStatus = approvedStatus[user.id];
+          switch (approvalStatus) {
+            case 'approved':
+              return (
+                <div className="flex gap-2">
+                  <Button
+                    className="w-[20%]"
+                    color="primary"
+                    disabled
+                  >
+                    Setujui
+                  </Button>
+                  <Button
+                    className="w-[20%]"
+                    color="warning"
+                    disabled
+                  >
+                    Tolak
+                  </Button>
+                </div>
+              );
+  
+            case 'rejected':
+              return (
+                <div className="flex gap-2">
+                  <Button
+                    className="w-[20%]"
+                    color="primary"
+                    disabled
+                  >
+                    Setujui
+                  </Button>
+                  <Button
+                    className="w-[20%]"
+                    color="warning"
+                    disabled
+                  >
+                    Tolak
+                  </Button>
+                </div>
+              );
+  
+            default:
+              return (
+                <div className="flex gap-2">
+                  <Button
+                    className="w-[20%]"
+                    
+                    color="primary"
+                    onPress={() => handleApproval(user.id, true)}
+                  >
+                    Setujui
+                  </Button>
+                  <Button
+                    className="w-[20%]"
+                    color="warning"
+                    onPress={() => handleApproval(user.id, false)}
+                  >
+                    Tolak
+                  </Button>
+                </div>
+              );
+          }
+  
+        default:
+          const cellValue = user[columnKey];
+          return cellValue;
+      }
   }, []);
 
   const onNextPage = React.useCallback(() => {

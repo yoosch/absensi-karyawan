@@ -2,7 +2,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import '../../css/dashboard.css';
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
-import { useState, useCallback } from 'react';
+import { Inertia } from '@inertiajs/inertia';
+import { useState, useCallback, usePage } from 'react';
 import {Spinner} from "@nextui-org/react";
 import {
   Modal,
@@ -13,12 +14,12 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { Toaster, toast } from 'sonner';
 
-export default function Dashboard({ user}) {
+export default function Dashboard({user,laporan_bulanan}) {
   const [fileInfo, setFileInfo] = useState(null);
   const [error, setError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
-
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   const handleFileUpload = (file) => {
@@ -54,22 +55,89 @@ export default function Dashboard({ user}) {
     event.stopPropagation();
   }, []);
 
-    const { name, email, role } = user;
+  const { name } = user;
 
-    const navigateToAbsensi = () => {
-        window.location.href = '/absen';
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const file = formData.get("file_laporan");
+  
+    if (!file) {
+      setError("File belum diunggah.");
+      return;
     }
+  
+    Inertia.post(route('dashboard.store'), formData, {
+      onSuccess: () => {
+        toast.success('Event has been created');
+      },
+      onError: (errors) => {
+        console.log('Terjadi kesalahan:', errors);
+        toast.error('Gagal mengunggah file');
+      }
+    });
+  };
 
-    const navigateToizin = () => {
-        window.location.href = '/izin';
-    }
+  const FileUploadHistoryModal = ({ isOpen, onOpenChange }) => {
+    return (
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent className='max-w-2xl'>
+          <ModalHeader className="flex flex-col gap-1">
+            Histori Unggahan File Anda
+          </ModalHeader>
+          <ModalBody>
+            {laporan_bulanan && laporan_bulanan.length > 0 ? (
+              <ul>
+                {laporan_bulanan.map((laporan, index) => (
+                  <li key={index}>
+                    <p><strong>File Anda: </strong>{laporan.file_laporan.split('/').pop()}</p>
+                    <p><strong>Bulan: </strong>{laporan.bulan}</p>
+                    <p><strong>Tahun: </strong>{laporan.tahun}</p>
+                    <p><strong>Last Uploaded: </strong>{new Date(laporan.updated_at).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}</p>
 
-    const navigateToRiwayat = () => {
-        window.location.href = '/riwayat';
-    };
+                    <div className="mt-3">
+                      <iframe
+                        src={`/storage/${laporan.file_laporan}`}
+                        width="100%"
+                        height="400px"
+                        title={`Preview for ${laporan.file_laporan}`}
+                      />
+                    </div>
+                    <hr />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Tidak ada file yang diunggah.</p>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" variant="light" onPress={() => onOpenChange(false)}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+    );
+  };
+
+  const navigateToAbsensi = () => {
+      window.location.href = '/absen';
+  }
+
+  const navigateToizin = () => {
+      window.location.href = '/izin';
+  }
+
+  const navigateToRiwayat = () => {
+      window.location.href = '/riwayat';
+  };
 
     return (
         <AuthenticatedLayout>
+            <Toaster />
             <Head title="Dashboard" />
             <div className="mt-6 md:px-32">
               <div className='ml-8 flex justify-left items-center'>
@@ -80,13 +148,11 @@ export default function Dashboard({ user}) {
               </div>
               <div className='mx-8 mt-4'>
                 <div className="flex items-center bg-blue-800 text-white rounded-lg overflow-hidden shadow-md border-b-4 border-[#fdb714]">
-                  {/* Profile Picture */}
-                   
+                  
                   <div className="w-20 h-20 bg-gray-300 rounded-full m-4 flex-shrink-0 overflow-hidden">
                     <img src="/putech.png" alt="" className="w-full h-full object-cover" />
                   </div>
 
-                  {/* Text Content */}
                   <div className="flex flex-col justify-center flex-grow">
                     <h2 className="font-semibold text-lg">{name}</h2>
                     <p className="text-sm">1236682443452</p>
@@ -97,7 +163,6 @@ export default function Dashboard({ user}) {
                 <div className='flex flex-col my-4 mt-4'>
                 <button onClick={navigateToAbsensi} >
                   <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md border-l-2 border-[#fdb714]">
-                    {/* Text Content */}
                     <div className="flex justify-between items-center flex-grow px-6 py-6">
                       <svg className="w-10 h-10" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
                           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
@@ -111,7 +176,6 @@ export default function Dashboard({ user}) {
                   </div>
                   </button>
 
-                    {/* Text Content */}
                   <button onClick={navigateToizin}>
                     <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md border-l-2 border-[#fdb714]">
                         <div className="flex justify-between flex-grow px-6 py-6">
@@ -129,7 +193,6 @@ export default function Dashboard({ user}) {
 
                   <button  onClick={navigateToRiwayat} className = "mb-4">
                       <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-2 border-[#fdb714]">
-                          {/* Text Content */}
                           <div className="flex justify-between flex-grow px-6 py-6">
                           <svg className="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1v3m5-3v3m5-3v3M1 7h7m1.506 3.429 2.065 2.065M19 7h-2M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm6 13H6v-2l5.227-5.292a1.46 1.46 0 0 1 2.065 2.065L8 16Z"/>
@@ -142,39 +205,21 @@ export default function Dashboard({ user}) {
                       </div>
                   </button>
                   <Card className="py-4 mb-4">
-                  <CardHeader className="pb- 3pt-2 px-4 flex flex-col items-center justify-center relative">
-                    <p className="text-tiny-800 font-bold text-center">Unggah Laporan Bulanan</p>
-                    <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
+                  <CardHeader className="pb-3 pt-2 px-4 flex flex-row items-center justify-center relative">
+                    <div className = "flex flex-col justify-center items-center">
+                      <p className="text-tiny-800 font-bold text-center">Unggah Laporan Bulanan</p>
+                      <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
+                    </div>
                     <Button onPress={onOpen} className="absolute left-4 bottom-4"> Recent Upload</Button>
+                  
+                    <FileUploadHistoryModal isOpen={isOpen} onOpenChange={onOpenChange} />
 
-                    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-                      <ModalContent>
-                        {(onClose) => (
-                          <>
-                            <ModalHeader className="flex flex-col gap-1">Histori Unggahan File Anda</ModalHeader>
-                            <ModalBody>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar risus non
-                                risus hendrerit venenatis. Pellentesque sit amet hendrerit risus, sed porttitor
-                                quam.
-                              </p>
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button color="danger" variant="light" onPress={onClose}>
-                                Close
-                              </Button>
-                            </ModalFooter>
-                          </>
-                        )}
-                      </ModalContent>
-                    </Modal>
                   </CardHeader>
 
-                    <CardBody 
-                      className="overflow-visible py-2 items-center"
-                      onDrop={handleDrop}
-                      onDragOver={handleDragOver}
-                    >
+                    <CardBody>
+                      <form onSubmit={handleSubmit} className="overflow-visible py-2 items-center"
+                        onDrop={handleDrop}
+                        onDragOver={handleDragOver}>
                       <label 
                         htmlFor="file-upload" 
                         className="cursor-pointer flex flex-col items-center bg-gray-100 border-2 border-dashed border-gray-500 rounded-lg py-10 px-6 hover:bg-gray-300 transition-colors duration-300 w-full"
@@ -187,6 +232,7 @@ export default function Dashboard({ user}) {
                         <input 
                           id="file-upload" 
                           type="file" 
+                          name="file_laporan"
                           accept=".pdf" 
                           onChange={(e) => handleFileUpload(e.target.files[0])} 
                           className="hidden"
@@ -195,7 +241,15 @@ export default function Dashboard({ user}) {
                       </label>
                       {fileInfo && <p className="mt-4 text-green-600">File berhasil diunggah: {fileInfo}</p>}
                       {error && <p className="mt-4 text-red-600">{error}</p>}
+
+                      <div className="mt-6">
+                          <Button type="submit" className="w-full bg-[#213468] text-white" >
+                              Submit Laporan
+                          </Button>
+                      </div>
+                    </form>
                     </CardBody>
+
                   </Card>
                 </div>
               </div>
