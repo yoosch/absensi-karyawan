@@ -153,6 +153,10 @@ export default function Dashboard({user,laporan_bulanan}) {
       window.location.href = '/riwayat';
   };
 
+  const navigateToShift = () => {
+      window.location.href = '/shift';
+  };
+
     return (
         <AuthenticatedLayout>
             <Toaster />
@@ -166,20 +170,24 @@ export default function Dashboard({user,laporan_bulanan}) {
               </div>
               <div className='mx-8 mt-4'>
                 <div className="flex items-center bg-blue-800 text-white rounded-lg overflow-hidden shadow-md border-b-4 border-[#fdb714]">
-                  
                   <div className="w-20 h-20 bg-gray-300 rounded-full m-4 flex-shrink-0 overflow-hidden">
                     <img src="/putech.png" alt="" className="w-full h-full object-cover" />
                   </div>
-
                   <div className="flex flex-col justify-center flex-grow">
-                  <div className='flex'>
-                  <UserLives user={user} />
-                      </div>
+                    <div className='flex'>
+                      <UserLives user={user} />
+                    </div>
+                    <div>
                       <h2 className="font-semibold text-lg">{name}</h2>
-                    <p className="text-sm">1236682443452</p>
-                    <p className="text-sm text-gray-200">Kepegawaian</p>
+                      <p className="text-sm">1236682443452</p>
+                      <p className="text-sm text-gray-200">Kepegawaian</p>
+                    </div>
                   </div>
-                </div>
+                  <div className = "m-3 gap-2 flex flex-col align items-start">
+                    <p>Shift Pagi</p>
+                    <p>07.30 - 16.00</p>
+                  </div>
+              </div>
 
                 <div className='flex flex-col my-4 mt-4'>
                 <button onClick={navigateToAbsensi} >
@@ -212,7 +220,7 @@ export default function Dashboard({user,laporan_bulanan}) {
                     </div>
                   </button>
 
-                  <button  onClick={navigateToRiwayat} className = "mb-4">
+                  <button  onClick={navigateToRiwayat} className="mb-4" >
                       <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-2 border-[#fdb714]">
                           <div className="flex justify-between flex-grow px-6 py-6">
                           <svg className="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -225,6 +233,7 @@ export default function Dashboard({user,laporan_bulanan}) {
                           </div>
                       </div>
                   </button>
+
                   <Card className="py-4 mb-4">
                   <CardHeader className="pb-3 pt-2 px-4 flex flex-row items-center justify-center relative">
                     <div className = "flex flex-col justify-center items-center">
