@@ -28,7 +28,7 @@ const IndividuRecord = ({ filteredRows }) => {
     const d = new Date(date);
     
     const s = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
-    // console.log(s);
+    console.log(s);
     return s;
   }
 

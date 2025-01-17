@@ -136,20 +136,21 @@ const Absence = () => {
         axios.post("/absen/store", absenceData)
         .then((response) => {
             console.log("Success:", response.data);
-            toast.success("Absen Berhasil");
+            toast.success("Absen Berhasil", {
+                duration: 3000,
+            });
             // window.location.href = "/dashboard";
 
-            Inertia.visit('/dashboard');
+            setTimeout(() => {
+                Inertia.visit('/dashboard');
+            }, 3000); 
         })
         .catch((error) => {
             console.error("Error submitting absence:", error);
-            toast.error(error.response.data.message);
-            Inertia.visit('/dashboard');
-        });
-
-
-
-        
+            toast.error(error.response.data.message, {
+                duration: 3000,
+            });
+        });  
     };
 
     useEffect(() => {
@@ -158,7 +159,6 @@ const Absence = () => {
 
         const interval = setInterval(() => {
             getCoordinates();
-            checkCoordinatesInRadius(); 
         }, 1000);
 
         interval;
@@ -168,6 +168,12 @@ const Absence = () => {
             clearInterval(interval);
         };
     }, []); 
+
+    useEffect(() => {
+        if (coordinates.latitude && coordinates.longitude) {
+            checkCoordinatesInRadius(); // Runs every time coordinates are updated
+        }
+    }, [coordinates]);
 
     
     return (
