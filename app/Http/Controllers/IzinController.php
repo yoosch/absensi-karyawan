@@ -51,7 +51,19 @@ class IzinController extends Controller
     ]);
 
     $user = Auth::user();
-    $izin = $request->tipeIzin . ' ' . $request->jenisCuti;
+    $izin = '';
+
+    if($request->tipeIzin == 'cuti'){
+        if($request->jenisCuti == 'tahunan'){
+            $izin = 'c';
+        } else if($request->jenisCuti == 'sakit'){
+            $izin = 's';
+        }
+    } else if($request->tipeIzin == 'dinas'){
+        $izin = 'dl';
+    } else if($request->tipeIzin == 'lupa absen'){
+        $izin = 'la';
+    }
 
     if ($request->tipeIzin == 'cuti') {
         if ($request->jenisCuti == 'tahunan'){

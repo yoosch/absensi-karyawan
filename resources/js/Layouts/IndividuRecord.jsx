@@ -2,8 +2,10 @@ import React, { useRef } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import PrimaryButton from '@/Components/PrimaryButton';
+import { Button } from "@nextui-org/react";
+import { Toaster, toast } from 'sonner';
 
-const IndividuRecord = ({ filteredRows }) => {
+const IndividuRecord = ({ filteredRows, isDownloadable }) => {
   const tableRef = useRef(null);
 
   const exportToXLSX = () => {
@@ -32,8 +34,15 @@ const IndividuRecord = ({ filteredRows }) => {
     return s;
   }
 
+  const handleDownload = () => {
+    
+    (!isDownloadable) && toast.warning('Terdapat Perizinanan yang belum di approve');
+
+  };
+
   return (
     <div>
+      <Toaster position="top-center" RichColors />
         <div hidden>
         <table ref={tableRef} border="1" style={{ borderCollapse: 'collapse', width: '100%', marginTop: '1rem' }}>
         <thead>
@@ -45,7 +54,7 @@ const IndividuRecord = ({ filteredRows }) => {
             </tr>
           <tr>
             <th rowSpan={2}>Hari</th>
-            <th rowSpan={2}>Tanggal</th>
+            <th rowSpan={2}>   Tanggal   </th>
             <th colSpan={2}>Absensi</th>
             <th colSpan={7}>Kehadiran</th>
             <th colSpan={3}>Lembur</th>
@@ -65,8 +74,8 @@ const IndividuRecord = ({ filteredRows }) => {
             <th>L1</th>
             <th>L2</th>
             <th>L3</th>
-            <th>HK</th>
-            <th>Telat</th>
+            <th>WK</th>
+            <th>KJ</th>
           </tr>
         </thead>
         <tbody>
@@ -87,8 +96,8 @@ const IndividuRecord = ({ filteredRows }) => {
                 <td>{row.l1}</td>
                 <td>{row.l2}</td>
                 <td>{row.l3}</td>
-                <td>{row.hk}</td>
-                <td>{row.telatSummary}</td>
+                <td>{row.wk}</td>
+                <td>{row.kj}</td>
                 <td>{row.keterangan}</td>
               </tr>
             ))
@@ -105,9 +114,12 @@ const IndividuRecord = ({ filteredRows }) => {
 
       {/* Export Button */}
       <div style={{ marginTop: '1rem' }}>
-        <PrimaryButton onClick={exportToXLSX}>
+        <Button isDisabled={!isDownloadable} onPress={() => {
+          exportToXLSX();
+          handleDownload();
+        }}>
           Download as XLSX
-        </PrimaryButton>
+        </Button>
       </div>
     </div>
   );

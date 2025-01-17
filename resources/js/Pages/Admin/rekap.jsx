@@ -14,12 +14,14 @@ import {TextField,
     TableHead, 
     TableRow, 
     Paper,
+    alpha,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import {Spinner, Button} from "@nextui-org/react";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import { Toaster, toast } from 'sonner';
 
 
 import axios from 'axios';
@@ -48,6 +50,7 @@ const ExportTable = ({ filteredRows, loading }) => {
   
 
 export default function rekap({data, absen}) {
+    console.log(absen);
 
     const [value, setValue] = useState("Select option...");
     const myFilter = (textValue, inputValue) => {
@@ -70,6 +73,15 @@ export default function rekap({data, absen}) {
           tanggal: item.tanggal,
           inn: item.waktu_masuk,
           out: item.waktu_keluar,
+          masuk: item.masuk,
+          telat: item.telat,
+          alpha: item.alpha,
+          dl: item.dl,
+          c: item.c,
+          s: item.s,
+          la: item.la,
+          wk: item.wk,
+          kj: item.kj,
         };
       });
       
@@ -80,6 +92,8 @@ export default function rekap({data, absen}) {
       const [selectedBulan, setSelectedBulan] = useState("january");
       const [filteredRows, setFilteredRows] = useState([]);
       const [loading, setLoading] = useState(false);
+
+      const [isDownloadable, setIsDownloadable] = useState(false);
 
     const handleNikChange = (event, value) => {
         setSelectedNik(value);
@@ -109,7 +123,9 @@ export default function rekap({data, absen}) {
         .get(`/rekap-individu/${selectedNik.nik}/${selectedBulan}/${selectedPeriode}`)
         .then((response) => {
             console.log(response.data);
-            setFilteredRows(response.data); // Set fetched data
+            setFilteredRows(response.data.dataAbsen);
+         // Set fetched data
+            setIsDownloadable(response.data.isDownloadable);
         })
         .catch((error) => {
             console.error("Error fetching data:", error);
@@ -236,6 +252,14 @@ export default function rekap({data, absen}) {
                                         <TableCell align="center">In</TableCell>
                                         <TableCell align="center">Out</TableCell>
                                         <TableCell align="center">Masuk</TableCell>
+                                        <TableCell align="center">Telat</TableCell>
+                                        <TableCell align="center">Alpha</TableCell>
+                                        <TableCell align="center">DL</TableCell>
+                                        <TableCell align="center">C</TableCell>
+                                        <TableCell align="center">S</TableCell>
+                                        <TableCell align="center">LA</TableCell>
+                                        <TableCell align="center">WK</TableCell>
+                                        <TableCell align="center">KJ</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -248,20 +272,60 @@ export default function rekap({data, absen}) {
                                         <TableCell align="center">{row.inn}</TableCell>
                                         <TableCell align="center">{row.out}</TableCell>
                                         <TableCell align="center">
-                                        {row.status == 'hadir' ? (
+                                        {row.masuk && (
                                             <div>
                                                 <CheckIcon style={{ color: 'green' }} />
                                                 <span className = "hidden">✓</span>
                                             </div>
-                                        ) : (
-                                            <CloseIcon style={{ color: 'red' }} />
                                         )}
                                         </TableCell>
+                                        <TableCell align="center">
+                                        {row.telat && (
+                                            <div>
+                                                <CheckIcon style={{ color: 'green' }} />
+                                                <span className = "hidden">✓</span>
+                                            </div>
+                                        )}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                        {row.alpha && (
+                                            <div>
+                                                <CheckIcon style={{ color: 'green' }} />
+                                                <span className = "hidden">✓</span>
+                                            </div>
+                                        )}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                        {row.dl && (
+                                            <div>
+                                                <CheckIcon style={{ color: 'green' }} />
+                                                <span className = "hidden">✓</span>
+                                            </div>
+                                        )}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {row.c && (
+                                                <div>
+                                                    <CheckIcon style={{ color: 'green' }} />
+                                                    <span className = "hidden">✓</span>
+                                                </div>
+                                            )}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            {row.s && (
+                                                <div>
+                                                    <CheckIcon style={{ color: 'green' }} />
+                                                    <span className = "hidden">✓</span>
+                                                </div>
+                                            )}
+                                        </TableCell>
+                                        
+                                        
                                     </TableRow>
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell align="center" colSpan={5}>
+                                        <TableCell align="center" colSpan={13}>
                                             Tidak ada Data
                                         </TableCell>
                                     </TableRow>
@@ -275,7 +339,7 @@ export default function rekap({data, absen}) {
             </div>
             {/* Export to XLSX Button */}
             <div className='flex mx-[5%] justify-end'>
-                <IndividuRecord filteredRows={filteredRows}/>
+                <IndividuRecord filteredRows={filteredRows} isDownloadable = {isDownloadable}/>
             </div>
         </AdminLayout>
     )

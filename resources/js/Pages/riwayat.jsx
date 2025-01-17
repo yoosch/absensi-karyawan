@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 // import { Calendar } from 'lucide-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Toaster, toast } from 'sonner'
+import { Chip } from "@nextui-org/react";
 
   const Riwayat = ({dataAbsen}) => {
+
+    console.log(dataAbsen);
             
     const [currentDate, setCurrentDate] = useState(new Date());
     const monthsOfYear = [
@@ -78,21 +82,85 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
             {/* Attendance List */}
             <div className="space-y-2">
-              {dataAbsen.map((record, index) => (
-                <div key={index} 
-                  className="grid grid-cols-4 bg-white p-4 rounded-lg text-sm border border-gray-200"
-                >
-                  <div>{record.tanggal}</div>
-                  <div>{record.waktu_masuk}</div>
-                  <div>{record.waktu_keluar ?? '00:00'}</div>
+            {dataAbsen.map((record, index) => (
+              (record.hari === 'Minggu' || record.hari === 'Sabtu') ? (
+                <div key={index} className="grid grid-cols-4 bg-green-50 p-4 rounded-lg text-sm border border-gray-200">
+                  <div>{new Date(record.tanggal).toLocaleDateString('en-GB').replace(/\//g, '-')}</div>
+                  
+                  {/* Waktu Masuk and Keluar */}
+                  <div>-</div>
+                  <div>-</div>
+                  
+                  {/* Status Handling */}
                   <div>
-                    <span className="bg-green-100 text-green-800 text-xs ml-[12.5%] px-2 py-1 rounded-xl dark:bg-green-900 dark:text-green-300">Hadir</span>
-                  </div>
-                  <div>
-                    <img src={record.photo_keluar_url} alt="" />
+                      <Chip
+                        classNames={{
+                          base: "bg-gradient-to-br from-teal-400 to-gray-300 border-small border-white/50 shadow-pink-500/30",
+                          content: "drop-shadow shadow-black text-white",
+                        }}
+                        size="sm"
+                      >
+                        Libur
+                      </Chip>
                   </div>
                 </div>
-              ))}
+              ) : (
+                <div key={index} className="grid grid-cols-4 bg-white p-4 rounded-lg text-sm border border-gray-200">
+                  {/* Date Formatting */}
+                  <div>{new Date(record.tanggal).toLocaleDateString('en-GB').replace(/\//g, '-')}</div>
+                  
+                  {/* Waktu Masuk and Keluar */}
+                  <div>{record.waktu_masuk ?? '-'}</div>
+                  <div>{record.waktu_keluar ?? '-'}</div>
+                  
+                  {/* Status Handling */}
+                  <div>
+                    {record.status === 'hadir' && (
+                      <Chip color="success" variant="flat">Hadir</Chip>
+                    )}
+                    {(record.status === 'c' || record.status === 's') && (
+                      <Chip color="secondary" variant="flat">
+                        {record.status === 'c' ? 'Cuti' : 'Sakit'}
+                      </Chip>
+                    )}
+                    {record.status === 'alpha' && (
+                      <Chip
+                        classNames={{
+                          base: "bg-gradient-to-br from-red-700 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                          content: "drop-shadow shadow-black text-white",
+                        }}
+                        size="sm"
+                      >
+                        Alpha
+                      </Chip>
+                    )}
+                    {record.status === 'pending' && (
+                      <Chip
+                        classNames={{
+                          base: "bg-gradient-to-br from-orange-600 to-yellow-500 border-small border-white/50 shadow-pink-500/30",
+                          content: "drop-shadow shadow-black text-white",
+                        }}
+                        size="sm"
+                      >
+                        Pending
+                      </Chip>
+                    )}
+                    {record.status === 'dl' && (
+                      <Chip
+                        classNames={{
+                          base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                          content: "drop-shadow shadow-black text-white",
+                        }}
+                        size="sm"
+                      >
+                        Dinas
+                      </Chip>
+                    )}
+                  </div>
+                </div>
+              )
+            ))}
+
             </div>
           </div>
         </div>

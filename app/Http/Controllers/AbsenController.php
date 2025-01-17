@@ -46,22 +46,23 @@ class AbsenController extends Controller
 
         if ($isOverTwelve) {
             // Absen keluar logic
+
+            $image = $request->input('photo_url');
+            $imagePath = null;
+
+            if ($image) {
+                $image = str_replace('data:image/png;base64,', '', $image);
+                $image = str_replace(' ', '+', $image);
+                $imageName = 'images/absence/' . date('H-i-s') . '-' . uniqid() . '.png';
+                Storage::disk('public')->put($imageName, base64_decode($image)); 
+                $imagePath = Storage::url($imageName);
+            }
+            
             if (!$absen) {
                 // Create a new record for absen keluar only
                 $absen = new Absen();
                 $absen->nik = $user->nik;
                 $absen->tanggal = $currentDate;
-
-                $image = $request->input('photo_url');
-                $imagePath = null;
-
-                if ($image) {
-                    $image = str_replace('data:image/png;base64,', '', $image);
-                    $image = str_replace(' ', '+', $image);
-                    $imageName = 'images/absence/' . date('H-i-s') . '-' . uniqid() . '.png';
-                    Storage::disk('public')->put($imageName, base64_decode($image)); 
-                    $imagePath = Storage::url($imageName);
-                }
             }
 
             // Update absen keluar fields
@@ -134,6 +135,7 @@ public function rekapIndividu($nik, $bulan, $tahun){
             'dl' => false,
             's' => false,
             'la' => false,
+            'c' => false,
             'formatted_tanggal' => $date->format('d/m/Y')
         ]);
     }
@@ -143,9 +145,14 @@ public function rekapIndividu($nik, $bulan, $tahun){
         ->whereMonth('tanggal', Carbon::parse($bulan)->format('m'))
         ->get();
 
+    $isDownloadable = true;
+
     foreach ($absen as $item) {
         //waktu kerja in hour
 
+        if($item->status == 'pending'){
+            $isDownloadable = false;
+        }
         $inn = $item->waktu_masuk;
         //check if $waktu masuk not exist then $inn = 12:00
         if($inn == null){
@@ -159,18 +166,23 @@ public function rekapIndividu($nik, $bulan, $tahun){
             $out = '12:00';
         }
 
-
-        $item->waktu_kerja = Carbon::parse($inn)->diffInHours(Carbon::parse($out));
-
+        $item->waktu_kerja = 0;
+        
         $item->kj = 0;
         $item->lembur = 0;
-        if($item->waktu_kerja < 7.5){
-            $item->kj = (7.5 - $item->waktu_kerja)*60;
-        }else{
-            $item->lembur = ($item->waktu_kerja - 7.5)*60;
-        }
+        
 
-        $item->telat = $item->waktu_masuk > '08:00:00' && $item->waktu_masuk != null;
+        if($item->status == 'alpha' || $item->status == 'hadir'){
+
+            $item->waktu_kerja = Carbon::parse($inn)->diffInHours(Carbon::parse($out));
+            if($item->waktu_kerja < 7.5){
+                $item->kj = (7.5 - $item->waktu_kerja)*60;
+            }else{
+                $item->lembur = ($item->waktu_kerja - 7.5)*60;
+            }
+
+            $item->telat = $item->waktu_masuk > '08:00:00' && $item->waktu_masuk != null;
+        }
 
     };
         
@@ -181,18 +193,22 @@ public function rekapIndividu($nik, $bulan, $tahun){
             $item['out'] = $match->waktu_keluar;
             $item['status'] = $match->status;
             $item['masuk'] = $match->waktu_masuk != null;
-            $item['wk'] = $match->waktu_kerja;
-            $item['kj'] = $match->kj;
+            $item['wk'] = ceil($match->waktu_kerja);
+            $item['kj'] = floor($match->kj);
             $item['lembur'] = $match->lembur;
             $item['telat'] = $match->telat;
             $item['alpha'] = $match->status == 'alpha';
-            $item['dl'] = $match->status == 'dinas';
-            $item['s'] = $match->status == 'sakit';
-            $item['la'] = $match->status == 'lupaabsen';
+            $item['dl'] = $match->status == 'dl';
+            $item['s'] = $match->status == 's';
+            $item['la'] = $match->status == 'la';
+            $item['c'] = $match->status == 'c';
         }
         return $item;
     });
-    return response()->json($dataAbsen);
+
+
+
+    return response()->json(['dataAbsen' => $dataAbsen, 'isDownloadable' => $isDownloadable]);
 }
 
 }

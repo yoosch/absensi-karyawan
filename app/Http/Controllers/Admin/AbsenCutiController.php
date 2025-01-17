@@ -13,7 +13,7 @@ class AbsenCutiController extends Controller
 
     public function indexCuti()
     {
-        $cutiData = Izin::whereIn('jenis_izin', ['cuti sakit', 'cuti tahunan'])->get();
+        $cutiData = Izin::whereIn('jenis_izin', ['c', 's'])->get();
         foreach ($cutiData as $cuti) {
             $cuti->nama = User::where('nik', $cuti->nik)->first()->name;
             $cuti->email = User::where('nik', $cuti->nik)->first()->email;

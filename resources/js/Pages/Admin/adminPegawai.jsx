@@ -27,17 +27,17 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { Inertia } from "@inertiajs/inertia";
 
 export const columns = [
-  {name: "ID", uid: "id", sortable: true},
-  {name: "NAME", uid: "name", sortable: true},
-  {name: "NIK", uid: "nik", sortable: true},
-  {name: "EMAIL", uid: "email"},
-  {name: "ACTIONS", uid: "actions"},
+  { name: "ID", uid: "id", sortable: true },
+  { name: "NAME", uid: "name", sortable: true },
+  { name: "NIK", uid: "nik", sortable: true },
+  { name: "EMAIL", uid: "email" },
+  { name: "ACTIONS", uid: "actions" },
 ];
 
 export const statusOptions = [
-  {name: "Active", uid: "active"},
-  {name: "Paused", uid: "paused"},
-  {name: "Vacation", uid: "vacation"},
+  { name: "Active", uid: "active" },
+  { name: "Paused", uid: "paused" },
+  { name: "Vacation", uid: "vacation" },
 ];
 
 
@@ -46,7 +46,7 @@ export function capitalize(s) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
 }
 
-export const PlusIcon = ({size = 24, width, height, ...props}) => {
+export const PlusIcon = ({ size = 24, width, height, ...props }) => {
   return (
     <svg
       aria-hidden="true"
@@ -72,7 +72,7 @@ export const PlusIcon = ({size = 24, width, height, ...props}) => {
   );
 };
 
-export const VerticalDotsIcon = ({size = 24, width, height, ...props}) => {
+export const VerticalDotsIcon = ({ size = 24, width, height, ...props }) => {
   return (
     <svg
       aria-hidden="true"
@@ -122,7 +122,7 @@ export const SearchIcon = (props) => {
   );
 };
 
-export const ChevronDownIcon = ({strokeWidth = 1.5, ...otherProps}) => {
+export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }) => {
   return (
     <svg
       aria-hidden="true"
@@ -154,7 +154,7 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "nik", "actions"];
 
-export default function adminPegawai({data}) {
+export default function adminPegawai({ data }) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -166,7 +166,7 @@ export default function adminPegawai({data}) {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedPegawai, setSelectedPegawai] = useState(null);
 
@@ -201,25 +201,25 @@ export default function adminPegawai({data}) {
     setSelectedPegawai(pegawai);
     setIsModalDeleteOpen(true);
     console.log(pegawai);
-    };
+  };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedPegawai(null);
-    };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPegawai(null);
+  };
 
-    const handleDeleteConfirm = (id) => {
+  const handleDeleteConfirm = (id) => {
 
-        // console.log('Deleting pegawai with email : ${selectedPegawai.email}');
-        Inertia.delete(route('pegawai.destroy', id), {
-            onSuccess: () => alert('Item deleted successfully'),
-        });
+    // console.log('Deleting pegawai with email : ${selectedPegawai.email}');
+    Inertia.delete(route('pegawai.destroy', id), {
+      onSuccess: () => alert('Item deleted successfully'),
+    });
 
 
-        setIsModalOpen(false);
-        selectedPegawai(null);
+    setIsModalOpen(false);
+    selectedPegawai(null);
 
-    }
+  }
 
   const items = React.useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -238,6 +238,11 @@ export default function adminPegawai({data}) {
     });
   }, [sortDescriptor, items]);
 
+  const selectedValue = React.useMemo(
+    () => Array.from(selectedKeys).join(", ").replace(/_/g, ""),
+    [selectedKeys],
+  );
+
   const renderCell = React.useCallback((user, columnKey) => {
     const cellValue = user[columnKey];
 
@@ -245,7 +250,7 @@ export default function adminPegawai({data}) {
       case "name":
         return (
           <User
-            avatarProps={{radius: "full", size: "sm", src: user.avatar}}
+            avatarProps={{ radius: "full", size: "sm", src: user.avatar }}
             classNames={{
               description: "text-default-500",
             }}
@@ -309,7 +314,7 @@ export default function adminPegawai({data}) {
               inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
             }}
             style={{
-                boxShadow: "none !important", // Ensures your style overrides others
+              boxShadow: "none !important", // Ensures your style overrides others
             }}
             placeholder="Search by name..."
             size="sm"
@@ -421,158 +426,178 @@ export default function adminPegawai({data}) {
 
   return (
     <AdminLayout>
-        <div className="m-4 px-4 py-3 rounded-lg bg-white">
+      <div className="m-4 px-4 py-3 rounded-lg bg-white">
         <Table
-        isCompact
-        removeWrapper
-        aria-label="Example table with custom cells, pagination and sorting"
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-        checkboxesProps={{
+          isCompact
+          removeWrapper
+          aria-label="Example table with custom cells, pagination and sorting"
+          bottomContent={bottomContent}
+          bottomContentPlacement="outside"
+          checkboxesProps={{
             classNames: {
-            wrapper: "after:bg-foreground after:text-background text-background",
+              wrapper: "after:bg-foreground after:text-background text-background",
             },
-        }}
-        classNames={classNames}
-        selectedKeys={selectedKeys}
-        selectionMode="multiple"
-        sortDescriptor={sortDescriptor}
-        topContent={topContent}
-        topContentPlacement="outside"
-        onSelectionChange={setSelectedKeys}
-        onSortChange={setSortDescriptor}
+          }}
+          classNames={classNames}
+          selectedKeys={selectedKeys}
+          selectionMode="multiple"
+          sortDescriptor={sortDescriptor}
+          topContent={topContent}
+          topContentPlacement="outside"
+          onSelectionChange={setSelectedKeys}
+          onSortChange={setSortDescriptor}
         >
-        <TableHeader columns={headerColumns}>
+          <TableHeader columns={headerColumns}>
             {(column) => (
-            <TableColumn
+              <TableColumn
                 key={column.uid}
                 align={column.uid === "actions" ? "center" : "start"}
                 allowsSorting={column.sortable}
-            >
+              >
                 {column.name}
-            </TableColumn>
+              </TableColumn>
             )}
-        </TableHeader>
-        <TableBody emptyContent={"No users found"} items={sortedItems}>
+          </TableHeader>
+          <TableBody emptyContent={"No users found"} items={sortedItems}>
             {(item) => (
-            <TableRow key={item.id}>
+              <TableRow key={item.id}>
                 {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-            </TableRow>
+              </TableRow>
             )}
-        </TableBody>
+          </TableBody>
         </Table>
-        </div>
-        <>
-            <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
-                        <ModalContent>
-                        {(onClose) => (
-                            <>
-                            <ModalHeader className="flex flex-col gap-1">Tambah Pegawai</ModalHeader>
-                            <ModalBody>
-                                <form action="/pegawai" method = "POST">
-                                <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} />
-                                <div className='gap-2'>
-                                    <div className="col-span-1 pb-[3%] ">
-                                    <Input
-                                        key={"outside"}
-                                        labelPlacement={"outside"}
-                                        placeholder="Masukkan nama"
-                                        label="Nama" type="text" name="nama" id="nama"
-                                        classNames={{
-                                            mainWrapper: "h-full",
-                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
-                                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-                                     }}
-                                     />
-                                    </div>
-                                    <div className="col-span-1 pb-[3%] ">
-                                    <Input
-                                        key={"outside"}
-                                        labelPlacement={"outside"}
-                                        placeholder="Masukkan email"
-                                        label="Email" type="email" name="email" id="email" 
-                                        classNames={{
-                                            mainWrapper: "h-full",
-                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
-                                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-                                        }}
-                                     />
-                                    </div>
-                                    <div className="col-span-1 pb-[3%] ">
-                                    <Input
-                                        key={"outside"}
-                                        labelPlacement={"outside"}
-                                        placeholder="Masukkan NIK"
-                                        label="NIK" type="text" name="nik" id="nik" 
-                                        classNames={{
-                                            mainWrapper: "h-full",
-                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
-                                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-                                    }}
-                                     />
-                                    </div>
+      </div>
+      <>
+        <Modal isOpen={isOpen} placement="top-center" onOpenChange={onOpenChange}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">Tambah Pegawai</ModalHeader>
+                <ModalBody>
+                  <form action="/pegawai" method="POST">
+                    <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} />
+                    <div className='gap-2'>
+                      <div className="col-span-1 pb-[3%] ">
+                        <Input
+                          key={"outside"}
+                          labelPlacement={"outside"}
+                          placeholder="Masukkan nama"
+                          label="Nama" type="text" name="nama" id="nama"
+                          classNames={{
+                            mainWrapper: "h-full",
+                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                          }}
+                        />
+                      </div>
+                      <div className="col-span-1 pb-[3%] ">
+                        <Input
+                          key={"outside"}
+                          labelPlacement={"outside"}
+                          placeholder="Masukkan email"
+                          label="Email" type="email" name="email" id="email"
+                          classNames={{
+                            mainWrapper: "h-full",
+                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                          }}
+                        />
+                      </div>
+                      <div className="col-span-1 pb-[3%] ">
+                        <Input
+                          key={"outside"}
+                          labelPlacement={"outside"}
+                          placeholder="Masukkan NIK"
+                          label="NIK" type="text" name="nik" id="nik"
+                          classNames={{
+                            mainWrapper: "h-full",
+                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                            inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                          }}
+                        />
+                      </div>
+                      <div className="col-span-1 pb-[3%] ">
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <Button className="capitalize" variant="bordered">
+                              {selectedValue ? selectedValue : "Pilih shift"}
+                            </Button>
+                          </DropdownTrigger>
+                          <DropdownMenu
+                            disallowEmptySelection
+                            aria-label="Single selection example"
+                            selectedKeys={selectedKeys}
+                            selectionMode="single"
+                            variant="flat"
+                            onSelectionChange={setSelectedKeys}
+                          >
+                            <DropdownItem key="pagi">Pagi</DropdownItem>
+                            <DropdownItem key="sore">Sore</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
 
-                                </div>
-                                    <ModalFooter>
-                                        <Button type='submit' color="primary" >
-                                        Submit
-                                        </Button>
-                                    </ModalFooter>
-                                </form>
-                            </ModalBody>
-                            </>
-                        )}
-                        </ModalContent>
-            </Modal>
-        </>
-        {isModalDeleteOpen && selectedPegawai && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="relative p-4 w-full max-w-md max-h-full">
-                            <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
-                                <button
-                                    type="button"
-                                    onClick={handleCloseModal}
-                                    className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5"
-                                >
-                                    <span className="sr-only">Close modal</span>
-                                </button>
-                                <div className="p-4 text-center">
-                                    <svg
-                                        className="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto"
-                                        aria-hidden="true"
-                                        fill="currentColor"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                            clipRule="evenodd"
-                                        ></path>
-                                    </svg>
-                                    <p className="mb-4 text-gray-500 dark:text-gray-300">
-                                        Apakah anda yakin ingin menghapus pegawai{' '}
-                                        <span className="font-bold">{selectedPegawai.name}</span>?
-                                    </p>
-                                    <div className="flex justify-center items-center space-x-4">
-                                        <button
-                                            onClick={handleCloseModal}
-                                            className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border hover:bg-gray-100"
-                                        >
-                                            Tidak
-                                        </button>
-                                        {/* <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} /> */}
-                                            <button
-                                                onClick={() => handleDeleteConfirm(selectedPegawai.id)}
-                                                className="py-2 px-3 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
-                                            >
-                                                Yakin
-                                            </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                )}
+                    <ModalFooter>
+                      <Button type='submit' color="primary" >
+                        Submit
+                      </Button>
+                    </ModalFooter>
+                  </form>
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </>
+      {isModalDeleteOpen && selectedPegawai && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="relative p-4 w-full max-w-md max-h-full">
+            <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="text-gray-400 absolute top-2.5 right-2.5 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5"
+              >
+                <span className="sr-only">Close modal</span>
+              </button>
+              <div className="p-4 text-center">
+                <svg
+                  className="text-gray-400 dark:text-gray-500 w-11 h-11 mb-3.5 mx-auto"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+                <p className="mb-4 text-gray-500 dark:text-gray-300">
+                  Apakah anda yakin ingin menghapus pegawai{' '}
+                  <span className="font-bold">{selectedPegawai.name}</span>?
+                </p>
+                <div className="flex justify-center items-center space-x-4">
+                  <button
+                    onClick={handleCloseModal}
+                    className="py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-lg border hover:bg-gray-100"
+                  >
+                    Tidak
+                  </button>
+                  {/* <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} /> */}
+                  <button
+                    onClick={() => handleDeleteConfirm(selectedPegawai.id)}
+                    className="py-2 px-3 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
+                  >
+                    Yakin
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

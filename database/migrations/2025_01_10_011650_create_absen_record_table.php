@@ -21,7 +21,7 @@ return new class extends Migration
             $table->json('koordinat_keluar')->nullable(); 
             $table->string('photo_masuk_url')->nullable(); 
             $table->string('photo_keluar_url')->nullable();
-            $table->string('status')->default('alpha');
+            $table->string('status')->default('alpha'); 
             $table->timestamps();
         });
     }

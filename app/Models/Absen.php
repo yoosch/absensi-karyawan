@@ -18,6 +18,7 @@ class Absen extends Model
         'koordinat_masuk',
         'koordinat_keluar',
         'photo_masuk_url',
-        'photo_keluar_url,'
+        'photo_keluar_url,',
+        'status'
     ];
 }

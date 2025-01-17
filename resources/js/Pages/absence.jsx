@@ -118,8 +118,13 @@ const Absence = () => {
 
     
     const handleSubmit = () => {
-        if (!capturedPhoto || !coordinates) {
-            setMessage("Please capture a photo and allow location access before submitting.");
+        if (!capturedPhoto) {
+            toast.warning("Photo Belum diambil");
+            return;
+        }
+
+        if (!isWithinRadius) {
+            toast.warning("Anda diluar radius absensi");
             return;
         }
 
@@ -139,12 +144,14 @@ const Absence = () => {
             toast.success("Absen Berhasil");
             // window.location.href = "/dashboard";
 
-            Inertia.visit('/dashboard');
+            setTimeout(() => {
+                Inertia.visit('/dashboard');
+            }, 3000); 
         })
         .catch((error) => {
             console.error("Error submitting absence:", error);
             toast.error(error.response.data.message);
-            Inertia.visit('/dashboard');
+            
         });
 
 
@@ -158,7 +165,6 @@ const Absence = () => {
 
         const interval = setInterval(() => {
             getCoordinates();
-            checkCoordinatesInRadius(); 
         }, 1000);
 
         interval;
@@ -168,6 +174,12 @@ const Absence = () => {
             clearInterval(interval);
         };
     }, []); 
+
+    useEffect(() => {
+        if (coordinates.latitude && coordinates.longitude) {
+            checkCoordinatesInRadius(); // Runs every time coordinates are updated
+        }
+    }, [coordinates]);
 
     
     return (
