@@ -45,6 +45,8 @@ Route::get('/dashboard-admin', function () {
 
 Route::resource('/pegawai', PegawaiController::class);
 Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
+Route::put('/pegawai/{id}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
+
 
 
 Route::get('/preview/{filePath}', [FileController::class, 'previewFile'])->where('filePath', '.*');

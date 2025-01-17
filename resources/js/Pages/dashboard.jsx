@@ -1,17 +1,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import '../../css/dashboard.css';
-import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
+import {Card, CardHeader, CardBody, CardFooter, Image, Button} from "@nextui-org/react";
 import { Inertia } from '@inertiajs/inertia';
 import { useState, useCallback, usePage } from 'react';
 import {Spinner} from "@nextui-org/react";
+import {Chip, Progress} from "@heroui/react";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
   useDisclosure,
 } from "@nextui-org/react";
 import { Toaster, toast } from 'sonner';
@@ -148,10 +148,21 @@ export default function Dashboard({user,laporan_bulanan}) {
 
   const navigateToizin = () => {
       Inertia.visit('/izin');
-  }
+  };
 
   const navigateToRiwayat = () => {
       Inertia.visit('/riwayat');
+  };
+
+  const getDay = () => {
+      const date = new Date();
+      return date.getDay();
+  };
+
+  const Hari = () => {
+    const date = new Date();
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    return days[date.getDay()];
   };
 
     return (
@@ -167,20 +178,35 @@ export default function Dashboard({user,laporan_bulanan}) {
               </div>
               <div className='mx-8 mt-4'>
                 <div className="flex items-center bg-blue-800 text-white rounded-lg overflow-hidden shadow-md border-b-4 border-[#fdb714]">
-                  
                   <div className="w-20 h-20 bg-gray-300 rounded-full m-4 flex-shrink-0 overflow-hidden">
                     <img src="/putech.png" alt="" className="w-full h-full object-cover" />
                   </div>
-
-                  <div className="flex flex-col justify-center flex-grow">
-                  <div className='flex'>
-                  <UserLives user={user} />
-                      </div>
+                  <div className="flex flex-col pl-5 justify-center flex-grow">
+                    <div className='flex'>
+                      <UserLives user={user} />
+                    </div>
+                    <div>
                       <h2 className="font-semibold text-lg">{name}</h2>
-                    <p className="text-sm">1236682443452</p>
-                    <p className="text-sm text-gray-200">Kepegawaian</p>
+                      <p className="text-sm">1236682443452</p>
+                      <p className="text-sm text-gray-200">Kepegawaian</p>
+                    </div>
                   </div>
-                </div>
+                  <div className = "my-3 mx-5 gap-2 flex flex-col align items-start">
+                    <p>Shift : {user.shift}</p>
+                    <Chip color="warning" variant="dot">
+                        {user.shift === 'Pagi' && !["Jumat", "Sabtu", "Minggu"].includes(Hari()) ? (
+                            <p className="text-white">{Hari()} : 07.30 - 16.00</p>
+                        ) : user.shift === 'Pagi' && ["Jumat"].includes(Hari()) ? (
+                            <p className="text-white">{Hari()} : 07.30 - 16.30</p>
+                        ) : user.shift == 'Siang' && !["Sabtu", "Minggu"].includes(Hari()) ?(
+                            <p className="text-white">{Hari()} : 14.00 - 21.00</p>
+                        ) : ["Sabtu"].includes(Hari())(
+                          <p className="text-white">Hari Libur</p>
+                        )
+                        }
+                    </Chip>
+                  </div>
+              </div>
 
                 <div className='flex flex-col my-4 mt-4'>
                 <button onClick={navigateToAbsensi} >
@@ -213,7 +239,7 @@ export default function Dashboard({user,laporan_bulanan}) {
                     </div>
                   </button>
 
-                  <button  onClick={navigateToRiwayat} className = "mb-4">
+                  <button  onClick={navigateToRiwayat} className="mb-4" >
                       <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-2 border-[#fdb714]">
                           <div className="flex justify-between flex-grow px-6 py-6">
                           <svg className="w-9 h-9" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -226,6 +252,7 @@ export default function Dashboard({user,laporan_bulanan}) {
                           </div>
                       </div>
                   </button>
+
                   <Card className="py-4 mb-4">
                   <CardHeader className="pb-3 pt-2 px-4 flex flex-row items-center justify-center relative">
                     <div className = "flex flex-col justify-center items-center">
@@ -261,8 +288,8 @@ export default function Dashboard({user,laporan_bulanan}) {
                         />
                         {isUploading && <Spinner color="warning" label="Loading..." />}
                       </label>
-                      {fileInfo && <p className="mt-4 text-green-600">File berhasil diunggah: {fileInfo}</p>}
-                      {error && <p className="mt-4 text-red-600">{error}</p>}
+                      {fileInfo && <p className="mt-4 text-center text-green-600">File berhasil diunggah: {fileInfo}</p>}
+                      {error && <p className="mt-4 text-center text-red-600">{error}</p>}
 
                       <div className="mt-6">
                           <Button type="submit" className="w-full bg-[#213468] text-white" >

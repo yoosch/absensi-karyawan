@@ -46,6 +46,7 @@ class PegawaiController extends Controller
             'nama' => 'required',
             'email' => 'required',
             'nik' => 'required',
+            'shift' => 'required',
         ]);
         
         $data = [
@@ -53,6 +54,7 @@ class PegawaiController extends Controller
             'email' => $request->email,
             'nik' => $request->nik,
             'password' => '12345678',
+            'shift' => $request->shift,
         ];
         // dd($data);
         User::create($data);
@@ -80,7 +82,22 @@ class PegawaiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        /* make e update in only one person */
+        $request -> validate([
+            'nama' => 'required',
+            'email' => 'required',
+            'shift' => 'required',
+        ]);
+
+        $data = [
+            'name' => $request->nama,
+            'email' => $request->email,
+            'shift' => $request->shift,
+        ];
+
+        User::where('id', $id)->update($data);
+
+        return response()->json(['message' => 'Data berhasil diupdate']);
     }
 
     /**

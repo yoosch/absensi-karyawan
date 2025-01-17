@@ -141,7 +141,9 @@ const Absence = () => {
         axios.post("/absen/store", absenceData)
         .then((response) => {
             console.log("Success:", response.data);
-            toast.success("Absen Berhasil");
+            toast.success("Absen Berhasil", {
+                duration: 3000,
+            });
             // window.location.href = "/dashboard";
 
             setTimeout(() => {
@@ -150,13 +152,10 @@ const Absence = () => {
         })
         .catch((error) => {
             console.error("Error submitting absence:", error);
-            toast.error(error.response.data.message);
-            
-        });
-
-
-
-        
+            toast.error(error.response.data.message, {
+                duration: 3000,
+            });
+        });  
     };
 
     useEffect(() => {

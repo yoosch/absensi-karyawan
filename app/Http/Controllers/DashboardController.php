@@ -21,6 +21,7 @@ class DashboardController extends Controller
         $user = auth()->user();
         $laporan_bulanan = Laporan_Bulanan::where('nik', $user->nik)->get();
 
+        // dd($user);
         if($user->role == 'admin'){
             return Inertia::render('Admin/dashboard',['user' => $user]);
         }else{
