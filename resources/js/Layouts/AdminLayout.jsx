@@ -57,7 +57,7 @@ export default function AdminLayout({ header, children }) {
                         <Sidebar.Collapse icon={HiInbox} label="Perizinan">
                             <Sidebar.Item as={Link} href="/absen-dinas">Dinas</Sidebar.Item>
                             <Sidebar.Item as={Link} href="/absen-cuti">Cuti</Sidebar.Item>
-                            <Sidebar.Item href="#">Lupa Absen</Sidebar.Item>
+                            <Sidebar.Item href="/absen-lupa-absen">Lupa Absen</Sidebar.Item>
                         </Sidebar.Collapse>
                         <Sidebar.Collapse icon={HiInbox} label="Laporan">
                             <Sidebar.Item as={Link} href="/rekap-individu">Rekap Individu</Sidebar.Item>

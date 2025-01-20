@@ -49,6 +49,8 @@ class IzinController extends Controller
             'deskripsi' => 'required|string',  
             'pathSurat' => 'required|file|mimes:pdf|max:5120',
         ]);
+
+        // dd($request->all());
     
     
     $user = Auth::user();
@@ -65,7 +67,6 @@ class IzinController extends Controller
         'jam_lupa_absen' => '',
         'alamat_cuti' => '',
     ];
-
 
     if($request->tipeIzin == 'cuti'){
         $request->validate([
@@ -92,13 +93,13 @@ class IzinController extends Controller
             'jamLupaAbsen' => 'required',
         ]);
 
-        $waktu = $request->jamLupaAbsen['hour'].':'.$request->jamLupaAbsen['minute'].':'.$request->jamLupaAbsen['second'];
-
+        // dd($dataIzin);
         $dataIzin['jenis_lupa_absen'] = $request->jenisLupaAbsen;
-        $dataIzin['jam_lupa_absen'] = $waktu;
+        // $dataIzin['jam_lupa_absen'] = $request->jamLupaAbsen;
+        $dataIzin['jam_lupa_absen'] = $request->jamLupaAbsen['hour'] . ':' . $request->jamLupaAbsen['minute'] . ':' . $request->jamLupaAbsen['second'];
+
         $izin = 'la';
     }
-
     
     $dataIzin['jenis_izin'] = $izin;
     
@@ -133,11 +134,11 @@ class IzinController extends Controller
         );
     }
 
-    $dataIzin['surat_pendukung'] = $filePath;
+    $dataIzin['surat_pendukung'] = $filePath;  
 
     Izin::create($dataIzin);
 
-
+    // dd($dataIzin);
 
     //Untuk Ubah Absen Ke Pending for date from tanggalMulai to tanggalSelesai
     $date = $request->tanggalMulai;

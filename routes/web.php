@@ -13,6 +13,7 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AbsenCutiController;
 use App\Http\Controllers\Admin\AbsenDinasController;
+use App\Http\Controllers\Admin\AdminAbsenController;
 use App\Http\Controllers\Admin\FileController;
 
 Route::get('/', function () {
@@ -38,7 +39,7 @@ Route::get('/riwayat', [RiwayatController::class, 'index'])->middleware(['auth',
 
 Route::get('/rekap-individu/{nik}/{bulan}/{tahun}',[AbsenController::class, 'rekapIndividu'])->middleware(['auth', 'verified']);
 
-Route::get('approval-cuti/{id}/{status}', [AbsenDinasController::class, 'approvalIzin'])->middleware(['auth', 'verified']);
+Route::get('approval-cuti/{id}/{status}', [AdminAbsenController::class, 'approvalIzin'])->middleware(['auth', 'verified']);
 
 Route::get('/dashboard-admin', function () {
     return Inertia::render('Admin/dashboardAdmin');
@@ -56,11 +57,9 @@ Route::post('/change-profile', [ProfileController::class, 'changeProfile'])->nam
 
 Route::get('/preview/{filePath}', [FileController::class, 'previewFile'])->where('filePath', '.*');
 
-
-Route::get('/absen-cuti', [AbsenCutiController::class, 'indexCuti'])->middleware(['auth', 'verified']);
-
-Route::get('/absen-dinas', [AbsenDinasController::class, 'index'])->middleware(['auth', 'verified']);
-Route::get('/absen-lupa-absen ', [IzinController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
+Route::get('/absen-cuti', [AdminAbsenController::class, 'indexCuti'])->middleware(['auth', 'verified']);
+Route::get('/absen-dinas', [AdminAbsenController::class, 'indexDinas'])->middleware(['auth', 'verified']);
+Route::get('/absen-lupa-absen ', [AdminAbsenController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
 
 Route::get('/lokasi', [LocationController::class, 'index'])->middleware(['auth', 'verified']);
 Route::resource('location', LocationController::class);
