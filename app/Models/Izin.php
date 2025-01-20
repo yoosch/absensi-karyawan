@@ -16,6 +16,8 @@ class Izin extends Model
         'deskripsi',
         'alamat_cuti',
         'surat_pendukung',
-        'status_persetujuan'
+        'status_persetujuan',
+        'jenis_lupa_absen',
+        'jam_lupa_absen',
     ];
 }

@@ -40,31 +40,66 @@ class IzinController extends Controller
       }
 
       public function store(Request $request){
-    $request->validate([
-        'tipeIzin' => 'required|string',
-        'jenisCuti' => 'nullable|string',
-        'tanggalMulai' => 'required|date',
-        'tanggalSelesai' => 'required|date',
-        'deskripsi' => 'required|string',
-        'alamat' => 'nullable|string',
-        'pathSurat' => 'required|file|mimes:pdf|max:5120',
-    ]);
 
+        
+          $request->validate([
+            'tipeIzin' => 'required|string',
+            'tanggalMulai' => 'required|date',
+            'tanggalSelesai' => 'required|date',
+            'deskripsi' => 'required|string',  
+            'pathSurat' => 'required|file|mimes:pdf|max:5120',
+        ]);
+    
+    
     $user = Auth::user();
     $izin = '';
 
+    $dataIzin = [
+        'nik' => $user->nik,
+        'jenis_izin' => '',
+        'tanggal_mulai' => $request->tanggalMulai,
+        'tanggal_selesai' => $request->tanggalSelesai,
+        'deskripsi' => $request->deskripsi,
+        'surat_pendukung' => '',
+        'jenis_lupa_absen' => '',
+        'jam_lupa_absen' => '',
+        'alamat_cuti' => '',
+    ];
+
+
     if($request->tipeIzin == 'cuti'){
+        $request->validate([
+            'jenisCuti' => 'required|string',
+        ]);
+
         if($request->jenisCuti == 'tahunan'){
+
+            $request->validate([
+                'alamat' => 'required|string',
+            ]);
+
             $izin = 'c';
+            $dataIzin['alamat_cuti'] = $request->alamat;
         } else if($request->jenisCuti == 'sakit'){
             $izin = 's';
         }
     } else if($request->tipeIzin == 'dinas'){
         $izin = 'dl';
     } else if($request->tipeIzin == 'lupa absen'){
+
+        $request->validate([
+            'jenisLupaAbsen' => 'required|string',
+            'jamLupaAbsen' => 'required|string',
+        ]);
+
+        $dataIzin['jenis_lupa_absen'] = $request->jenisLupaAbsen;
+        $dataIzin['jam_lupa_absen'] = $request->jamLupaAbsen;
         $izin = 'la';
     }
 
+    
+    $dataIzin['jenis_izin'] = $izin;
+    
     if ($request->tipeIzin == 'cuti') {
         if ($request->jenisCuti == 'tahunan'){
             $filePath = $request->file('pathSurat')->storeAs(
@@ -96,15 +131,9 @@ class IzinController extends Controller
         );
     }
 
-    Izin::create([
-        'nik' => $user->nik,
-        'jenis_izin' => $izin,
-        'tanggal_mulai' => $request->tanggalMulai,
-        'tanggal_selesai' => $request->tanggalSelesai,
-        'deskripsi' => $request->deskripsi,
-        'alamat_cuti' => $request->alamat,
-        'surat_pendukung' => $filePath,
-    ]);
+    $dataIzin['surat_pendukung'] = $filePath;
+
+    Izin::create($dataIzin);
 
 
 

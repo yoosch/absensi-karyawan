@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import {Spinner, Button} from "@nextui-org/react";
+import { Spinner, Button } from "@nextui-org/react";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import { Toaster, toast } from 'sonner';
@@ -48,8 +48,8 @@ const ExportTable = ({ filteredRows, loading }) => {
             </PrimaryButton>
         </div>
     );
-  };
-  
+};
+
 
 
 
@@ -70,30 +70,34 @@ export default function rekap({ data, absen }) {
 
     const rows = absen.map((item) => {
         return {
-          hari: item.hari,
-          tanggal: item.tanggal,
-          inn: item.waktu_masuk,
-          out: item.waktu_keluar,
-          masuk: item.masuk,
-          telat: item.telat,
-          alpha: item.alpha,
-          dl: item.dl,
-          c: item.c,
-          s: item.s,
-          la: item.la,
-          wk: item.wk,
-          kj: item.kj,
+            hari: item.hari,
+            tanggal: item.tanggal,
+            inn: item.waktu_masuk,
+            out: item.waktu_keluar,
+            masuk: item.masuk,
+            telat: item.telat,
+            alpha: item.alpha,
+            dl: item.dl,
+            c: item.c,
+            s: item.s,
+            la: item.la,
+            wk: item.wk,
+            kj: item.kj,
         };
     });
 
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth();
+    const years = Array.from({ length: 4 }, (_, i) => year - 3 + i);
+
     const [selectedNik, setSelectedNik] = useState(null);
     const [selectedName, setSelectedName] = useState(null);
-    const [selectedPeriode, setSelectedPeriode] = useState("2022");
-    const [selectedBulan, setSelectedBulan] = useState("january");
+    const [selectedPeriode, setSelectedPeriode] = useState(year);
+    const [selectedBulan, setSelectedBulan] = useState(month);
     const [filteredRows, setFilteredRows] = useState([]);
     const [loading, setLoading] = useState(false);
 
-      const [isDownloadable, setIsDownloadable] = useState(false);
+    const [isDownloadable, setIsDownloadable] = useState(false);
 
     const handleNikChange = (event, value) => {
         setSelectedNik(value);
@@ -124,22 +128,22 @@ export default function rekap({ data, absen }) {
     const handleFilter = () => {
         setLoading(true); // Start loading
         axios
-        .get(`/rekap-individu/${selectedNik.nik}/${selectedBulan}/${selectedPeriode}`)
-        .then((response) => {
-            console.log(response.data);
-            setFilteredRows(response.data.dataAbsen);
-         // Set fetched data
-            setIsDownloadable(response.data.isDownloadable);
-        })
-        .catch((error) => {
-            console.error("Error fetching data:", error);
-        })
-        .finally(() => {
-            setLoading(false); // Stop loading
-        });
-            
-        };
-      
+            .get(`/rekap-individu/${selectedNik.nik}/${selectedBulan}/${selectedPeriode}`)
+            .then((response) => {
+                console.log(response.data);
+                setFilteredRows(response.data.dataAbsen);
+                // Set fetched data
+                setIsDownloadable(response.data.isDownloadable);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            })
+            .finally(() => {
+                setLoading(false); // Stop loading
+            });
+
+    };
+
 
     return (
         <AdminLayout>
@@ -222,10 +226,11 @@ export default function rekap({ data, absen }) {
                             value={selectedPeriode}
                             onChange={handlePeriodeChange}
                         >
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
+                            {years.map((year) => (
+                                <option key={year} value={year}>
+                                    {year}
+                                </option>
+                            ))}
                         </select>
                         <label
                             htmlFor="option"
@@ -295,73 +300,73 @@ export default function rekap({ data, absen }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                {loading && <Spinner />}
-                                {filteredRows.length > 0 ? (
-                                    filteredRows.map((row, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell align="center">{row.hari}</TableCell>
-                                        <TableCell align="center">{row.tanggal}</TableCell>
-                                        <TableCell align="center">{row.inn}</TableCell>
-                                        <TableCell align="center">{row.out}</TableCell>
-                                        <TableCell align="center">
-                                        {row.masuk && (
-                                            <div>
-                                                <CheckIcon style={{ color: 'green' }} />
-                                                <span className = "hidden">✓</span>
-                                            </div>
-                                        )}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                        {row.telat && (
-                                            <div>
-                                                <CheckIcon style={{ color: 'green' }} />
-                                                <span className = "hidden">✓</span>
-                                            </div>
-                                        )}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                        {row.alpha && (
-                                            <div>
-                                                <CheckIcon style={{ color: 'green' }} />
-                                                <span className = "hidden">✓</span>
-                                            </div>
-                                        )}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                        {row.dl && (
-                                            <div>
-                                                <CheckIcon style={{ color: 'green' }} />
-                                                <span className = "hidden">✓</span>
-                                            </div>
-                                        )}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            {row.c && (
-                                                <div>
-                                                    <CheckIcon style={{ color: 'green' }} />
-                                                    <span className = "hidden">✓</span>
-                                                </div>
-                                            )}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            {row.s && (
-                                                <div>
-                                                    <CheckIcon style={{ color: 'green' }} />
-                                                    <span className = "hidden">✓</span>
-                                                </div>
-                                            )}
-                                        </TableCell>
-                                        
-                                        
-                                    </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell align="center" colSpan={13}>
-                                            Tidak ada Data
-                                        </TableCell>
-                                    </TableRow>
-                                )}
+                                    {loading && <Spinner />}
+                                    {filteredRows.length > 0 ? (
+                                        filteredRows.map((row, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell align="center">{row.hari}</TableCell>
+                                                <TableCell align="center">{row.tanggal}</TableCell>
+                                                <TableCell align="center">{row.inn}</TableCell>
+                                                <TableCell align="center">{row.out}</TableCell>
+                                                <TableCell align="center">
+                                                    {row.masuk && (
+                                                        <div>
+                                                            <CheckIcon style={{ color: 'green' }} />
+                                                            <span className="hidden">✓</span>
+                                                        </div>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.telat && (
+                                                        <div>
+                                                            <CheckIcon style={{ color: 'green' }} />
+                                                            <span className="hidden">✓</span>
+                                                        </div>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.alpha && (
+                                                        <div>
+                                                            <CheckIcon style={{ color: 'green' }} />
+                                                            <span className="hidden">✓</span>
+                                                        </div>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.dl && (
+                                                        <div>
+                                                            <CheckIcon style={{ color: 'green' }} />
+                                                            <span className="hidden">✓</span>
+                                                        </div>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.c && (
+                                                        <div>
+                                                            <CheckIcon style={{ color: 'green' }} />
+                                                            <span className="hidden">✓</span>
+                                                        </div>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.s && (
+                                                        <div>
+                                                            <CheckIcon style={{ color: 'green' }} />
+                                                            <span className="hidden">✓</span>
+                                                        </div>
+                                                    )}
+                                                </TableCell>
+
+
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell align="center" colSpan={13}>
+                                                Tidak ada Data
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -370,7 +375,7 @@ export default function rekap({ data, absen }) {
             </div>
             {/* Export to XLSX Button */}
             <div className='flex mx-[5%] justify-end'>
-                <IndividuRecord filteredRows={filteredRows} isDownloadable = {isDownloadable}/>
+                <IndividuRecord filteredRows={filteredRows} isDownloadable={isDownloadable} />
             </div>
         </AdminLayout>
     );

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('alamat_cuti')->nullable();
             $table->string('surat_pendukung');
             $table->string('status_persetujuan')->default('pending');
+            $table->string('jenis_lupa_absen')->nullable();
+            $table->time('jam_lupa_absen')->nullable();
             $table->timestamps();
         });
     }

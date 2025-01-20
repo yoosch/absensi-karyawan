@@ -3,9 +3,9 @@ import { Head } from '@inertiajs/react';
 import '../../css/dashboard.css';
 import {Card, CardHeader, CardBody, CardFooter, Image, Button} from "@nextui-org/react";
 import { Inertia } from '@inertiajs/inertia';
-import { useState, useCallback, usePage } from 'react';
+import { useState, useCallback, usePage, useEffect } from 'react';
 import {Spinner} from "@nextui-org/react";
-import {Chip, Progress} from "@heroui/react";
+// import {Chip, Progress} from "@heroui/react";
 import {
   Modal,
   ModalContent,
@@ -13,15 +13,42 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Chip, Progress
 } from "@nextui-org/react";
 import { Toaster, toast } from 'sonner';
 import { Link } from '@inertiajs/react';
+
+
+
 
 export default function Dashboard({user,laporan_bulanan}) {
   const [fileInfo, setFileInfo] = useState(null);
   const [error, setError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [isSmallerScreen, setIsSmallerScreen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth <= 850);
+        };
+
+        const handleResize2 = () => {
+            setIsSmallerScreen(window.innerWidth <= 850);
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        window.addEventListener('resize', handleResize2);
+        handleResize2();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', handleResize2);
+        }
+    }, []);
 
   const handleFileUpload = (file) => {
     const maxFileSize = 5 * 1024 * 1024; 
@@ -200,9 +227,9 @@ export default function Dashboard({user,laporan_bulanan}) {
                             <p className="text-white">{Hari()} : 07.30 - 16.30</p>
                         ) : user.shift == 'Siang' && !["Sabtu", "Minggu"].includes(Hari()) ?(
                             <p className="text-white">{Hari()} : 14.00 - 21.00</p>
-                        ) : ["Sabtu"].includes(Hari())(
+                        ) : ["Sabtu"].includes(Hari()) ? (
                           <p className="text-white">Hari Libur</p>
-                        )
+                        ) : null
                         }
                     </Chip>
                   </div>
@@ -259,7 +286,15 @@ export default function Dashboard({user,laporan_bulanan}) {
                       <p className="text-tiny-800 font-bold text-center">Unggah Laporan Bulanan</p>
                       <small className="text-default-500 italic text-center">Silahkan unggah file .pdf Anda di sini</small>
                     </div>
-                    <Button onPress={onOpen} className="absolute left-4 bottom-4"> Recent Upload</Button>
+                    <Button onPress={onOpen} className="absolute left-4 bottom-4" isIconOnly = {isSmallScreen}> 
+                    {isSmallScreen ? (
+                      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+                    </svg>):(
+                      <span>Recent Upload</span>
+                    )
+                      }
+                      </Button>
                   
                     <FileUploadHistoryModal isOpen={isOpen} onOpenChange={onOpenChange} />
 
