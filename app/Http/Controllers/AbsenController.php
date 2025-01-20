@@ -190,8 +190,7 @@ class AbsenController extends Controller
         }
 
         return response()->json(['message' => 'Absen Berhasil'], 201);
-    }
-
+    } 
 
 public function rekapIndividu($nik, $bulan, $tahun){
 
@@ -293,3 +292,5 @@ public function rekapIndividu($nik, $bulan, $tahun){
 }
 
 }
+
+
