@@ -9,9 +9,9 @@ use App\Models\Izin;
 use App\Models\User;
 use App\Models\Absen;
 
-class AbsenDinasController extends Controller
+class AdminAbsenController extends Controller
 {
-    public function index() {
+    public function indexDinas() {
         $dinasData = Izin::where('jenis_izin', 'dl')->get();
         foreach ($dinasData as $dinas) {
             $dinas->nama = User::where('nik', $dinas->nik)->first()->name;
@@ -22,6 +22,31 @@ class AbsenDinasController extends Controller
         return Inertia::render('Admin/absenDinas', ['dinasData' => $dinasData]);
     }
 
+    public function indexCuti()
+    {
+        $cutiData = Izin::whereIn('jenis_izin', ['c', 's'])->get();
+        foreach ($cutiData as $cuti) {
+            $cuti->nama = User::where('nik', $cuti->nik)->first()->name;
+            $cuti->email = User::where('nik', $cuti->nik)->first()->email;
+            $cuti->jenis_cuti = $cuti->jenis_izin;
+            $cuti->surat_pendukung = url("/preview/" . urlencode($cuti->surat_pendukung));
+        }
+
+        // dd($cutiData);
+
+        return Inertia::render('Admin/absenCuti', ['cutiData' => $cutiData]);
+    }
+
+    public function indexLupaAbsen() {
+        $lupaAbsenData = Izin::where('jenis_izin', 'la')->get();
+        foreach ($lupaAbsenData as $lupaAbsen) {
+            $lupaAbsen->nama = User::where('nik', $lupaAbsen->nik)->first()->name;
+            $lupaAbsen->surat_pendukung = url("/preview/" . urlencode($lupaAbsen->surat_pendukung));
+        }
+        // dd($lupaAbsenData);
+
+        return Inertia::render('Admin/absenLupaAbsen', ['lupaAbsenData' => $lupaAbsenData]);
+    }
 
     public function approvalIzin($id,$status){
 
@@ -29,8 +54,6 @@ class AbsenDinasController extends Controller
         $izin->status_persetujuan = $status;
         $izin->save();
 
-
-        //change status in user record 
         $user = User::where('nik', $izin->nik)->first();
 
         //get date from izin->tanggal_mulai until izin->tanggal_selesai
@@ -47,9 +70,7 @@ class AbsenDinasController extends Controller
                 $absen->status = ($status == 'Disetujui') ? $izin->jenis_izin : $absen->status;
                 $absen->save();
             }
-        }
-
-        
+        }   
 
         return response()->json(['message' => 'Izin berhasil diupdate']);
     }

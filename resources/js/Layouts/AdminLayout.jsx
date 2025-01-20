@@ -55,7 +55,7 @@ export default function AdminLayout({ header, children }) {
                             <Sidebar.Item>Log Absensi</Sidebar.Item>
                             <Sidebar.Item as={Link} href="/absen-dinas">Dinas</Sidebar.Item>
                             <Sidebar.Item as={Link} href="/absen-cuti">Cuti</Sidebar.Item>
-                            <Sidebar.Item href="#">Lupa Absen</Sidebar.Item>
+                            <Sidebar.Item href="/absen-lupa-absen">Lupa Absen</Sidebar.Item>
                         </Sidebar.Collapse>
                     </Sidebar.ItemGroup>
                 </Sidebar.Items>

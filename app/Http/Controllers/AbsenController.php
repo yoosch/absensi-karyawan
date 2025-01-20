@@ -228,42 +228,74 @@ public function rekapIndividu($nik, $bulan, $tahun){
     $isDownloadable = true;
 
     foreach ($absen as $item) {
-        //waktu kerja in hour
+        $inn = $item->waktu_masuk;
+        $out = $item->waktu_keluar;
+        
+        // default waktu
+        $defaultInnPagi = '07:30';
+        $defaultOutPagi = '16:00';
+        $defaultInnSiang = '14:00';
+        $defaultOutSiang = '21:00';
+
+        if ($item->shift == 'Pagi') {
+            $inn = $inn ?? $defaultInnPagi;
+            $out = $out ?? $defaultOutPagi;
+        } elseif ($item->shift == 'Siang') {
+            $inn = $inn ?? $defaultInnSiang;
+            $out = $out ?? $defaultOutSiang;
+        } 
+
+        $item->waktu_kerja = 0;
+        $item->kj = 0;
+        $item->lembur = 0;
+        $isDownloadable = true;
 
         if($item->status == 'pending'){
             $isDownloadable = false;
         }
-        $inn = $item->waktu_masuk;
-        //check if $waktu masuk not exist then $inn = 12:00
-        if($inn == null){
-            $inn = '12:00';
-        }
+        // $inn = $item->waktu_masuk;
+        // //check if $waktu masuk not exist then $inn = 12:00
+        // if($inn == null){
+        //     $inn = '12:00';
+        // }
 
-        //check if $waktu keluar not exist then $out = 12:00
+        // //check if $waktu keluar not exist then $out = 12:00
 
-        $out = $item->waktu_keluar;
-        if($out == null){
-            $out = '12:00';
-        }
-
-        $item->waktu_kerja = 0;
-        
-        $item->kj = 0;
-        $item->lembur = 0;
-        
+        // $out = $item->waktu_keluar;
+        // if($out == null){
+        //     $out = '12:00';
+        // }
 
         if($item->status == 'alpha' || $item->status == 'hadir'){
 
             $item->waktu_kerja = Carbon::parse($inn)->diffInHours(Carbon::parse($out));
-            if($item->waktu_kerja < 7.5){
-                $item->kj = (7.5 - $item->waktu_kerja)*60;
-            }else{
-                $item->lembur = ($item->waktu_kerja - 7.5)*60;
+            $breakTime = 1;
+            $effectiveHours = $item->waktu_kerja - $breakTime;
+
+            if ($item->shift == "Pagi"){
+                if($item->$effectiveHours < 7.5){
+                    $item->kj = (7.5 - $item->effectiveHours)*60;
+                }else{
+                    $item->lembur = ($item->effectiveHours - 7.5)*60;
+                }
+
+            }
+            else if ($item->shift == "Siang"){
+                if($item->$effectiveHours < 6){
+                    $item->kj = (6 - $item->effectiveHours)*60;
+                }else{
+                    $item->lembur = ($item->effectiveHours - 6)*60;
+                }
             }
 
-            $item->telat = $item->waktu_masuk > '08:00:00' && $item->waktu_masuk != null;
-        }
+            $toleransiPagi = Carbon::parse('08:00');
+            $toleransiSiang = Carbon::parse('14:30');
 
+            $item->telat = (
+                ($item->shift == 'Pagi' && Carbon::parse($inn)->gt($toleransiPagi)) ||
+                ($item->shift == 'Siang' && Carbon::parse($inn)->gt($toleransiSiang))
+            ) && $inn !== null;
+        }
     };
         
     $dataAbsen = $dataAbsen->map(function ($item) use ($absen) {
@@ -285,8 +317,6 @@ public function rekapIndividu($nik, $bulan, $tahun){
         }
         return $item;
     });
-
-
 
     return response()->json(['dataAbsen' => $dataAbsen, 'isDownloadable' => $isDownloadable]);
 }
