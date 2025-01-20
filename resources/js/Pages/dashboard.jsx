@@ -11,7 +11,6 @@ import {
 import { Inertia } from "@inertiajs/inertia";
 import { useState, useCallback, usePage } from "react";
 import { Spinner } from "@nextui-org/react";
-import { Chip, Progress } from "@heroui/react";
 import {
   Modal,
   ModalContent,
@@ -19,6 +18,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Chip, Progress
 } from "@nextui-org/react";
 import { Toaster, toast } from "sonner";
 import { Link } from "@inertiajs/react";
@@ -333,11 +333,11 @@ export default function Dashboard({ user, laporan_bulanan }) {
                         14.00 - 21.00
                       </p>
                     ) : (
-                      ["Sabtu"].includes(Hari())(
+                      ["Sabtu", "Minggu"].includes(Hari())?(
                         <p className="text-white">
                           Hari Libur
                         </p>
-                      )
+                      ):null
                     )}
                   </Chip>
                 </div>
@@ -358,9 +358,9 @@ export default function Dashboard({ user, laporan_bulanan }) {
                   !["Sabtu", "Minggu"].includes(Hari()) ? (
                   <p className="text-white">14.00 - 21.00</p>
                 ) : (
-                  ["Sabtu"].includes(Hari())(
+                  ["Sabtu", "Minggu"].includes(Hari())?(
                     <p className="text-white">Hari Libur</p>
-                  )
+                  ) : null
                 )}
               </Chip>
             </div>
