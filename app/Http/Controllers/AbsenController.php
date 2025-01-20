@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Absen;
+use App\Models\Location;
 use App\Models\User;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -13,7 +14,9 @@ use Carbon\Carbon;
 class AbsenController extends Controller
 {
     public function index(){
-        return Inertia::render('absence');
+
+        $lokasi = Location::all();
+        return Inertia::render('absence', ['lokasi' => $lokasi]);
     }
 
     public function index2(){
@@ -63,16 +66,17 @@ class AbsenController extends Controller
                     Storage::disk('public')->put($imageName, base64_decode($image));
                     $imagePath = Storage::url($imageName);
                 }
-
+                
                 if (!$absen) {
                     // Create a new record for absen keluar only
                     $absen = new Absen();
                     $absen->nik = $user->nik;
                     $absen->tanggal = $currentDate;
-
-                    
+                    $absen->status = 'la';
+                }else{
+                    $absen->status = 'hadir';
                 }
-
+                
                 // Update absen keluar fields
                 $absen->waktu_keluar = $request->input('waktu_keluar');
                 $absen->koordinat_keluar = $request->input('koordinat_keluar');
@@ -107,7 +111,7 @@ class AbsenController extends Controller
                     $absen->waktu_masuk = $request->input('waktu_masuk');
                     $absen->koordinat_masuk = $request->input('koordinat_masuk');
                     $absen->photo_masuk_url = $imagePath;
-                    $absen->status = 'hadir';
+                    $absen->status = 'la';
                     $absen->save();
                 } else {
                     // Ignore duplicate absen masuk before 12:00
@@ -135,8 +139,9 @@ class AbsenController extends Controller
                     $absen = new Absen();
                     $absen->nik = $user->nik;
                     $absen->tanggal = $currentDate;
-
-                    
+                    $absen->status = 'la';
+                }else{
+                    $absen->status = 'hadir';
                 }
 
                 // Update absen keluar fields
@@ -178,7 +183,7 @@ class AbsenController extends Controller
                     $absen->waktu_masuk = $request->input('waktu_masuk');
                     $absen->koordinat_masuk = $request->input('koordinat_masuk');
                     $absen->photo_masuk_url = $imagePath;
-                    $absen->status = 'hadir';
+                    $absen->status = 'la';
                     $absen->save();
                 } else {
                     // Ignore duplicate absen masuk before 12:00
@@ -192,104 +197,122 @@ class AbsenController extends Controller
         return response()->json(['message' => 'Absen Berhasil'], 201);
     } 
 
-public function rekapIndividu($nik, $bulan, $tahun){
+    public function rekapIndividu($nik, $bulan, $tahun){
 
 
-    $startDate = Carbon::createFromDate($tahun, Carbon::parse($bulan)->format('m'), 1);
-    $endDate = $startDate->copy()->endOfMonth();
+        $startDate = Carbon::createFromDate($tahun, Carbon::parse($bulan)->format('m'), 1);
+        $endDate = $startDate->copy()->endOfMonth();
 
-    $dataAbsen = collect();
-    for ($date = $startDate->copy(); $date <= $endDate; $date->addDay()) {
-        $dataAbsen->push([
-            'tanggal' => $date->format('Y-m-d'),
-            'hari' => $date->locale('id')->translatedFormat('l'), 
-            'inn' => null,
-            'out' => null,
-            'status' => 'alpha',
-            'masuk' => false,
-            'telat' => false,
-            'wk' => 0,
-            'lembur' => 0,
-            'kj' => 0,
-            'alpha' => false,
-            'dl' => false,
-            's' => false,
-            'la' => false,
-            'c' => false,
-            'formatted_tanggal' => $date->format('d/m/Y')
-        ]);
-    }
-
-    $absen = Absen::where('nik', $nik)
-        ->whereYear('tanggal', $tahun)
-        ->whereMonth('tanggal', Carbon::parse($bulan)->format('m'))
-        ->get();
-
-    $isDownloadable = true;
-
-    foreach ($absen as $item) {
-        //waktu kerja in hour
-
-        if($item->status == 'pending'){
-            $isDownloadable = false;
-        }
-        $inn = $item->waktu_masuk;
-        //check if $waktu masuk not exist then $inn = 12:00
-        if($inn == null){
-            $inn = '12:00';
+        $dataAbsen = collect();
+        for ($date = $startDate->copy(); $date <= $endDate; $date->addDay()) {
+            $dataAbsen->push([
+                'tanggal' => $date->format('Y-m-d'),
+                'hari' => $date->locale('id')->translatedFormat('l'), 
+                'inn' => null,
+                'out' => null,
+                'status' => 'alpha',
+                'masuk' => false,
+                'telat' => false,
+                'wk' => 0,
+                'lembur' => 0,
+                'kj' => 0,
+                'alpha' => false,
+                'dl' => false,
+                's' => false,
+                'la' => false,
+                'c' => false,
+                'formatted_tanggal' => $date->format('d/m/Y')
+            ]);
         }
 
-        //check if $waktu keluar not exist then $out = 12:00
+        $absen = Absen::where('nik', $nik)
+            ->whereYear('tanggal', $tahun)
+            ->whereMonth('tanggal', Carbon::parse($bulan)->format('m'))
+            ->get();
 
-        $out = $item->waktu_keluar;
-        if($out == null){
-            $out = '12:00';
-        }
+        $isDownloadable = true;
 
-        $item->waktu_kerja = 0;
-        
-        $item->kj = 0;
-        $item->lembur = 0;
-        
+        foreach ($absen as $item) {
+            //waktu kerja in hour
 
-        if($item->status == 'alpha' || $item->status == 'hadir'){
-
-            $item->waktu_kerja = Carbon::parse($inn)->diffInHours(Carbon::parse($out));
-            if($item->waktu_kerja < 7.5){
-                $item->kj = (7.5 - $item->waktu_kerja)*60;
-            }else{
-                $item->lembur = ($item->waktu_kerja - 7.5)*60;
+            if($item->status == 'pending'){
+                $isDownloadable = false;
+            }
+            $inn = $item->waktu_masuk;
+            //check if $waktu masuk not exist then $inn = 12:00
+            if($inn == null){
+                $inn = '12:00';
             }
 
-            $item->telat = $item->waktu_masuk > '08:00:00' && $item->waktu_masuk != null;
-        }
+            //check if $waktu keluar not exist then $out = 12:00
 
-    };
-        
-    $dataAbsen = $dataAbsen->map(function ($item) use ($absen) {
-        $match = $absen->firstWhere('tanggal', $item['tanggal']);
-        if ($match) {
-            $item['inn'] = $match->waktu_masuk;
-            $item['out'] = $match->waktu_keluar;
-            $item['status'] = $match->status;
-            $item['masuk'] = $match->waktu_masuk != null;
-            $item['wk'] = ceil($match->waktu_kerja);
-            $item['kj'] = floor($match->kj);
-            $item['lembur'] = $match->lembur;
-            $item['telat'] = $match->telat;
-            $item['alpha'] = $match->status == 'alpha';
-            $item['dl'] = $match->status == 'dl';
-            $item['s'] = $match->status == 's';
-            $item['la'] = $match->status == 'la';
-            $item['c'] = $match->status == 'c';
-        }
-        return $item;
-    });
+            $out = $item->waktu_keluar;
+            if($out == null){
+                $out = '12:00';
+            }
+
+            $item->waktu_kerja = 0;
+            
+            $item->kj = 0;
+            $item->lembur = 0;
+            
+
+            if($item->status == 'alpha' || $item->status == 'hadir'){
+
+                $item->waktu_kerja = Carbon::parse($inn)->diffInHours(Carbon::parse($out));
+                if($item->waktu_kerja < 7.5){
+                    $item->kj = (7.5 - $item->waktu_kerja)*60;
+                }else{
+                    $item->lembur = ($item->waktu_kerja - 7.5)*60;
+                }
+
+                $item->telat = $item->waktu_masuk > '08:00:00' && $item->waktu_masuk != null;
+            }
+
+        };
+            
+        $dataAbsen = $dataAbsen->map(function ($item) use ($absen) {
+            $match = $absen->firstWhere('tanggal', $item['tanggal']);
+            if ($match) {
+                $item['inn'] = $match->waktu_masuk;
+                $item['out'] = $match->waktu_keluar;
+                $item['status'] = $match->status;
+                $item['masuk'] = $match->waktu_masuk != null;
+                $item['wk'] = ceil($match->waktu_kerja);
+                $item['kj'] = floor($match->kj);
+                $item['lembur'] = $match->lembur;
+                $item['telat'] = $match->telat;
+                $item['alpha'] = $match->status == 'alpha';
+                $item['dl'] = $match->status == 'dl';
+                $item['s'] = $match->status == 's';
+                $item['la'] = $match->status == 'la';
+                $item['c'] = $match->status == 'c';
+            }
+            return $item;
+        });
 
 
 
-    return response()->json(['dataAbsen' => $dataAbsen, 'isDownloadable' => $isDownloadable]);
-}
+        return response()->json(['dataAbsen' => $dataAbsen, 'isDownloadable' => $isDownloadable]);
+    }
+
+
+    public function logAbsensi()
+    {
+
+        $data = User::all();
+        $absen = Absen::all();
+
+        $absen = $absen->map(function ($item) {
+            $item->hari = Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l');
+            $item->nama = User::where('nik', $item->nik)->first()->name;    
+            $item->photo_masuk_url = $item->photo_masuk_url?url("/preview/" . urlencode($item->photo_masuk_url)):null;
+            $item->photo_keluar_url = $item->photo_keluar_url?url("/preview/" . urlencode($item->photo_keluar_url)):null;
+            return $item;
+        });
+        // dd($absen);
+        return Inertia::render('Admin/logAbsensi', ['logAbsen' => $absen]);
+    }
 
 }
 

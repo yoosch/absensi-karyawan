@@ -38,13 +38,27 @@ class AbsenDinasController extends Controller
             
             $absen = Absen::where('nik', $izin->nik)->where('tanggal', $date)->first();
             if($absen){
-                $absen->status = ($status == 'Disetujui') ? $izin->jenis_izin : $absen->status ;
+                if($status == 'Disetujui'){
+                    if($absen->status == 'la'){
+                        $absen->status = 'hadir';
+                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->masuk = $izin->jam_lupa_absen : $absen->keluar = $izin->jam_lupa_absen;
+                    }else{
+                        $absen->status = $izin->jenis_izin;
+                    }
+                }
                 $absen->save();
             }else{
                 $absen = new Absen();
                 $absen->nik = $izin->nik;
                 $absen->tanggal = $date;
-                $absen->status = ($status == 'Disetujui') ? $izin->jenis_izin : $absen->status;
+                if($status == 'Disetujui'){
+                    if($absen->status == 'la'){
+                        $absen->status = 'hadir';
+                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->masuk = $izin->jam_lupa_absen : $absen->keluar = $izin->jam_lupa_absen;
+                    }else{
+                        $absen->status = $izin->jenis_izin;
+                    }
+                }
                 $absen->save();
             }
         }

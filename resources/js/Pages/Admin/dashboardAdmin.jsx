@@ -49,9 +49,8 @@ export default function DashboardAdmin() {
         const seconds = currentDate.getSeconds();
 
         // Format time to always show two digits
-        const formattedTime = `${hours}:${
-            minutes < 10 ? "0" + minutes : minutes
-        }:${seconds < 10 ? "0" + seconds : seconds}`;
+        const formattedTime = `${hours}:${minutes < 10 ? "0" + minutes : minutes
+            }:${seconds < 10 ? "0" + seconds : seconds}`;
 
         return <h1>{`${dayOfWeek}, ${dayOfMonth} ${month} ${year}`}</h1>;
     };

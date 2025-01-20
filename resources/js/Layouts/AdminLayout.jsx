@@ -51,17 +51,22 @@ export default function AdminLayout({ header, children }) {
                         <Sidebar.Item as={Link} href='/pegawai' icon={HiUser}>
                             Pegawai
                         </Sidebar.Item>
-                        <Sidebar.Collapse icon={HiInbox} label="Presensi">
-                            <Sidebar.Item>Log Absensi</Sidebar.Item>
+                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiInbox}>
+                            Presensi 
+                        </Sidebar.Item>
+                        <Sidebar.Collapse icon={HiInbox} label="Perizinan">
                             <Sidebar.Item as={Link} href="/absen-dinas">Dinas</Sidebar.Item>
                             <Sidebar.Item as={Link} href="/absen-cuti">Cuti</Sidebar.Item>
                             <Sidebar.Item href="#">Lupa Absen</Sidebar.Item>
+                        </Sidebar.Collapse>
+                        <Sidebar.Collapse icon={HiInbox} label="Laporan">
+                            <Sidebar.Item as={Link} href="/rekap-individu">Rekap Individu</Sidebar.Item>
                         </Sidebar.Collapse>
                     </Sidebar.ItemGroup>
                 </Sidebar.Items>
             </Sidebar>
 
-            <div className="flex flex-col w-[83%]">
+            <div className="flex flex-col w-screen">
                 <nav className="py-2 pr-4 bg-[#04042A] border-[#FECE00] border-b-4">
                     <div className="hidden sm:flex sm:items-center sm:justify-end">
                         <div className="flex items-center space-x-4">

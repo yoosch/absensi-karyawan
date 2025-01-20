@@ -89,11 +89,13 @@ class IzinController extends Controller
 
         $request->validate([
             'jenisLupaAbsen' => 'required|string',
-            'jamLupaAbsen' => 'required|string',
+            'jamLupaAbsen' => 'required',
         ]);
 
+        $waktu = $request->jamLupaAbsen['hour'].':'.$request->jamLupaAbsen['minute'].':'.$request->jamLupaAbsen['second'];
+
         $dataIzin['jenis_lupa_absen'] = $request->jenisLupaAbsen;
-        $dataIzin['jam_lupa_absen'] = $request->jamLupaAbsen;
+        $dataIzin['jam_lupa_absen'] = $waktu;
         $izin = 'la';
     }
 

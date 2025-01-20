@@ -8,7 +8,7 @@ import { Toaster, toast } from 'sonner'
 
 const MySwal = withReactContent(Swal)
 
-const Absence = () => {
+const Absence = ({lokasi}) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const [capturedPhoto, setCapturedPhoto] = useState(null);
@@ -16,11 +16,8 @@ const Absence = () => {
     const [message, setMessage] = useState("");
     const [isWithinRadius, setIsWithinRadius] = useState(false);
 
-    const serverLocation = {
-        latitude: -6.9772774,  
-        longitude: 110.4488306, 
-        radius: 1, 
-    };
+    const [locations, setLocations] = useState(lokasi);
+    
 
     const startCamera = () => {
         navigator.mediaDevices
@@ -98,23 +95,20 @@ const Absence = () => {
 
     // Check if the current coordinates are within the server's radius
     const checkCoordinatesInRadius = () => {
-        if (coordinates.latitude && coordinates.longitude) {
+        locations.forEach((location) => {
             const distance = calculateDistance(
                 coordinates.latitude,
                 coordinates.longitude,
-                serverLocation.latitude,
-                serverLocation.longitude
+                location.latitude,
+                location.longitude
             );
-
-            // Check if distance is less than or equal to the radius
-            if (distance <= serverLocation.radius) {
-                console.log("You are within the radius.");
+    
+            if (distance <= location.radius) {
                 setIsWithinRadius(true);
-            } else {
-                setIsWithinRadius(false);
             }
-        }
+        });
     };
+    
 
     
     const handleSubmit = () => {

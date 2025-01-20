@@ -7,6 +7,7 @@ use App\Http\Controllers\IzinController;
 use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LocationController;
 
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DashboardController;
@@ -44,8 +45,12 @@ Route::get('/dashboard-admin', function () {
 });
 
 Route::resource('/pegawai', PegawaiController::class);
-Route::get('/rekap', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
+Route::get('/rekap-individu', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
 Route::put('/pegawai/{id}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
+
+Route::get('/log-presensi', [AbsenController::class, 'logAbsensi'])->middleware(['auth', 'verified'])->name('log-absensi.index');
+
+Route::post('/change-profile', [ProfileController::class, 'changeProfile'])->name('change-profile');
 
 
 
@@ -56,5 +61,8 @@ Route::get('/absen-cuti', [AbsenCutiController::class, 'indexCuti'])->middleware
 
 Route::get('/absen-dinas', [AbsenDinasController::class, 'index'])->middleware(['auth', 'verified']);
 Route::get('/absen-lupa-absen ', [IzinController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
+
+Route::get('/lokasi', [LocationController::class, 'index'])->middleware(['auth', 'verified']);
+Route::resource('location', LocationController::class);
 
 require __DIR__.'/auth.php';
