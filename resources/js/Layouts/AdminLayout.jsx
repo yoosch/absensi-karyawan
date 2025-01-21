@@ -3,7 +3,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from "react-icons/hi";
+import { HiArrowSmRight, HiChartPie, HiInbox,HiPencilAlt, HiDocumentText, HiShoppingBag, HiTable, HiUser, HiLocationMarker, HiViewBoards } from "react-icons/hi";
 import { Sidebar } from "flowbite-react";
 import { Link, usePage } from '@inertiajs/react';
 
@@ -51,7 +51,7 @@ export default function AdminLayout({ header, children }) {
                         <Sidebar.Item as={Link} href='/pegawai' icon={HiUser}>
                             Pegawai
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiInbox}>
+                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiPencilAlt}>
                             Presensi 
                         </Sidebar.Item>
                         <Sidebar.Collapse icon={HiInbox} label="Perizinan">
@@ -59,9 +59,12 @@ export default function AdminLayout({ header, children }) {
                             <Sidebar.Item as={Link} href="/absen-cuti">Cuti</Sidebar.Item>
                             <Sidebar.Item href="/absen-lupa-absen">Lupa Absen</Sidebar.Item>
                         </Sidebar.Collapse>
-                        <Sidebar.Collapse icon={HiInbox} label="Laporan">
+                        <Sidebar.Collapse icon={ HiDocumentText} label="Laporan">
                             <Sidebar.Item as={Link} href="/rekap-individu">Rekap Individu</Sidebar.Item>
                         </Sidebar.Collapse>
+                        <Sidebar.Item as={Link} href='/location' icon={HiLocationMarker}>
+                            Lokasi 
+                        </Sidebar.Item>
                     </Sidebar.ItemGroup>
                 </Sidebar.Items>
             </Sidebar>

@@ -300,7 +300,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                     <div className="flex items-center py-2 bg-blue-800 text-white rounded-lg overflow-hidden shadow-md border-b-4 border-[#fdb714]">
                         <div className="w-20 h-20 bg-gray-300 rounded-full m-4 flex-shrink-0 overflow-hidden">
                             <img
-                                src="/putech.png"
+                                src={user.path_foto}
                                 alt=""
                                 className="w-full h-full object-cover"
                             />

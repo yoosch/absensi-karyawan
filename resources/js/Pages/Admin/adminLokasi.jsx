@@ -538,7 +538,7 @@ export default function adminLokasi({ data }) {
                 </Table>
             </div>
 
-            <Modal isOpen={isOpen} onClose={() => onOpenChange(false)} placement="top-center">
+            <Modal isOpen={isOpen}  onClose={() => onOpenChange(false)} placement="top-center">
                 <ModalContent>
                     <ModalHeader>{"Tambah Lokasi"}</ModalHeader>
                     <ModalBody>

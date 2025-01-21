@@ -77,14 +77,16 @@ class ProfileController extends Controller
         $image = $request->input('photo');
         $imagePath = null;
 
+    // Check if the 'photo' field contains a file
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo'); // Retrieve the file
+            $imageName = 'images/photo_profile/' . uniqid() . '.' . $file->getClientOriginalExtension(); // Generate unique name
+            Storage::disk('public')->put($imageName, file_get_contents($file)); // Store the file
+            $imagePath = Storage::url($imageName); // Get the URL of the stored file
+        }
 
-
-        if ($image) {
-            $image = str_replace('data:image/png;base64,', '', $image);
-            $image = str_replace(' ', '+', $image);
-            $imageName = 'images/photo_profile/' . uniqid() . '.png';
-            Storage::disk('public')->put($imageName, base64_decode($image));
-            $imagePath = Storage::url($imageName);
+        if($user->path_foto){
+            Storage::disk('public')->delete(str_replace('/storage', '', $user->path_foto));
         }
 
         // return response()->json(['message' => $imagePath]);

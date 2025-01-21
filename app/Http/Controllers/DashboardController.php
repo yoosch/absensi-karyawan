@@ -8,6 +8,7 @@ use App\Models\Izin;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Laporan_Bulanan;
 use App\Models\Absen;
+use App\Models\User;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -21,17 +22,24 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $laporan_bulanan = Laporan_Bulanan::where('nik', $user->nik)->get();
+
         
         $nik = $user->nik;  
-        
+        $user->path_foto = url("/preview/" . urlencode($user->path_foto));
 
         //get today absen
         $absen = Absen::where('nik', $nik)
                 ->whereDate('created_at', Carbon::today())
                 ->first();
-                
-            $inn = $absen->waktu_masuk;
-            $out = $absen->waktu_keluar;
+             
+            if ($absen) {
+                $inn = $absen->waktu_masuk;
+                $out = $absen->waktu_keluar;
+            }
+            else {
+                $inn = null;
+                $out = null;
+            }
             
             // default waktu
             $defaultInnPagi = '07:30';
@@ -39,10 +47,10 @@ class DashboardController extends Controller
             $defaultInnSiang = '14:00';
             $defaultOutSiang = '21:30';
 
-            if ($absen->shift == 'Pagi') {
+            if ($user->shift == 'Pagi') {
                 $inn = $inn ?? $defaultInnPagi;
                 $out = $out ?? $defaultOutPagi;
-            } elseif ($absen->shift == 'Siang') {
+            } elseif ($user->shift == 'Siang') {
                 $inn = $inn ?? $defaultInnSiang;
                 $out = $out ?? $defaultOutSiang;
             } 

@@ -26,41 +26,41 @@ export default function UpdateProfileInformation({
             photo: null,
         });
 
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setfotoProfile(file.File);
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setPhotoPreview(event.target.result);
-            };
-            reader.readAsDataURL(file);
-        }   
-    };
-
-    const submit = (e) => {
-        e.preventDefault();
-
-        console.log(fotoProfile);
-
-        const formData = new FormData();
-        formData.append('photo', fotoProfile);
-
-        //async post profile via axios
-        axios.post('/change-profile', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data', 
-            },
-        })
-        .then(response => {
-            console.log(response.data);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-
-        patch(route('profile.update'));
-    };
+        const handlePhotoChange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                setfotoProfile(file);
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    setPhotoPreview(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }   
+        };
+    
+        const submit = (e) => {
+            e.preventDefault();
+    
+            console.log(fotoProfile);
+    
+            if(fotoProfile){
+                const formData = new FormData();
+                formData.append('photo', fotoProfile); // Attach the file
+                axios.post('/change-profile', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data', // Required for file uploads
+                    },
+                })
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+    
+            patch(route('profile.update'));
+        };
 
     return (
         <section className={className}>
@@ -74,7 +74,7 @@ export default function UpdateProfileInformation({
                     address.
                 </p>
             </header>
-            <img src="/public/storage/images/photo_profile/678e0fa8c65b9.png" alt="Profile Photo" class="h-16 w-16 rounded-full">
+            <img src={photo} alt="Profile Photo" class="h-16 w-16 rounded-full">
             </img>
 
 
