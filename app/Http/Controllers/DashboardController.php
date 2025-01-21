@@ -8,6 +8,7 @@ use App\Models\Izin;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Laporan_Bulanan;
 use App\Models\Absen;
+use App\Models\User;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -21,7 +22,6 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $laporan_bulanan = Laporan_Bulanan::where('nik', $user->nik)->get();
-        
         $nik = $user->nik;  
         
 
@@ -29,67 +29,72 @@ class DashboardController extends Controller
         $absen = Absen::where('nik', $nik)
                 ->whereDate('created_at', Carbon::today())
                 ->first();
-                
-            $inn = $absen->waktu_masuk;
-            $out = $absen->waktu_keluar;
-            
+
+        if ($absen) {
             // default waktu
             $defaultInnPagi = '07:30';
             $defaultOutPagi = '16:00';
             $defaultInnSiang = '14:00';
             $defaultOutSiang = '21:30';
+    
+                if ($user->shift == 'Pagi') {
+                    $inn = $absen->waktu_masuk ?? $defaultInnPagi;
+                    $out = $absen->waktu_keluar ?? $defaultOutPagi;
+                } elseif ($user->shift == 'Siang') {
+                    $inn = $absen->waktu_masuk ?? $defaultInnSiang;
+                    $out = $absen->waktu_keluar ?? $defaultOutSiang;
+                } 
 
-            if ($absen->shift == 'Pagi') {
-                $inn = $inn ?? $defaultInnPagi;
-                $out = $out ?? $defaultOutPagi;
-            } elseif ($absen->shift == 'Siang') {
-                $inn = $inn ?? $defaultInnSiang;
-                $out = $out ?? $defaultOutSiang;
-            } 
-
-            $absen->waktu_kerja = 0;
-            $absen->kj = 0;
-            $absen->lembur = 0;
-
-            if($absen->status == 'pending'){
-                $isDownloadable = false;
-            }
-            // $inn = $absen->waktu_masuk;
-            // //check if $waktu masuk not exist then $inn = 12:00
-            // if($inn == null){
-            //     $inn = '12:00';
-            // }
-
-            // //check if $waktu keluar not exist then $out = 12:00
-
-            // $out = $absen->waktu_keluar;
-            // if($out == null){
-            //     $out = '12:00';
-            // }
-
-            if($absen->status == 'alpha' || $absen->status == 'hadir'){
-
-                $absen->waktu_kerja = Carbon::parse($inn)->diffInHours(Carbon::parse($out));
-                $breakTime = 1;
-                $effectiveHours = $absen->waktu_kerja - $breakTime;
-                $absen->effectiveHours = $effectiveHours;
-
-                if($absen->$effectiveHours < 7.5){
-                    $absen->kj = (7.5 - $absen->effectiveHours)*60;
-                }else{
-                    $absen->lembur = ($absen->effectiveHours - 7.5)*60;
+                if ($inn){
+                    $waktu_masuk = Carbon::parse($inn);
+                    $waktuSekarang = Carbon::now();
                 }
+    
+                $absen->waktu_kerja = $waktu_masuk->diffInHours($waktuSekarang);
+                $absen->kj = 0;
+                $absen->lembur = 0;
+                $absen->effectiveHours = 0;
+                $absen->telat = false;
+    
+                if($absen->status == 'pending'){
+                    $isDownloadable = false;
+                }
+    
+                if($absen->status == 'la' || $absen->status == 'hadir'){
+                    $breakTime = 1;
+                    $effectiveHours = $absen->waktu_kerja - $breakTime;
+                    $absen->effectiveHours = $effectiveHours;
+    
+                    if($absen->$effectiveHours < 7.5){
+                        $absen->kj = (7.5 - $absen->effectiveHours)*60;
+                    }else{
+                        $absen->lembur = ($absen->effectiveHours - 7.5)*60;
+                    }
+    
+                    $toleransiPagi = Carbon::parse('08:00:00');
+                    $toleransiSiang = Carbon::parse('14:30:00');
 
-                $toleransiPagi = Carbon::parse('08:00');
-                $toleransiSiang = Carbon::parse('14:30');
 
-                $absen->telat = (
-                    ($absen->shift == 'Pagi' && Carbon::parse($inn)->gt($toleransiPagi)) ||
-                    ($absen->shift == 'Siang' && Carbon::parse($inn)->gt($toleransiSiang))
-                ) && $inn !== null;
-            }
-
-        // dd($absen);
+                    if ($user->shift == 'Pagi'){
+                        if ($waktu_masuk > $toleransiPagi) {
+                            $absen->telat = true;
+                        }
+                        else {
+                            $absen->telat = false;
+                        }             
+                    }
+                    else if ($user->shift == 'Siang'){
+                        if ($waktu_masuk > $toleransiSiang) {
+                            $absen->telat = true;
+                        }
+                        else {
+                            $absen->telat = false;
+                        }             
+                    }
+                }
+            }       
+            
+            // dd($absen);
 
         // dd($user);
         if($user->role == 'admin'){
