@@ -582,7 +582,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                             color="primary"
                             variant="faded"
                         >
-                            Jam Lembur
+                            Total Jam Kerja
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent>
@@ -591,13 +591,21 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                                 <p className="font-bold">
                                     Total jam anda hari ini:
                                 </p>
-                                <p>
-                                    Jam kerja: {absen.effectiveHours<1?0:absen.effectiveHours} jam
-                                </p>
-                                <p>Lembur: {absen.lembur} menit</p>
+                                {absen ? (
+                                    <>
+                                        <p>Jam Kerja : {(absen.waktu_kerja * 60).toFixed(2)} menit</p>
+                                        <p>Efektif (60 menit Istirahat): {(absen.effectiveHours * 60).toFixed(2)} menit</p>
+                                        <p>Lembur : {(absen.lembur * 60).toFixed(2)} menit</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p>Anda belum absen hari ini</p>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </PopoverContent>
+
                 </Popover>
             </div>
         </AuthenticatedLayout>
