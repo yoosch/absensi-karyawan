@@ -269,7 +269,23 @@ export default function App({ logAbsen }) {
     });
   }, [sortDescriptor, items]);
 
-
+  const judul  = (status) => {
+    if(status == 'la'){
+        return 'Lupa Absen';
+    }else if(status == 's'){
+        return 'Sakit';
+    }else if(status == 'c'){
+        return 'Cuti';
+    }else if(status == 'dl'){
+        return 'Dinas Luar';
+    }else if(status == 'alpha'){
+        return 'Alpha'; 
+    }else if(status == 'hadir'){
+        return 'Hadir';
+    }else if(status == 'pending'){
+      return 'Pending';
+    }
+  }
 
   const renderCell = React.useCallback((user, columnKey) => {
     switch (columnKey) {
@@ -303,7 +319,7 @@ export default function App({ logAbsen }) {
                 <p className="text-bold">{user.nik}</p>
                 <p className="text-bold">{user.nama}</p>
                 <p className="text-default-600"><span className="text-bold text-black">IN: </span> {user.waktu_masuk}</p>
-                <p className="text-default-600"><span className="text-bold text-black">STATUS: </span> {user.status}</p>
+                <p className="text-default-600"><span className="text-bold text-black">STATUS: </span> {judul(user.status)}</p>
                 <p className="text-default-600">Lokasi: 10 Meter Dari radius</p>
             </div>
         )
@@ -313,7 +329,7 @@ export default function App({ logAbsen }) {
                 <p className="text-bold">{user.nik}</p>
                 <p className="text-bold">{user.nama}</p>
                 <p className="text-default-600"><span className="text-bold">OUT: </span> {user.waktu_keluar}</p>
-                <p className="text-default-600"><span className="text-bold text-black">STATUS: </span> {user.status}</p>
+                <p className="text-default-600"><span className="text-bold text-black">STATUS: </span> {judul(user.status)}</p>
                 <p className="text-default-600">Lokasi: 10 Meter Dari radius</p>
             </div>
         )
@@ -327,6 +343,7 @@ export default function App({ logAbsen }) {
     }
   }, []);
 
+ 
 
 
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Head } from "@inertiajs/react";
 
-export default function DashboardAdmin() {
+export default function DashboardAdmin({absenData}) {
     // RealTimeDate function to get real-time date and time
     const RealTimeDate = () => {
         const [currentDate, setCurrentDate] = useState(new Date());
@@ -81,7 +81,7 @@ export default function DashboardAdmin() {
                             </svg>
                             <div className="flex flex-col">
                                 <h1>Total Karyawan</h1>
-                                <h1 className="text-3xl font-bold">54</h1>
+                                <h1 className="text-3xl font-bold">{absenData.totalKaryawan}</h1>
                             </div>
                         </div>
                         <div className="flex items-center justify-around mx-[20%] rounded-lg">
@@ -98,7 +98,7 @@ export default function DashboardAdmin() {
                             </svg>
                             <div className="flex flex-col">
                                 <h1>Karyawan Hadir</h1>
-                                <h1 className="text-3xl font-bold">50</h1>
+                                <h1 className="text-3xl font-bold">{absenData.totalHadir}</h1>
                             </div>
                         </div>
                         <div className="flex items-center justify-around mx-[20%] rounded-lg">
@@ -115,7 +115,7 @@ export default function DashboardAdmin() {
                             </svg>
                             <div className="flex flex-col">
                                 <h1>Karyawan Tidak Hadir</h1>
-                                <h1 className="text-3xl font-bold">4</h1>
+                                <h1 className="text-3xl font-bold">{absenData.totalTidakHadir}</h1>
                             </div>
                         </div>
                     </div>

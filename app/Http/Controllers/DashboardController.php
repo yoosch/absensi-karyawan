@@ -106,7 +106,25 @@ class DashboardController extends Controller
 
         // dd($user);
         if($user->role == 'admin'){
-            return Inertia::render('Admin/dashboard',['user' => $user]);
+            
+            $absen = Absen::whereDate('created_at', Carbon::today())->get();
+            
+            $totalKaryawan = User::where('role', 'pegawai')->count();
+            $totalHadir = $absen->filter(function ($absen) {
+                return $absen->status === 'hadir' || $absen->status === 'la';
+            })->count();
+            $totalTidakHadir = $totalKaryawan - $totalHadir;
+        
+            $absenData = [
+                'totalKaryawan' => $totalKaryawan,
+                'totalHadir' => $totalHadir,
+                'totalTidakHadir' => $totalTidakHadir,
+            ];
+        
+
+            // dd($absenData);
+
+            return Inertia::render('Admin/dashboardAdmin',['user' => $user, 'absenData' => $absenData]);
         }else{
             $currentMonth = Carbon::now()->month;
             $currentYear = Carbon::now()->year;
@@ -122,6 +140,29 @@ class DashboardController extends Controller
             }
             return Inertia::render('dashboard',['user' => $user, 'laporan_bulanan' => $laporan_bulanan, 'absen' => $absen]);   
         }
+    }
+
+    public function indexAdmin()
+    {
+        $user = auth()->user();
+        $absen = Absen::whereDate('created_at', Carbon::today())->get();
+        
+        $totalKaryawan = User::where('role', 'pegawai')->count();
+        $totalHadir = $absen->filter(function ($absen) {
+            return $absen->status === 'hadir' || $absen->status === 'la';
+        })->count();
+        $totalTidakHadir = $totalKaryawan - $totalHadir;
+    
+        $absenData = [
+            'totalKaryawan' => $totalKaryawan,
+            'totalHadir' => $totalHadir,
+            'totalTidakHadir' => $totalTidakHadir,
+        ];
+    
+
+        // dd($absenData);
+
+        return Inertia::render('Admin/dashboardAdmin',['user' => $user, 'absenData' => $absenData]);
     }
 
     public function store(Request $request)

@@ -16,52 +16,68 @@ use App\Http\Controllers\Admin\AbsenDinasController;
 use App\Http\Controllers\Admin\AdminAbsenController;
 use App\Http\Controllers\Admin\FileController;
 
+use App\Http\Middleware\adminMiddleware;
+use App\Http\Middleware\pegawaiMiddleware;
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::post('/dashboard/store', [DashboardController::class, 'store'])->name('dashboard.store');
-
-Route::get('/absen', [AbsenController::class, 'index'])->middleware(['auth', 'verified'])->name('absen.index');
-Route::post('/absen/store', [AbsenController::class, 'store']);
-
-Route::get('/izin', [IzinController::class, 'index'])->middleware(['auth', 'verified'])->name('izin.index');
-Route::post('/izin/store', [IzinController::class, 'store'])->name('izin.store');
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/change-profile', [ProfileController::class, 'changeProfile'])->name('change-profile');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/preview/{filePath}', [FileController::class, 'previewFile'])->where('filePath', '.*');
+
+
+    Route::middleware(adminMiddleware::class)->group(function () {
+        
+        //Rekap Individu
+        Route::get('/rekap-individu', [AbsenController::class, 'index2'])->name('rekap.index');
+        Route::get('/rekap-individu/{nik}/{bulan}/{tahun}',[AbsenController::class, 'rekapIndividu']);
+
+        Route::resource('/pegawai', PegawaiController::class);
+        
+        //Approval Izin
+        Route::get('approval-cuti/{id}/{status}', [AdminAbsenController::class, 'approvalIzin']);
+        
+        //Pegawai
+        Route::put('/pegawai/{id}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
+
+        //Log Presensi
+        Route::get('/log-presensi', [AbsenController::class, 'logAbsensi'])->name('log-absensi.index');
+        
+        //Absen
+        Route::get('/absen-cuti', [AdminAbsenController::class, 'indexCuti']);
+        Route::get('/absen-dinas', [AdminAbsenController::class, 'indexDinas']);
+        Route::get('/absen-lupa-absen ', [AdminAbsenController::class, 'indexLupaAbsen']);
+    
+        //Lokasi
+        Route::get('/lokasi', [LocationController::class, 'index']);
+        Route::resource('location', LocationController::class);
+    
+    });
+
+    Route::middleware(pegawaiMiddleware::class)->group(function () {
+        
+        //store Laporan Bulanan
+        Route::post('/dashboard/store', [DashboardController::class, 'store'])->name('dashboard.store');
+
+        //Absen 
+        Route::get('/absen', [AbsenController::class, 'index'])->name('absen.index');
+        Route::post('/absen/store', [AbsenController::class, 'store']);
+        
+        //Izin
+        Route::get('/izin', [IzinController::class, 'index'])->name('izin.index');
+        Route::post('/izin/store', [IzinController::class, 'store'])->name('izin.store');
+
+        //Riwayat
+        Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+    });
+
+   
 });
-
-Route::get('/riwayat', [RiwayatController::class, 'index'])->middleware(['auth', 'verified'])->name('riwayat.index');
-
-Route::get('/rekap-individu/{nik}/{bulan}/{tahun}',[AbsenController::class, 'rekapIndividu'])->middleware(['auth', 'verified']);
-
-Route::get('approval-cuti/{id}/{status}', [AdminAbsenController::class, 'approvalIzin'])->middleware(['auth', 'verified']);
-
-Route::get('/dashboard-admin', function () {
-    return Inertia::render('Admin/dashboardAdmin');
-});
-
-Route::resource('/pegawai', PegawaiController::class);
-Route::get('/rekap-individu', [AbsenController::class, 'index2'])->middleware(['auth', 'verified'])->name('rekap.index');
-Route::put('/pegawai/{id}/update', [PegawaiController::class, 'update'])->name('pegawai.update');
-
-Route::get('/log-presensi', [AbsenController::class, 'logAbsensi'])->middleware(['auth', 'verified'])->name('log-absensi.index');
-
-Route::post('/change-profile', [ProfileController::class, 'changeProfile'])->name('change-profile');
-
-
-
-Route::get('/preview/{filePath}', [FileController::class, 'previewFile'])->where('filePath', '.*');
-
-Route::get('/absen-cuti', [AdminAbsenController::class, 'indexCuti'])->middleware(['auth', 'verified']);
-Route::get('/absen-dinas', [AdminAbsenController::class, 'indexDinas'])->middleware(['auth', 'verified']);
-Route::get('/absen-lupa-absen ', [AdminAbsenController::class, 'indexLupaAbsen'])->middleware(['auth', 'verified']);
-
-Route::get('/lokasi', [LocationController::class, 'index'])->middleware(['auth', 'verified']);
-Route::resource('location', LocationController::class);
 
 require __DIR__.'/auth.php';

@@ -64,7 +64,8 @@ class AdminAbsenController extends Controller
                 if($status == 'Disetujui'){
                     if($absen->status == 'la'){
                         $absen->status = 'hadir';
-                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->masuk = $izin->jam_lupa_absen : $absen->keluar = $izin->jam_lupa_absen;
+                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->waktu_masuk = $izin->jam_lupa_absen : $absen->waktu_keluar = $izin->jam_lupa_absen;
+                        $absen->save();
                     }else{
                         $absen->status = $izin->jenis_izin;
                     }
@@ -77,7 +78,7 @@ class AdminAbsenController extends Controller
                 if($status == 'Disetujui'){
                     if($absen->status == 'la'){
                         $absen->status = 'hadir';
-                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->masuk = $izin->jam_lupa_absen : $absen->keluar = $izin->jam_lupa_absen;
+                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->waktu_masuk = $izin->jam_lupa_absen : $absen->waktu_keluar = $izin->jam_lupa_absen;
                     }else{
                         $absen->status = $izin->jenis_izin;
                     }

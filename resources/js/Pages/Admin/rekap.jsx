@@ -95,6 +95,7 @@ export default function rekap({ data, absen }) {
     const [selectedPeriode, setSelectedPeriode] = useState(year);
     const [selectedBulan, setSelectedBulan] = useState(month);
     const [filteredRows, setFilteredRows] = useState([]);
+    const [dataUser, setDataUser] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const [isDownloadable, setIsDownloadable] = useState(false);
@@ -134,6 +135,7 @@ export default function rekap({ data, absen }) {
                 setFilteredRows(response.data.dataAbsen);
                 // Set fetched data
                 setIsDownloadable(response.data.isDownloadable);
+                setDataUser(response.data.user);
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
@@ -303,7 +305,9 @@ export default function rekap({ data, absen }) {
                                     {loading && <Spinner />}
                                     {filteredRows.length > 0 ? (
                                         filteredRows.map((row, index) => (
-                                            <TableRow key={index}>
+                                            <TableRow key={index}
+                                                className={`${row.hari === "Sabtu" || row.hari === "Minggu" ? "bg-green-200" : ""
+                                                    }`}>
                                                 <TableCell align="center">{row.hari}</TableCell>
                                                 <TableCell align="center">{row.tanggal}</TableCell>
                                                 <TableCell align="center">{row.inn}</TableCell>
@@ -356,6 +360,19 @@ export default function rekap({ data, absen }) {
                                                         </div>
                                                     )}
                                                 </TableCell>
+                                                <TableCell align="center">
+                                                    {row.la && (
+                                                        <div>
+                                                            <CheckIcon style={{ color: 'green' }} />
+                                                            <span className="hidden">✓</span>
+                                                        </div>
+                                                    )}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.hari === 'Sabtu' || row.hari === 'Minggu' ? null : row.wk}
+                                                </TableCell>
+
+                                                <TableCell align="center">{row.hari === 'Sabtu' || row.hari === 'Minggu' ? null : row.kj}</TableCell>
 
 
                                             </TableRow>
@@ -375,7 +392,7 @@ export default function rekap({ data, absen }) {
             </div>
             {/* Export to XLSX Button */}
             <div className='flex mx-[5%] justify-end'>
-                <IndividuRecord filteredRows={filteredRows} isDownloadable={isDownloadable} />
+                <IndividuRecord filteredRows={filteredRows} isDownloadable={isDownloadable} user={dataUser} />
             </div>
         </AdminLayout>
     );
