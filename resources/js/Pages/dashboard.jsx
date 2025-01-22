@@ -589,13 +589,16 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                         <div className="px-4 py-2">
                             <div className="text-sm">
                                 <p className="font-bold">
-                                    Total jam anda hari ini:
+                                    Total jam Kerja hari ini :
                                 </p>
                                 {absen ? (
                                     <>
-                                        <p>Jam Kerja : {(absen.waktu_kerja * 60).toFixed(2)} menit</p>
-                                        <p>Efektif (60 menit Istirahat): {(absen.effectiveHours * 60).toFixed(2)} menit</p>
-                                        <p>Lembur : {(absen.lembur * 60).toFixed(2)} menit</p>
+                                        <p>Normal : {(absen.effectiveHours * 60).toFixed(2)} menit</p>
+                                        <p>Lembur : {
+                                        absen.lembur > 0 
+                                            ? `${(absen.lembur * 60).toFixed(2)} menit` 
+                                            : <span style={{ fontStyle: 'italic' }}>anda belum lembur</span>
+                                        }</p>
                                     </>
                                 ) : (
                                     <>
