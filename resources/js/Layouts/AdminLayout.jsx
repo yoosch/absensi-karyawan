@@ -74,6 +74,10 @@ export default function AdminLayout({ header, children }) {
                         >
                             Lokasi 
                         </Sidebar.Item>
+                        <Sidebar.Item as={Link} href='/shift' icon={HiLocationMarker} className={isActive('/shift') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        >
+                            Shift 
+                        </Sidebar.Item>
                     </Sidebar.ItemGroup>
                 </Sidebar.Items>
             </Sidebar>

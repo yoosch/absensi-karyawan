@@ -60,32 +60,36 @@ class AdminAbsenController extends Controller
         for($date = $izin->tanggal_mulai; $date <= $izin->tanggal_selesai; $date = date('Y-m-d', strtotime($date . ' +1 day'))){
             
             $absen = Absen::where('nik', $izin->nik)->where('tanggal', $date)->first();
-            if($absen){
-                if($status == 'Disetujui'){
-                    if($absen->status == 'la'){
-                        $absen->status = 'hadir';
-                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->waktu_masuk = $izin->jam_lupa_absen : $absen->waktu_keluar = $izin->jam_lupa_absen;
-                        $absen->save();
-                    }else{
-                        $absen->status = $izin->jenis_izin;
-                    }
-                }
-                $absen->save();
-            }else{
+            if (!$absen) {
                 $absen = new Absen();
                 $absen->nik = $izin->nik;
                 $absen->tanggal = $date;
-                if($status == 'Disetujui'){
-                    if($absen->status == 'la'){
-                        $absen->status = 'hadir';
-                        ($izin->jenis_lupa_absen == 'masuk') ? $absen->waktu_masuk = $izin->jam_lupa_absen : $absen->waktu_keluar = $izin->jam_lupa_absen;
-                        $absen->save();
-                    }else{
-                        $absen->status = $izin->jenis_izin;
-                    }
-                }
-                $absen->save();
             }
+            if($status == 'Disetujui'){
+                if($izin->jenis_izin == 'la'){
+                    $absen->status = 'hadir';
+                    if ($izin->jenis_lupa_absen == 'masuk') {
+                        $absen->waktu_masuk = $izin->jam_lupa_absen;
+                    } else {
+                        $absen->waktu_keluar = $izin->jam_lupa_absen;
+                    }
+                    $absen->save();
+                }else{
+                    $absen->status = $izin->jenis_izin;
+                }
+            }
+            else {
+                if($izin->jenis_izin == 'la'){
+                    if ($izin->jenis_lupa_absen == 'masuk') {
+                        $absen->waktu_masuk = null;
+                    } else {
+                        $absen->waktu_keluar = null;
+                    }
+                    $absen->save();
+                }
+                $absen->status = 'alpha';
+            }
+            $absen->save();
         }   
 
         return response()->json(['message' => 'Izin berhasil diupdate']);

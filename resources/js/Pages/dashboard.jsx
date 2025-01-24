@@ -447,7 +447,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                             </div>
                         </Link>
 
-                        <Card className="py-4 mb-4">
+                        <Card className="py-4 mb-4 mt-6">
                             <CardHeader className="pb-3 pt-2 px-4 flex flex-row items-center justify-center relative">
                                 <div className="flex flex-col justify-center items-center">
                                     <p className="text-tiny-800 font-bold text-center">
