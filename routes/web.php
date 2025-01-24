@@ -56,7 +56,7 @@ Route::middleware(['auth','verified'])->group(function () {
     
         //Lokasi
         Route::get('/lokasi', [LocationController::class, 'index']);
-        Route::resource('location', LocationController::class);
+        Route::resource('/location', LocationController::class);
     
     });
 

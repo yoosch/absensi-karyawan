@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content';
 import axios from "axios";
 import { Toaster, toast } from 'sonner'
+import { Head } from "@inertiajs/react";
 
 const MySwal = withReactContent(Swal)
 
@@ -177,6 +178,7 @@ const Absence = ({lokasi}) => {
     
     return (
         <AuthenticatedLayout>
+            <Head title="Presensi" />
             <div className="flex flex-col items-center justify-center bg-gray-100 p-4">
                 <h1 className="text-2xl font-bold mb-6 text-gray-800">Absence Page</h1>
 

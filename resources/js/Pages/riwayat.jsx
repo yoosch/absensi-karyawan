@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Toaster, toast } from 'sonner'
 import { Chip } from "@nextui-org/react";
+import { Head } from "@inertiajs/react";
 
   const Riwayat = ({dataAbsen}) => {
 
@@ -41,6 +42,7 @@ import { Chip } from "@nextui-org/react";
 
   return (
     <AuthenticatedLayout>
+      <Head title='Riwayat' />
       <div className="mt-6 px-8 md:px-32 flex justify-center items-center">
         <div className="w-full bg-white">
           <div className="text-center mb-6">

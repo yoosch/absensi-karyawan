@@ -11,6 +11,9 @@ export default function AdminLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
 
+    const { url } = usePage(); // Get the current URL from Inertia
+    const isActive = (path) => url.startsWith(path);
+
     // Update the `isDesktop` state when the window is resized
     useEffect(() => {
         const handleResize = () => {
@@ -45,24 +48,30 @@ export default function AdminLayout({ header, children }) {
                 </div>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
-                        <Sidebar.Item href="/dashboard-admin" as={Link} icon={HiChartPie}>
+                        <Sidebar.Item href="/dashboard" as={Link} icon={HiChartPie} className={isActive('/dashboard') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
                             Dashboard
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/pegawai' icon={HiUser}>
+                        <Sidebar.Item as={Link} href='/pegawai' icon={HiUser} className={isActive('/pegawai') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
                             Pegawai
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiPencilAlt}>
+                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiPencilAlt} className={isActive('/log-presensi') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
                             Presensi 
                         </Sidebar.Item>
-                        <Sidebar.Collapse icon={HiInbox} label="Perizinan">
-                            <Sidebar.Item as={Link} href="/absen-dinas">Dinas</Sidebar.Item>
-                            <Sidebar.Item as={Link} href="/absen-cuti">Cuti</Sidebar.Item>
-                            <Sidebar.Item href="/absen-lupa-absen">Lupa Absen</Sidebar.Item>
+                        <Sidebar.Collapse icon={HiInbox} label="Perizinan" className={isActive('/absen-dinas') || isActive('/absen-cuti') || isActive('/absen-lupa-absen') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
+                            <Sidebar.Item as={Link} href="/absen-dinas" className={isActive('/absen-dinas') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                            >Dinas</Sidebar.Item>
+                            <Sidebar.Item as={Link} href="/absen-cuti" className={isActive('/absen-cuti') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                            >Cuti</Sidebar.Item>
+                            <Sidebar.Item as={Link} href="/absen-lupa-absen" className={isActive('/absen-lupa-absen') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                            >Lupa Absen</Sidebar.Item>
                         </Sidebar.Collapse>
-                        <Sidebar.Collapse icon={ HiDocumentText} label="Laporan">
-                            <Sidebar.Item as={Link} href="/rekap-individu">Rekap Individu</Sidebar.Item>
+                        <Sidebar.Collapse icon={ HiDocumentText} label="Laporan" className={isActive('/rekap-individu') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        >
+                            <Sidebar.Item as={Link} href="/rekap-individu" className={isActive('/rekap-individu') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                            >Rekap Individu</Sidebar.Item>
                         </Sidebar.Collapse>
-                        <Sidebar.Item as={Link} href='/location' icon={HiLocationMarker}>
+                        <Sidebar.Item as={Link} href='/location' icon={HiLocationMarker} className={isActive('/location') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        >
                             Lokasi 
                         </Sidebar.Item>
                     </Sidebar.ItemGroup>

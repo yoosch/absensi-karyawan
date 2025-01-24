@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import {
     Card,
     CardHeader,
@@ -26,7 +26,6 @@ import {
     Progress,
 } from "@nextui-org/react";
 import { Toaster, toast } from "sonner";
-import { Link } from "@inertiajs/react";
 import React, { useEffect, useRef } from "react";
 
 export default function Dashboard({ user, laporan_bulanan, absen }) {
@@ -211,18 +210,6 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
         );
     };
 
-    const navigateToAbsensi = () => {
-        Inertia.visit("/absen");
-    };
-
-    const navigateToizin = () => {
-        Inertia.visit("/izin");
-    };
-
-    const navigateToRiwayat = () => {
-        Inertia.visit("/riwayat");
-    };
-
     const getDay = () => {
         const date = new Date();
         return date.getDay();
@@ -369,7 +356,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                     </div>
 
                     <div className="flex flex-col my-4 mt-4">
-                        <button onClick={navigateToAbsensi}>
+                        <Link href="/absen" as="button">
                             <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md border-l-2 border-[#fdb714]">
                                 <div className="flex justify-between items-center flex-grow px-6 py-6">
                                     <svg
@@ -404,9 +391,9 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                                     </div>
                                 </div>
                             </div>
-                        </button>
+                        </Link>
 
-                        <button onClick={navigateToizin}>
+                        <Link href="/izin" as="button">
                             <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-md border-l-2 border-[#fdb714]">
                                 <div className="flex justify-between flex-grow px-6 py-6">
                                     <svg
@@ -428,9 +415,9 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                                     </div>
                                 </div>
                             </div>
-                        </button>
+                        </Link>
 
-                        <button onClick={navigateToRiwayat} className="mb-4">
+                        <Link href="/riwayat" as="button">
                             <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-2 border-[#fdb714]">
                                 <div className="flex justify-between flex-grow px-6 py-6">
                                     <svg
@@ -458,7 +445,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                                     </div>
                                 </div>
                             </div>
-                        </button>
+                        </Link>
 
                         <Card className="py-4 mb-4">
                             <CardHeader className="pb-3 pt-2 px-4 flex flex-row items-center justify-center relative">

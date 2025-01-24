@@ -79,6 +79,7 @@ class AdminAbsenController extends Controller
                     if($absen->status == 'la'){
                         $absen->status = 'hadir';
                         ($izin->jenis_lupa_absen == 'masuk') ? $absen->waktu_masuk = $izin->jam_lupa_absen : $absen->waktu_keluar = $izin->jam_lupa_absen;
+                        $absen->save();
                     }else{
                         $absen->status = $izin->jenis_izin;
                     }

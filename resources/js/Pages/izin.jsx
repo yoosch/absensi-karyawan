@@ -6,12 +6,14 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, T
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
 import {Spinner} from "@nextui-org/react";
 import { Inertia } from '@inertiajs/inertia';
+import { Head } from "@inertiajs/react";
 
 
 const Izin = ({user}) => {
     const [fileInfo, setFileInfo] = useState(null);
     const [error, setError] = useState("");
     const [isUploading, setIsUploading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
   
     const handleFileUpload = (file) => {
         const maxFileSize = 5 * 1024 * 1024; // Maksimal ukuran file 5MB
@@ -89,6 +91,7 @@ const Izin = ({user}) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(izin);
+        setIsLoading(true);
     
         const tanggalMulai = new Date(izin.tanggalMulai);
         const tanggalSelesai = new Date(izin.tanggalSelesai);
@@ -104,9 +107,11 @@ const Izin = ({user}) => {
         Inertia.post(route('izin.store'), izin, {
             onSuccess: () => {
                 console.log('Izin berhasil diajukan');
+                setIsLoading(false);
             },
             onError: (errors) => {
                 console.log('Terjadi kesalahan:', errors);
+                setIsLoading(false);
             }
         });
     };
@@ -150,6 +155,7 @@ const Izin = ({user}) => {
 
     return (
         <AuthenticatedLayout>
+            <Head title="Izin" />
             <div className="mt-6 px-8 md:px-32">
                 <form onSubmit={handleSubmit}>
                     <div className="mt-6">
@@ -316,7 +322,7 @@ const Izin = ({user}) => {
                     </div>
 
                     <div className="mt-6">
-                        <Button type="submit" className="w-full bg-[#213468] text-white" >
+                        <Button isDisabled={isLoading} type="submit" className="w-full bg-[#213468] text-white" >
                             Submit
                         </Button>
                     </div>

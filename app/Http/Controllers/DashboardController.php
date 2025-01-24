@@ -129,7 +129,7 @@ class DashboardController extends Controller
             $currentMonth = Carbon::now()->month;
             $currentYear = Carbon::now()->year;
             $total = Izin::where('nik', $user->nik)
-            ->where('jenis_izin', 'lupa absen')
+            ->where('jenis_izin', 'la')
             ->where('status_persetujuan', 'Disetujui')
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)  

@@ -25,6 +25,7 @@ import {
 import { Toaster, toast } from "sonner";
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Inertia } from "@inertiajs/inertia";
+import { Head } from "@inertiajs/react";
 
 export const columns = [
     { name: "NIK", uid: "nik" },
@@ -581,6 +582,7 @@ export default function absenCuti({ cutiData }) {
 
     return (
         <AdminLayout>
+            <Head title="Absen Cuti" />
             <div className="mt-[3%] mx-[5%]">
                 <Table
                     isHeaderSticky
