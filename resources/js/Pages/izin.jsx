@@ -53,8 +53,6 @@ const Izin = ({user}) => {
       event.stopPropagation();
     }, []);
 
-
-
     const [izin, setIzin] = useState({
         tipeIzin: '',
         jenisCuti: '',
@@ -180,6 +178,7 @@ const Izin = ({user}) => {
                                     onAction={(key) => setIzin({ ...izin, jenisCuti: key })}>
                                     <DropdownItem key="tahunan">Tahunan</DropdownItem>
                                     <DropdownItem key="sakit">Sakit</DropdownItem>
+                                    <DropdownItem key="khusus">Khusus / Melahirkan</DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </div>
@@ -242,8 +241,7 @@ const Izin = ({user}) => {
                         }
                         
                     </div>
-
-                    {izin.jenisCuti === "tahunan" && izin.tipeIzin === "cuti" && (
+                    {(izin.jenisCuti === "tahunan" || izin.jenisCuti ==="khusus") && izin.tipeIzin === "cuti" && (
                         <div className="mt-6">
                             <label className="block text-sm text-gray-600 mb-2">Alamat</label>
                             <Textarea

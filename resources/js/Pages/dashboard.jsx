@@ -561,43 +561,6 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                     </div>
                 </div>
             </div>
-            <div className="fixed bottom-4 right-4">
-                <Popover placement="bottom-end" showArrow={true}>
-                    <PopoverTrigger>
-                        <Button
-                            className="text-xs rounded-full"
-                            color="primary"
-                            variant="faded"
-                        >
-                            Total Jam Kerja
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                        <div className="px-4 py-2">
-                            <div className="text-sm">
-                                <p className="font-bold">
-                                    Total jam Kerja hari ini :
-                                </p>
-                                {absen ? (
-                                    <>
-                                        <p>Normal : {(absen.effectiveHours * 60).toFixed(2)} menit</p>
-                                        <p>Lembur : {
-                                        absen.lembur > 0 
-                                            ? `${(absen.lembur * 60).toFixed(2)} menit` 
-                                            : <span style={{ fontStyle: 'italic' }}>anda belum lembur</span>
-                                        }</p>
-                                    </>
-                                ) : (
-                                    <>
-                                        <p>Anda belum absen hari ini</p>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </PopoverContent>
-
-                </Popover>
-            </div>
         </AuthenticatedLayout>
     );
 }
