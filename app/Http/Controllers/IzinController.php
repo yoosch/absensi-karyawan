@@ -52,7 +52,6 @@ class IzinController extends Controller
 
         // dd($request->all());
     
-    
     $user = Auth::user();
     $izin = '';
 
@@ -73,17 +72,24 @@ class IzinController extends Controller
             'jenisCuti' => 'required|string',
         ]);
 
-        if($request->jenisCuti == 'tahunan'){
+        if($request->jenisCuti == 'tahunan' || $request->jenisCuti == 'khusus'){
 
             $request->validate([
                 'alamat' => 'required|string',
             ]);
 
-            $izin = 'c';
+            if ($request->jenisCuti == 'tahunan'){
+                $izin = 'c';
+            }
+            else if ($request->jenisCuti == 'khusus'){
+                $izin = 'k';
+            }
             $dataIzin['alamat_cuti'] = $request->alamat;
-        } else if($request->jenisCuti == 'sakit'){
+        } 
+        else if($request->jenisCuti == 'sakit'){
             $izin = 's';
         }
+
     } else if($request->tipeIzin == 'dinas'){
         $izin = 'dl';
     } else if($request->tipeIzin == 'lupa absen'){
@@ -118,6 +124,13 @@ class IzinController extends Controller
                 'public'
             );
         } 
+        else if($request->jenisCuti == "khusus"){
+            $filePath = $request->file('pathSurat')->storeAs(
+                'Surat_Pendukung_Cuti/Khusus/' . $user->nik . '_' . $user->name, 
+                $request->file('pathSurat')->getClientOriginalName(), 
+                'public'
+            );
+        }
     }
     else if ($request->tipeIzin == 'dinas') {
         $filePath = $request->file('pathSurat')->storeAs(

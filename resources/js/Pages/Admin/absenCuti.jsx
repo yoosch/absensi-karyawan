@@ -42,8 +42,9 @@ export const columns = [
 ];
 
 export const statusOptions = [
-    { name: "Tahunan", uid: "cuti tahunan" },
-    { name: "Sakit", uid: "cuti sakit" },
+    { name: "Tahunan", uid: "c" },
+    { name: "Sakit", uid: "s" },
+    { name: "Khusus", uid: "k" },
 ];
 
 export function capitalize(s) {

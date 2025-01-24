@@ -24,7 +24,7 @@ class AdminAbsenController extends Controller
 
     public function indexCuti()
     {
-        $cutiData = Izin::whereIn('jenis_izin', ['c', 's'])->get();
+        $cutiData = Izin::whereIn('jenis_izin', ['c', 's','k'])->get();
         foreach ($cutiData as $cuti) {
             $cuti->nama = User::where('nik', $cuti->nik)->first()->name;
             $cuti->email = User::where('nik', $cuti->nik)->first()->email;
