@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Laporan_Bulanan;
 use App\Models\Absen;
 use App\Models\User;
+use App\Models\Shift;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -24,85 +25,6 @@ class DashboardController extends Controller
         $laporan_bulanan = Laporan_Bulanan::where('nik', $user->nik)->get();
         $nik = $user->nik;  
         $user->path_foto = url("/preview/" . urlencode($user->path_foto));
-
-        //get today absen
-        $absen = Absen::where('nik', $nik)
-                ->whereDate('created_at', Carbon::today())
-                ->first();
-
-        if ($absen) {
-            $defaultInnPagi = '07:30';
-            if (Carbon::now()->dayOfWeek == 5) { //jumat
-                $breakTime = 1.5;
-                $defaultOutPagi = '16:30';
-                $absen->jamKerjaNormal = 6;
-            }
-            else {
-                $breakTime = 1;
-                $defaultOutPagi = '16:00';
-                $absen->jamKerjaNormal = 7.5;
-            }
-            $defaultInnSiang = '14:00';
-            $defaultOutSiang = '21:30';
-    
-            if ($user->shift == 'Pagi') {
-                $inn = $absen->waktu_masuk ?? $defaultInnPagi;
-                $out = $absen->waktu_keluar ?? $defaultOutPagi;
-            } 
-            elseif ($user->shift == 'Siang') {
-                $inn = $absen->waktu_masuk ?? $defaultInnSiang;
-                $out = $absen->waktu_keluar ?? $defaultOutSiang;
-            } 
-
-            if ($inn){
-                $waktu_masuk = Carbon::parse($inn);
-                $waktuSekarang = Carbon::now();
-            }
-    
-            $absen->waktu_kerja = $waktu_masuk->diffInHours($waktuSekarang);
-            $absen->kj = 0;
-            $absen->lembur = 0;
-            $absen->effectiveHours = 0;
-            $absen->telat = false;
-
-            if($absen->status == 'pending'){
-                $isDownloadable = false;
-            }
-
-            if($absen->status == 'la' || $absen->status == 'hadir'){
-                $effectiveHours = $absen->waktu_kerja - $breakTime;
-                $absen->effectiveHours = $effectiveHours;
-
-                if($effectiveHours < $absen->jamKerjaNormal){
-                    $absen->kj = $absen->jamKerjaNormal - $effectiveHours;
-                }
-                else{
-                    $absen->lembur = $effectiveHours - $absen->jamKerjaNormal;
-                }
-
-                $toleransiPagi = Carbon::parse('08:00:00');
-                $toleransiSiang = Carbon::parse('14:30:00');
-
-                if ($user->shift == 'Pagi'){
-                    if ($waktu_masuk > $toleransiPagi) {
-                        $absen->telat = true;
-                    }
-                    else {
-                        $absen->telat = false;
-                    }             
-                }
-                else if ($user->shift == 'Siang'){
-                    if ($waktu_masuk > $toleransiSiang) {
-                        $absen->telat = true;
-                    }
-                    else {
-                        $absen->telat = false;
-                    }             
-                }
-            }
-        }       
-        
-        // dd($absen);
 
         // dd($user);
         if($user->role == 'admin'){
@@ -138,7 +60,12 @@ class DashboardController extends Controller
             if($user->nyawa < 0){
                 $user->nyawa = 0;
             }
-            return Inertia::render('dashboard',['user' => $user, 'laporan_bulanan' => $laporan_bulanan, 'absen' => $absen]);   
+            
+            $shift = Shift::where('id', $user->shift)->first();
+            $user->jam_masuk = $shift->jam_masuk;
+            $user->jam_pulang = $shift->jam_pulang;
+            $user->shift = $shift->nama;
+            return Inertia::render('dashboard',['user' => $user, 'laporan_bulanan' => $laporan_bulanan]);   
         }
     }
 

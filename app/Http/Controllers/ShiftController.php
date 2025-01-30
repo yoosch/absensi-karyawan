@@ -22,18 +22,19 @@ class ShiftController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string',
-            'mulai_jam_masuk' => 'string',
-            'jam_masuk' => 'required|string',
-            'turning_point' => 'required|string',
-            'jam_keluar' => 'required|string',
-            'selesai_jam_keluar' => 'string',
-            'jam_kerja' => 'required|string',
-            'durasi_istirahat' => 'string',
-            'durasi_istirahat_jumat' => 'string',
-        ]);
-        return Shift::create($request->all());
+        $dataShift = new Shift();
+        $dataShift->nama = $request->nama;
+        $dataShift->mulai_jam_masuk = $request->mulaiJamMasuk ? $request->mulaiJamMasuk['hour'] . ':' . $request->mulaiJamMasuk['minute'] : null;
+        $dataShift->jam_masuk = $request->jamMasuk['hour'] . ':' . $request->jamMasuk['minute'];
+        $dataShift->turning_point = $request->turningPoint['hour'] . ':' . $request->turningPoint['minute'];
+        $dataShift->jam_keluar = $request->jamKeluar['hour'] . ':' . $request->jamKeluar['minute'];
+        $dataShift->selesai_jam_keluar = $request->selesaiJamKeluar ? $request->selesaiJamKeluar['hour'] . ':' . $request->selesaiJamKeluar['minute'] : null;
+        $dataShift->jam_kerja = $request->jamKerja;
+        $dataShift->durasi_istirahat = $request->durasiIstirahat;
+        $dataShift->durasi_istirahat_jumat =$request->durasiIstirahatJumat;
+        $dataShift->save();
+
+        return response()->json(['message' => 'Shift Berhasil Dibuat!']);
     }
 
     /**

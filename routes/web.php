@@ -8,6 +8,7 @@ use App\Http\Controllers\AbsenController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\ShiftController;
 
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DashboardController;

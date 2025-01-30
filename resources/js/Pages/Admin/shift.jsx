@@ -20,20 +20,22 @@ import {
     ModalBody,
     ModalFooter,
     useDisclosure,
+    TimeInput,
 } from "@nextui-org/react";
 import { Toaster, toast } from "sonner";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import { Inertia } from "@inertiajs/inertia";
+import axios from "axios";
 
 export const columns = [
     { name: "ID", uid: "id", sortable: true },
-    { name: "NAME", uid: "name", sortable: true },
-    { name: "LATITUDE", uid: "latitude", sortable: true },
-    { name: "LONGITUDE", uid: "longitude" },
-    { name: "RADIUS", uid: "radius" },
-    { name: "ACTIONS", uid: "actions" },
+    { name: "NAMA", uid: "nama", sortable: true },
+    { name: "JAM MASUK", uid: "jam_masuk", sortable: true },
+    { name: "TP", uid: "turning_point" },
+    { name: "JAM KELUAR", uid: "jam_keluar" },
+    { name: "DURASI ISTIRAHAT (MENIT)", uid: "durasi_istirahat" },
 ];
 
 export function capitalize(s) {
@@ -148,78 +150,93 @@ const statusColorMap = {
 
 
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "longitude", "latitude", "radius", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["nama", "jam_masuk", "turning_point", "jam_keluar", "durasi_istirahat", "actions"];
 
 export default function adminShift({ data }) {
-    const MapEvents = () => {
-        useMapEvents({
-            click(e) {
-                setPosition([e.latlng.lat, e.latlng.lng]); // update state with clicked location
-            },
-        });
-        console.log(position);
-        return null;
-    };
-    const [step, setStep] = useState(1);
     const [nama, setNama] = useState("");
-    const [radius, setRadius] = useState("");
-
-    const handleNext = () => {
-        setStep(2);
-    };
-
-    const handleBack = () => {
-        setStep(1);
-    };
+    const [jamMasuk, setJamMasuk] = useState("");
+    const [mulaiJamMasuk, setMulaiJamMasuk] = useState("");
+    const [turningPoint, setTurningPoint] = useState("");
+    const [jamKerja, setJamKerja] = useState(0);
+    const [jamKeluar, setJamKeluar] = useState("");
+    const [selesaiJamKeluar, setSelesaiJamKeluar] = useState("");
+    const [durasiIstirahat, setDurasiIstirahat] = useState(60);
+    const [durasiIstirahatJumat, setDurasiIstirahatJumat] = useState(90);
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
         const data = {
-            name: event.target[0].value,
-            radius: event.target[1].value,
-            radius: radius,
-            latitude: position[0],
-            longitude: position[1],
+            nama: nama,
+            jamMasuk: jamMasuk,
+            mulaiJamMasuk: mulaiJamMasuk,
+            turningPoint: turningPoint,
+            jamKerja: jamKerja,
+            jamKeluar: jamKeluar,
+            selesaiJamKeluar: selesaiJamKeluar,
+            durasiIstirahat: durasiIstirahat ? durasiIstirahat : 60,
+            durasiIstirahatJumat: durasiIstirahatJumat ? durasiIstirahatJumat : 90,
         }
         console.log("Submitting:", { data });
-        axios.post('/location', data)
+        axios.post('/shift', data)
             .then((response) => {
                 console.log(response);
-                toast.success("Berhasil menambahkan lokasi"), {
+                toast.success("Berhasil menambahkan Shift"), {
                     duration: 3000
                 };
-
-                setTimeout(() => {
-                    Inertia.visit('/lokasi');
-                }, 1000);
             });
 
         onOpenChange(false);
     };
 
-    const handleDeleteClick = (location) => {
-        setSelectedLocation(location);
+    const handleDeleteClick = (shift) => {
+        setSelectedShift(shift);
         setIsModalDeleteOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalDeleteOpen(false);
-        setSelectedLocation(null);
+        setSelectedShift(null);
     };
+
+    useEffect(() => {
+        console.log("jamMasuk", jamMasuk);
+        console.log("jamKeluar", jamKeluar);
+        console.log("durasi", durasiIstirahat);
+        const calculateJamKerja = () => {
+            if (!jamMasuk || !jamKeluar || !durasiIstirahat) return 0;
+
+            const jamMasukInMinutes = jamMasuk.hour * 60 + jamMasuk.minute;
+            const jamKeluarInMinutes = jamKeluar.hour * 60 + jamKeluar.minute;
+
+
+            const totalMinutes = jamKeluarInMinutes - jamMasukInMinutes - durasiIstirahat;
+
+            const totalHours = (totalMinutes / 60).toFixed(1);
+            return totalHours;
+        };
+
+        // Update state with the calculated value
+        setJamKerja(calculateJamKerja());
+    }, [jamMasuk, jamKeluar, durasiIstirahat]);
+
+
+
+
+
 
     const handleDeleteConfirm = (id) => {
         // console.log('Deleting pegawai with email : ${selectedPegawai.email}');
 
-        Inertia.delete(route("location.destroy", id), {
+        Inertia.delete(route("shift.destroy", id), {
             onSuccess: () => alert("Item deleted successfully"),
         });
 
         setIsModalOpen(false);
-        selectedLocation(null);
+        selectedShift(null);
     };
 
-    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [selectedShift, setSelectedShift] = useState(null);
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState(
@@ -236,11 +253,11 @@ export default function adminShift({ data }) {
     const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const locations = data;
+    const shifts = data;
 
     const [page, setPage] = React.useState(1);
 
-    const pages = Math.ceil(locations.length / rowsPerPage);
+    const pages = Math.ceil(shifts.length / rowsPerPage);
 
     const hasSearchFilter = Boolean(filterValue);
 
@@ -253,16 +270,16 @@ export default function adminShift({ data }) {
     }, [visibleColumns]);
 
     const filteredItems = React.useMemo(() => {
-        let filteredLocations = [...locations];
+        let filteredShifts = [...shifts];
 
         if (hasSearchFilter) {
-            filteredLocations = filteredLocations.filter((location) =>
-                location.name.toLowerCase().includes(filterValue.toLowerCase())
+            filteredShifts = filteredShifts.filter((shift) =>
+                shift.name.toLowerCase().includes(filterValue.toLowerCase())
             );
         }
 
-        return filteredLocations;
-    }, [locations, filterValue]);
+        return filteredShifts;
+    }, [shifts, filterValue]);
 
 
 
@@ -283,8 +300,8 @@ export default function adminShift({ data }) {
         });
     }, [sortDescriptor, items]);
 
-    const renderCell = React.useCallback((location, columnKey) => {
-        const cellValue = location[columnKey];
+    const renderCell = React.useCallback((shift, columnKey) => {
+        const cellValue = shift[columnKey];
 
         switch (columnKey) {
             case "actions":
@@ -304,12 +321,12 @@ export default function adminShift({ data }) {
                             <DropdownMenu>
                                 <DropdownItem
                                     key="edit"
-                                    onPress={() => handleEditPegawai(user)}
+                                    onPress={() => handleEditPegawai(shift)}
                                 >
                                     Edit
                                 </DropdownItem>
                                 <DropdownItem
-                                    onPress={() => handleDeleteClick(location)}
+                                    onPress={() => handleDeleteClick(shift)}
                                     key="delete"
                                 >
                                     Delete
@@ -401,13 +418,13 @@ export default function adminShift({ data }) {
                             size="sm"
                             onPress={onOpen}
                         >
-                            Tambahkan Lokasi
+                            Tambahkan Shift
                         </Button>
                     </div>
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-default-400 text-small">
-                        Total {locations.length} locations
+                        Total {shifts.length} shifts
                     </span>
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
@@ -429,7 +446,7 @@ export default function adminShift({ data }) {
         visibleColumns,
         onSearchChange,
         onRowsPerPageChange,
-        locations.length,
+        shifts.length,
         hasSearchFilter,
     ]);
 
@@ -521,7 +538,7 @@ export default function adminShift({ data }) {
                         )}
                     </TableHeader>
                     <TableBody
-                        emptyContent={"No locations found"}
+                        emptyContent={"No shift found"}
                         items={sortedItems}
                     >
                         {(item) => (
@@ -537,54 +554,134 @@ export default function adminShift({ data }) {
                 </Table>
             </div>
 
-            <Modal isOpen={isOpen}  onClose={() => onOpenChange(false)} placement="top-center">
+            <Modal isOpen={isOpen} onClose={() => onOpenChange(false)} placement="top-center">
                 <ModalContent>
-                    <ModalHeader>{"Tambah Lokasi"}</ModalHeader>
+                    <ModalHeader>{"Tambah Shift"}</ModalHeader>
                     <ModalBody>
-                        {step === 1 ? (
-                            // Step 1: Select Location on Map
-                            <>
-                                <div style={{ position: "relative", height: "400px", marginBottom: "20px" }}>
-                                    <MapContainer center={position} zoom={13} style={{ height: "100%", width: "100%" }}>
-                                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                        <MapEvents />
-                                        <Marker position={position} draggable={true} onDragend={(e) => setPosition([e.target.getLatLng().lat, e.target.getLatLng().lng])}>
-                                            <Popup>
-                                                <span>Location: {position[0]}, {position[1]}</span>
-                                            </Popup>
-                                        </Marker>
-                                    </MapContainer>
-                                </div>
-                                <ModalFooter style={{ justifyContent: "center" }}>
-                                    <Button colorScheme="blue" onClick={handleNext}>Next</Button>
-                                </ModalFooter>
-                            </>
-                        ) : (
-                            // Step 2: Fill out Name and Radius
-                            <form onSubmit={handleSubmit}>
-                                <div style={{ marginBottom: "15px" }}>
-                                    <Input
-                                        value={nama}
-                                        onChange={(e) => setNama(e.target.value)}
-                                        placeholder="Nama"
-                                        required
-                                    />
-                                </div>
-                                <div style={{ marginBottom: "15px" }}>
-                                    <Input
-                                        type="number"
-                                        value={radius}
-                                        onChange={(e) => setRadius(e.target.value)}
-                                        placeholder="Radius (KM)"
-                                        required
-                                    />
-                                </div>
-                                <ModalFooter style={{ justifyContent: "center" }}>
-                                    <Button colorScheme="blue" onClick={handleBack} style={{ marginRight: "10px" }}>Back</Button>
-                                    <Button type="submit" colorScheme="blue">Submit</Button>
-                                </ModalFooter>
-                            </form>
-                        )}
+                        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+                            <div className="col-span-2 mb-4">
+                                <Input
+                                    value={nama}
+                                    onChange={(e) => setNama(e.target.value)}
+                                    placeholder="Suhadi"
+                                    label="Nama"
+                                    labelPlacement="outside"
+                                    required
+                                    classNames={{
+                                        mainWrapper: "h-full",
+                                        input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                        inputWrapper:
+                                            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                    }}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <TimeInput
+                                    value={jamMasuk}
+                                    className=""
+                                    onChange={(time) => setJamMasuk(time)}
+                                    name="jamMasuk"
+                                    hourCycle={24}
+                                    label="Jam Masuk"
+                                    labelPlacement="outside"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <TimeInput
+                                    value={mulaiJamMasuk}
+                                    className=""
+                                    onChange={(time) => setMulaiJamMasuk(time)}
+                                    name="mulaiJamMasuk"
+                                    hourCycle={24}
+                                    label="Mulai Jam Masuk"
+                                    labelPlacement="outside"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <TimeInput
+                                    value={jamKeluar}
+                                    className=""
+                                    onChange={(time) => setJamKeluar(time)}
+                                    name="setJamKeluar"
+                                    hourCycle={24}
+                                    label="Jam Keluar"
+                                    labelPlacement="outside"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <TimeInput
+                                    value={selesaiJamKeluar}
+                                    className=""
+                                    onChange={(time) => setSelesaiJamKeluar(time)}
+                                    name="setSelesaiJamKeluar"
+                                    hourCycle={24}
+                                    label="Selesai Jam Keluar"
+                                    labelPlacement="outside"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <TimeInput
+                                    value={turningPoint}
+                                    className=""
+                                    onChange={(time) => setTurningPoint(time)}
+                                    name="setTurningPoint"
+                                    hourCycle={24}
+                                    label="Turning Point"
+                                    labelPlacement="outside"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <Input
+                                    isReadOnly
+                                    value={jamKerja}
+                                    className=""
+                                    name="setJamKerja"
+                                    label="Jam Kerja"
+                                    labelPlacement="outside"
+                                    classNames={{
+                                        mainWrapper: "h-full",
+                                        input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                        inputWrapper:
+                                            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                    }}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <Input
+                                    value={durasiIstirahat}
+                                    onChange={(e) => setDurasiIstirahat(e.target.value)}
+                                    name="setDurasiIstirahat"
+                                    label="Durasi Istirahat (menit)"
+                                    labelPlacement="outside"
+                                    classNames={{
+                                        mainWrapper: "h-full",
+                                        input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                        inputWrapper:
+                                            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                    }}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <Input
+                                    value={durasiIstirahatJumat}
+                                    onChange={(e) => setDurasiIstirahatJumat(e.target.value)}
+                                    name="setDurasiIstirahatJumat"
+                                    label="Durasi Istirahat Jumat"
+                                    labelPlacement="outside"
+                                    classNames={{
+                                        mainWrapper: "h-full",
+                                        input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                        inputWrapper:
+                                            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                    }}
+                                />
+                            </div>
+                            <div className="col-span-2 mb-4">
+                                <Button type="submit" color="primary" className="w-full">Submit</Button>
+                            </div>
+                        </form>
                     </ModalBody>
                 </ModalContent>
             </Modal>
