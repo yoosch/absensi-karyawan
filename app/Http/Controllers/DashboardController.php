@@ -62,9 +62,9 @@ class DashboardController extends Controller
             }
             
             $shift = Shift::where('id', $user->shift)->first();
-            $user->jam_masuk = $shift->jam_masuk;
-            $user->jam_pulang = $shift->jam_pulang;
-            $user->shift = $shift->nama;
+            $user->jam_masuk = $shift->jam_masuk ?? '00:00:00';
+            $user->jam_pulang = $shift->jam_pulang ?? '00:00:00';
+            $user->shift = $shift->nama ?? 'Tidak ada shift';
             return Inertia::render('dashboard',['user' => $user, 'laporan_bulanan' => $laporan_bulanan]);   
         }
     }

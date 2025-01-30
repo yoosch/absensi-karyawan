@@ -8,6 +8,56 @@ import { Head } from "@inertiajs/react";
   const Riwayat = ({dataAbsen}) => {
 
     console.log(dataAbsen);
+    const [filteredData, setFilteredData] = useState(dataAbsen);
+    const [Hadir, setHadir] = useState(0);
+    const [Izin, setIzin] = useState(0);
+    const [Alpha, setAlpha] = useState(0);
+
+
+
+
+
+    //set filtered data to dataAbsen until today date, not all day in month
+    useEffect(() => {
+      const today = new Date();
+      const filteredData = dataAbsen.filter((record) => {
+        const recordDate = new Date(record.tanggal);
+        return recordDate <= today;
+      });
+      setFilteredData(filteredData);
+
+
+      //count hadir, izin, alpha
+      let hadir = 0;
+      let izin = 0;
+      let alpha = 0;
+
+      filteredData.forEach((record) => {
+        if (record.status === 'hadir' || (record.status === 'la' && !isOverNoonInUTC7)) {
+          hadir++;
+        }
+        if (record.status === 'c' || record.status === 's' || record.status === 'dl' || record.status === 'pending' || record.status === 'k') {
+          izin++;
+        }
+        if (record.status === 'alpha' || (record.status === 'la' && isOverNoonInUTC7)) {
+          alpha++;
+        }
+      });
+
+      setHadir(hadir);
+      setIzin(izin);
+      setAlpha(alpha);
+
+    }, [dataAbsen]);
+
+    //check is over 12.00 or not utc+7 only one const not a funtion
+    const isOverNoonInUTC7 = new Date().toLocaleTimeString("en-US", { 
+      timeZone: "Asia/Bangkok", 
+      hour12: false, 
+      hour: "2-digit" 
+    }) >= 12;
+
+    
             
     const [currentDate, setCurrentDate] = useState(new Date());
     const monthsOfYear = [
@@ -29,12 +79,6 @@ import { Head } from "@inertiajs/react";
 
   const tanggalAwal = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const tanggalAkhir = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-
-  const attendanceStats = {
-    hadir: null,
-    izin: null,
-    alpha: null
-  };
 
   const handleBackClick = () => {
     window.history.back();  
@@ -60,16 +104,16 @@ import { Head } from "@inertiajs/react";
 
             {/* Attendance Stats */}
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-navy-700 rounded-lg p-4 bg-blue-900">
-                <div className="text-2xl font-bold text-white">{attendanceStats.hadir}</div>
+              <div className="rounded-lg p-4 bg-gradient-to-tr from-green-600 to-cyan-500">
+                <div className="text-2xl font-bold text-white">{Hadir}</div>
                 <div className="text-sm text-white">Hadir</div>
               </div>
-              <div className="bg-navy-700 rounded-lg p-4 bg-blue-900">
-                <div className="text-2xl font-bold text-white">{attendanceStats.izin}</div>
+              <div className="rounded-lg p-4 bg-gradient-to-tr from-orange-600 to-yellow-500">
+                <div className="text-2xl font-bold text-white">{Izin}</div>
                 <div className="text-sm text-white">Izin</div>
               </div>
-              <div className="bg-navy-700 rounded-lg p-4 bg-blue-900">
-                <div className="text-2xl font-bold text-white">{attendanceStats.alpha}</div>
+              <div className="rounded-lg p-4 bg-gradient-to-tr from-red-700 to-pink-500">
+                <div className="text-2xl font-bold text-white">{Alpha}</div>
                 <div className="text-sm text-white">Alpha</div>
               </div>
             </div>
@@ -84,7 +128,7 @@ import { Head } from "@inertiajs/react";
 
             {/* Attendance List */}
             <div className="space-y-2">
-            {dataAbsen.map((record, index) => (
+            {filteredData.map((record, index) => (
               (record.hari === 'Minggu' || record.hari === 'Sabtu') ? (
                 <div key={index} className="grid grid-cols-4 bg-green-50 p-4 rounded-lg text-sm border border-gray-200">
                   <div>{new Date(record.tanggal).toLocaleDateString('en-GB').replace(/\//g, '-')}</div>
@@ -117,15 +161,22 @@ import { Head } from "@inertiajs/react";
                   
                   {/* Status Handling */}
                   <div>
-                    {record.status === 'hadir' && (
-                      <Chip color="success" variant="flat">Hadir</Chip>
+                    {(record.status === 'hadir' || (record.status === 'la' && !isOverNoonInUTC7)) && (
+                      <Chip 
+                        classNames={{
+                          base: "bg-gradient-to-br from-green-600 to-cyan-500 border-small border-white/50 shadow-pink-500/30",
+                          content: "drop-shadow shadow-black text-white",
+                        }}
+                        size="sm"
+                      >Hadir
+                      </Chip>
                     )}
                     {(record.status === 'c' || record.status === 's') && (
                       <Chip color="secondary" variant="flat">
                         {record.status === 'c' ? 'Cuti' : 'Sakit'}
                       </Chip>
                     )}
-                    {record.status === 'alpha' && (
+                    {(record.status === 'alpha' || (record.status === 'la' && isOverNoonInUTC7)) && (
                       <Chip
                         classNames={{
                           base: "bg-gradient-to-br from-red-700 to-pink-500 border-small border-white/50 shadow-pink-500/30",
@@ -133,7 +184,7 @@ import { Head } from "@inertiajs/react";
                         }}
                         size="sm"
                       >
-                        Alpha
+                        {record.status === 'alpha' ? 'Alpha' : 'Lupa Absen'}
                       </Chip>
                     )}
                     {record.status === 'pending' && (

@@ -248,6 +248,23 @@ class AbsenController extends Controller
 
         return response()->json(['dataAbsen' => $dataAbsen, 'isDownloadable' => $isDownloadable, 'user' => $user]);
     }
+
+    public function countDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371; // km
+
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo = deg2rad($lat2);
+        $lonTo = deg2rad($lon2);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+        return $angle * $earthRadius;
+    }
     
 public function logAbsensi()
     {
@@ -255,13 +272,43 @@ public function logAbsensi()
         $data = User::all();
         $absen = Absen::all();
 
+        $location = Location::all();
+
         $absen = $absen->map(function ($item) {
             $item->hari = Carbon::parse($item->tanggal)->locale('id')->translatedFormat('l');
             $item->nama = User::where('nik', $item->nik)->first()->name;    
             $item->photo_masuk_url = $item->photo_masuk_url?url("/preview/" . urlencode($item->photo_masuk_url)):null;
             $item->photo_keluar_url = $item->photo_keluar_url?url("/preview/" . urlencode($item->photo_keluar_url)):null;
+            $item->distance_masuk = 0;
+            $item->distance_keluar = 0;
             return $item;
         });
+
+        foreach ($absen as $item) {
+
+            $koordinat_masuk = json_decode($item->koordinat_masuk);
+            $koordinat_keluar = json_decode($item->koordinat_keluar);
+            //count minimum of distance between user location and location in database
+
+            if($koordinat_masuk){
+                foreach($location as $loc){
+                    $distance = $this->countDistance($koordinat_masuk->latitude, $koordinat_masuk->longitude, $loc->latitude, $loc->longitude);
+                    if($distance < $item->distance_masuk || $item->distance_masuk == 0){
+                        //change to distance to meter and precision 2
+                        $item->distance_masuk = round($distance * 1000, 2);
+                    }
+                }
+            }
+
+            if($koordinat_keluar){
+                foreach($location as $loc){
+                    $distance = $this->countDistance($koordinat_keluar->latitude, $koordinat_keluar->longitude, $loc->latitude, $loc->longitude);
+                    if($distance < $item->distance_keluar || $item->distance_keluar == 0){
+                        $item->distance_keluar = round($distance * 1000, 2);
+                    }
+                }
+            }
+        }
         // dd($absen);
         return Inertia::render('Admin/logAbsensi', ['logAbsen' => $absen]);
     }

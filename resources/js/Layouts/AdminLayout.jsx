@@ -3,7 +3,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { HiArrowSmRight, HiChartPie, HiInbox,HiPencilAlt, HiDocumentText, HiShoppingBag, HiTable, HiUser, HiLocationMarker, HiViewBoards } from "react-icons/hi";
+import { HiArrowSmRight, HiChartPie, HiInbox,HiPencilAlt, HiDocumentText, HiShoppingBag, HiTable, HiUser, HiLocationMarker, HiViewBoards, HiOutlineIdentification } from "react-icons/hi";
 import { Sidebar } from "flowbite-react";
 import { Link, usePage } from '@inertiajs/react';
 
@@ -74,7 +74,7 @@ export default function AdminLayout({ header, children }) {
                         >
                             Lokasi 
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/shift' icon={HiLocationMarker} className={isActive('/shift') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        <Sidebar.Item as={Link} href='/shift' icon={HiOutlineIdentification} className={isActive('/shift') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
                         >
                             Shift 
                         </Sidebar.Item>

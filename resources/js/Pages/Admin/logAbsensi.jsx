@@ -211,6 +211,24 @@ export default function App({ logAbsen }) {
 
   const hasSearchFilter = Boolean(filterValue);
 
+  const judul  = (status) => {
+    if(status == 'la'){
+        return 'Lupa Absen';
+    }else if(status == 's'){
+        return 'Sakit';
+    }else if(status == 'c'){
+        return 'Cuti';
+    }else if(status == 'dl'){
+        return 'Dinas Luar';
+    }else if(status == 'alpha'){
+        return 'Alpha'; 
+    }else if(status == 'hadir'){
+        return 'Hadir';
+    }else if(status == 'pending'){
+      return 'Pending';
+    }
+  }
+
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
 
@@ -223,9 +241,11 @@ export default function App({ logAbsen }) {
     if (hasSearchFilter && filterValue) {
       const searchValue = filterValue.toLowerCase();
       filteredUser = filteredUser.filter((user) => {
-        const { nama} = user;
+        const { nama, status, nik } = user;
         return (
           nama?.toLowerCase().includes(searchValue)
+          || judul(status)?.toLowerCase().includes(searchValue)
+          || nik?.toLowerCase().includes(searchValue)
         );
       });
     }
@@ -269,23 +289,7 @@ export default function App({ logAbsen }) {
     });
   }, [sortDescriptor, items]);
 
-  const judul  = (status) => {
-    if(status == 'la'){
-        return 'Lupa Absen';
-    }else if(status == 's'){
-        return 'Sakit';
-    }else if(status == 'c'){
-        return 'Cuti';
-    }else if(status == 'dl'){
-        return 'Dinas Luar';
-    }else if(status == 'alpha'){
-        return 'Alpha'; 
-    }else if(status == 'hadir'){
-        return 'Hadir';
-    }else if(status == 'pending'){
-      return 'Pending';
-    }
-  }
+  
 
   const renderCell = React.useCallback((user, columnKey) => {
     switch (columnKey) {
@@ -320,7 +324,7 @@ export default function App({ logAbsen }) {
                 <p className="text-bold">{user.nama}</p>
                 <p className="text-default-600"><span className="text-bold text-black">IN: </span> {user.waktu_masuk}</p>
                 <p className="text-default-600"><span className="text-bold text-black">STATUS: </span> {judul(user.status)}</p>
-                <p className="text-default-600">Lokasi: 10 Meter Dari radius</p>
+                <p className="text-default-600">Lokasi: {user.distance_masuk} Meter Dari radius</p>
             </div>
         )
     case "detail_keluar":
@@ -330,7 +334,7 @@ export default function App({ logAbsen }) {
                 <p className="text-bold">{user.nama}</p>
                 <p className="text-default-600"><span className="text-bold">OUT: </span> {user.waktu_keluar}</p>
                 <p className="text-default-600"><span className="text-bold text-black">STATUS: </span> {judul(user.status)}</p>
-                <p className="text-default-600">Lokasi: 10 Meter Dari radius</p>
+                <p className="text-default-600">Lokasi: {user.distance_keluar} Meter Dari radius</p>
             </div>
         )
     case "tanggal":
@@ -399,7 +403,7 @@ export default function App({ logAbsen }) {
               input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
               inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
             }}
-            placeholder="Search by name..."
+            placeholder="Search anything..."
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
