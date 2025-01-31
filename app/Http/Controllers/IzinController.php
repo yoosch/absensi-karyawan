@@ -156,6 +156,14 @@ class IzinController extends Controller
     //Untuk Ubah Absen Ke Pending for date from tanggalMulai to tanggalSelesai
     $date = $request->tanggalMulai;
     while (strtotime($date) <= strtotime($request->tanggalSelesai)) {
+
+        //check if date is weekend
+        $day = date('D', strtotime($date));
+        if ($day == 'Sat' || $day == 'Sun') {
+            $date = date ("Y-m-d", strtotime("+1 day", strtotime($date)));
+            continue;
+        }
+        
         $absen = Absen::where('nik', $user->nik)->where('tanggal', $date)->first();
         if (!$absen) {
             $absen = new Absen();

@@ -161,7 +161,7 @@ export default function adminPegawai({ data }) {
         new Set(INITIAL_VISIBLE_COLUMNS)
     );
     const [statusFilter, setStatusFilter] = React.useState("all");
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [sortDescriptor, setSortDescriptor] = React.useState({
         column: "age",
         direction: "ascending",
@@ -415,7 +415,7 @@ export default function adminPegawai({ data }) {
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-default-400 text-small">
-                        Total {users.length} users
+                        Total {users.length} pegawai
                     </span>
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
@@ -426,6 +426,7 @@ export default function adminPegawai({ data }) {
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
+                            <option value="100">100</option>
                         </select>
                     </label>
                 </div>
@@ -529,7 +530,7 @@ export default function adminPegawai({ data }) {
                         )}
                     </TableHeader>
                     <TableBody
-                        emptyContent={"No users found"}
+                        emptyContent={"Tidak Ada Data Pegawai"}
                         items={sortedItems}
                     >
                         {(item) => (

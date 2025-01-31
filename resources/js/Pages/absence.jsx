@@ -5,7 +5,8 @@ import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content';
 import axios from "axios";
 import { Toaster, toast } from 'sonner'
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
+
 
 const MySwal = withReactContent(Swal)
 
@@ -18,6 +19,7 @@ const Absence = ({lokasi}) => {
     const [isWithinRadius, setIsWithinRadius] = useState(false);
 
     const [locations, setLocations] = useState(lokasi);
+    const url = usePage();
     
 
     const startCamera = () => {
@@ -34,6 +36,21 @@ const Absence = ({lokasi}) => {
             });
     };
 
+    const stopCamera = () => {
+        if (videoRef.current && videoRef.current.srcObject) {
+            const stream = videoRef.current.srcObject;
+            const tracks = stream.getTracks();
+    
+            // Stop all tracks in the stream
+            tracks.forEach((track) => {
+                track.stop(); // Stop each track
+            });
+    
+            // Clear the srcObject to release the camera
+            videoRef.current.srcObject = null;
+        }
+    };
+
     const capturePhoto = () => {
         if (videoRef.current && canvasRef.current) {
             const canvas = canvasRef.current;
@@ -48,14 +65,6 @@ const Absence = ({lokasi}) => {
             setCapturedPhoto(dataUrl);
             stopCamera();
             getCoordinates(); // Get GPS location
-        }
-    };
-
-    const stopCamera = () => {
-        if (videoRef.current && videoRef.current.srcObject) {
-            const tracks = videoRef.current.srcObject.getTracks();
-            tracks.forEach((track) => track.stop());
-            videoRef.current.srcObject = null;
         }
     };
     
@@ -109,6 +118,25 @@ const Absence = ({lokasi}) => {
             }
         });
     };
+
+    //check is now page is in absen, if not absen stopCamera with useEffect
+    useEffect(() => {
+        console.log(url);
+        console.log(url.url);
+        if (url.url === '/absen') {
+            startCamera();
+        } else {
+            stopCamera();
+        }
+
+        // Cleanup function to stop the camera when the component unmounts
+        return () => {
+            stopCamera();
+        };
+    }, [url]);
+    
+
+    
     
 
     

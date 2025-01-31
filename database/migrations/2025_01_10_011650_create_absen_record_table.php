@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('absen_record', function (Blueprint $table) {
             $table->id();
-            $table->string('nik')->index(); 
+            $table->string('nik'); 
             $table->date('tanggal')->index();
             $table->time('waktu_masuk')->nullable();
             $table->time('waktu_keluar')->nullable(); 
@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('photo_keluar_url')->nullable();
             $table->string('status')->default('alpha'); 
             $table->timestamps();
+
+
+            $table->foreign('nik')->references('nik')->on('users')->onUpdate('cascade');
         });
     }
 

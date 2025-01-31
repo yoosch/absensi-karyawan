@@ -41,40 +41,53 @@ export default function AdminLayout({ header, children }) {
 
     // Render the main admin layout for desktop users
     return (
-        <div className="flex h-screen overflow-x-hidden">
-            <Sidebar aria-label="Sidebar with logo branding example">
+        <div className="flex h-screen overflow-x-hidden bg-gray-50">
+            <Sidebar aria-label="Sidebar with logo branding example" className='min-h-fit bg-[#f9fafb]'>
                 <div className="flex justify-center my-4">
-                    <img src="putech.png" className="w-[80%]" alt="" />
+                    <Link href='/' className='w-[80%]'>
+                        <img src="putech.png"  alt="" />
+                    </Link>
                 </div>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
-                        <Sidebar.Item href="/dashboard" as={Link} icon={HiChartPie} className={isActive('/dashboard') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
+                        <Sidebar.Item href="/dashboard" as={Link} icon={HiChartPie} className={isActive('/dashboard') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}>
                             Dashboard
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/pegawai' icon={HiUser} className={isActive('/pegawai') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
+                        <Sidebar.Item as={Link} href='/pegawai' icon={HiUser} className={isActive('/pegawai') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}>
                             Pegawai
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiPencilAlt} className={isActive('/log-presensi') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
+                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiPencilAlt} className={isActive('/log-presensi') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}>
                             Presensi 
                         </Sidebar.Item>
-                        <Sidebar.Collapse icon={HiInbox} label="Perizinan" className={isActive('/absen-dinas') || isActive('/absen-cuti') || isActive('/absen-lupa-absen') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}>
-                            <Sidebar.Item as={Link} href="/absen-dinas" className={isActive('/absen-dinas') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        <Sidebar.Collapse 
+                            icon={HiInbox} 
+                            label="Perizinan" 
+                            className={'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
+                            //open when in sidebar item
+                            open={isActive('/absen-dinas') || isActive('/absen-cuti') || isActive('/absen-lupa-absen')}
+                            
+                        >
+                            <Sidebar.Item as={Link} href="/absen-dinas" className={isActive('/absen-dinas') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                             >Dinas</Sidebar.Item>
-                            <Sidebar.Item as={Link} href="/absen-cuti" className={isActive('/absen-cuti') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                            <Sidebar.Item as={Link} href="/absen-cuti" className={isActive('/absen-cuti') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                             >Cuti</Sidebar.Item>
-                            <Sidebar.Item as={Link} href="/absen-lupa-absen" className={isActive('/absen-lupa-absen') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                            <Sidebar.Item as={Link} href="/absen-lupa-absen" className={isActive('/absen-lupa-absen') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                             >Lupa Absen</Sidebar.Item>
                         </Sidebar.Collapse>
-                        <Sidebar.Collapse icon={ HiDocumentText} label="Laporan" className={isActive('/rekap-individu') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        <Sidebar.Collapse 
+                            icon={ HiDocumentText} 
+                            label="Laporan" 
+                            className={'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
+                            open={isActive('/rekap-individu')}
                         >
-                            <Sidebar.Item as={Link} href="/rekap-individu" className={isActive('/rekap-individu') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                            <Sidebar.Item as={Link} href="/rekap-individu" className={isActive('/rekap-individu') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                             >Rekap Individu</Sidebar.Item>
                         </Sidebar.Collapse>
-                        <Sidebar.Item as={Link} href='/location' icon={HiLocationMarker} className={isActive('/location') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        <Sidebar.Item as={Link} href='/location' icon={HiLocationMarker} className={isActive('/location') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                         >
                             Lokasi 
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/shift' icon={HiOutlineIdentification} className={isActive('/shift') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : ''}
+                        <Sidebar.Item as={Link} href='/shift' icon={HiOutlineIdentification} className={isActive('/shift') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                         >
                             Shift 
                         </Sidebar.Item>

@@ -202,7 +202,7 @@ export default function App({ dinasData }) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set());
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "age",
     direction: "ascending",
@@ -347,15 +347,21 @@ export default function App({ dinasData }) {
           </div>
         )
       case "status":
-                    return user.status_persetujuan === "Disetujui" ? (
-                      <Chip color="success" startContent={<CheckIcon size={18} />} variant="faded">
-                        Disetujui
-                      </Chip>
-                    ) : (
-                      <Chip color={user.status_persetujuan === "Ditolak" ? 'danger' : 'warning'} startContent={<WarningIcon size={18} />} variant="faded">
-                        {user.status_persetujuan === "Ditolak" ? 'Ditolak' : 'Pending'}
-                      </Chip>
-                    );
+                                return user.status_persetujuan === "Disetujui" ? (
+                                  <Chip color="success" variant="solid">
+                                    Disetujui
+                                  </Chip>
+                                ) : (
+                                  <Chip color={user.status_persetujuan === "Ditolak" ? 'danger' : 'warning'}  variant="solid">
+                                    {user.status_persetujuan === "Ditolak" ? 'Ditolak' : 'Pending'}
+                                  </Chip>
+                                );s
+                    case "deskripsi":
+                      return (
+                          <div className="whitespace-normal break-words max-w-44">
+                              {user.deskripsi}
+                          </div>
+                      );
 
       default:
         const cellValue = user[columnKey];
@@ -409,7 +415,7 @@ export default function App({ dinasData }) {
               input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
               inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
             }}
-            placeholder="Search by name..."
+            placeholder="Search by name / nik / email / description"
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
@@ -440,7 +446,7 @@ export default function App({ dinasData }) {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {user.length} user</span>
+          <span className="text-default-400 text-small">Total {user.length} record</span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -450,6 +456,7 @@ export default function App({ dinasData }) {
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
+              <option value="15">100</option>
             </select>
           </label>
         </div>
@@ -503,9 +510,6 @@ export default function App({ dinasData }) {
           aria-label="Example table with custom cells, pagination and sorting"
           bottomContent={bottomContent}
           bottomContentPlacement="outside"
-          classNames={{
-            wrapper: "max-h-[382px]",
-          }}
           selectedKeys={selectedKeys}
           selectionMode="=multiple"
           sortDescriptor={sortDescriptor}

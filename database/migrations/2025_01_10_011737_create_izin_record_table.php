@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('izin_record', function (Blueprint $table) {
             $table->id();
-            $table->string('nik')->foreign('nik')->references('nik')->on('users'); 
+            $table->string('nik');
             $table->string('jenis_izin');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
@@ -24,6 +24,9 @@ return new class extends Migration
             $table->string('jenis_lupa_absen')->nullable();
             $table->time('jam_lupa_absen')->nullable();
             $table->timestamps();
+
+
+            $table->foreign('nik')->references('nik')->on('users')->onUpdate('cascade');
         });
     }
 

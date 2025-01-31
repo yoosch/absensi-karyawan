@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('laporan_bulanan_record', function (Blueprint $table) {
             $table->id();
-            $table->string('nik')->foreign('nik')->references('nik')->on('users');
+            $table->string('nik');
             $table->string('nama');
             $table->string('bulan');
             $table->integer('tahun');
             $table->string('file_laporan');
             $table->timestamps();
+
+            $table->foreign('nik')->references('nik')->on('users')->onUpdate('cascade');
         });
     }
 

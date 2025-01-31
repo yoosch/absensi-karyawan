@@ -195,7 +195,7 @@ export default function App({ logAbsen }) {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set());
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortDescriptor, setSortDescriptor] = React.useState({
     column: "age",
     direction: "ascending",
@@ -434,7 +434,7 @@ export default function App({ logAbsen }) {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {user.length} absen</span>
+          <span className="text-default-400 text-small">Total {user.length} record</span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -444,6 +444,7 @@ export default function App({ logAbsen }) {
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
+              <option value="100">100</option>
             </select>
           </label>
         </div>
@@ -497,9 +498,6 @@ export default function App({ logAbsen }) {
           aria-label="Example table with custom cells, pagination and sorting"
           bottomContent={bottomContent}
           bottomContentPlacement="outside"
-          classNames={{
-            wrapper: "max-h-[382px]",
-          }}
           selectedKeys={selectedKeys}
           selectionMode="=multiple"
           sortDescriptor={sortDescriptor}
@@ -519,7 +517,7 @@ export default function App({ logAbsen }) {
               </TableColumn>
             )}
           </TableHeader>
-          <TableBody emptyContent={"No user found"} items={sortedItems}>
+          <TableBody emptyContent={"Tidak Ada Data Pegawai"} items={sortedItems}>
             {(item) => (
               <TableRow key={item.id}>
                 {(columnKey) => <TableCell>

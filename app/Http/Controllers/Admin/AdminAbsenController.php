@@ -59,6 +59,11 @@ class AdminAbsenController extends Controller
         //get date from izin->tanggal_mulai until izin->tanggal_selesai
         for($date = $izin->tanggal_mulai; $date <= $izin->tanggal_selesai; $date = date('Y-m-d', strtotime($date . ' +1 day'))){
             
+            $day = date('D', strtotime($date));
+            if ($day == 'Sat' || $day == 'Sun') {
+                continue;
+            }
+        
             $absen = Absen::where('nik', $izin->nik)->where('tanggal', $date)->first();
             if (!$absen) {
                 $absen = new Absen();

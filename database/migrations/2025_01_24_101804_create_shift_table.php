@@ -19,9 +19,9 @@ return new class extends Migration
             $table->time('turning_point');
             $table->time('jam_keluar');
             $table->time('selesai_jam_keluar')->default('23:59:59');
-            $table->float('jam_kerja', 7.5, 2);
-            $table->float('durasi_istirahat', 1, 2);
-            $table->float('durasi_istirahat_jumat', 1, 2);
+            $table->float('jam_kerja', 7.5, 2)->default(7.5);
+            $table->float('durasi_istirahat', 1, 2)->default(60);
+            $table->float('durasi_istirahat_jumat', 1, 2)->default(90);
             $table->timestamps();
         });
     }

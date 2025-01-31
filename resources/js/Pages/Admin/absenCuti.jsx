@@ -226,7 +226,7 @@ export default function absenCuti({ cutiData }) {
         new Set(INITIAL_VISIBLE_COLUMNS)
     );
     const [statusFilter, setStatusFilter] = React.useState("all");
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [sortDescriptor, setSortDescriptor] = React.useState({
         column: "age",
         direction: "ascending",
@@ -400,14 +400,33 @@ export default function absenCuti({ cutiData }) {
                 );
             case "status":
                           return user.status_persetujuan === "Disetujui" ? (
-                            <Chip color="success" startContent={<CheckIcon size={18} />} variant="faded">
+                            <Chip color="success" variant="solid">
                               Disetujui
                             </Chip>
                           ) : (
-                            <Chip color={user.status_persetujuan === "Ditolak" ? 'danger' : 'warning'} startContent={<WarningIcon size={18} />} variant="faded">
+                            <Chip color={user.status_persetujuan === "Ditolak" ? 'danger' : 'warning'}  variant="solid">
                               {user.status_persetujuan === "Ditolak" ? 'Ditolak' : 'Pending'}
                             </Chip>
                           );
+            case "deskripsi":
+                            return (
+                                <div className="whitespace-normal break-words max-w-44">
+                                    {user.deskripsi}
+                                </div>
+                            );
+            case "alamat":
+                                return (
+                                    <div className="whitespace-normal break-words w-40">
+                                        {user.alamat}
+                                    </div>
+                                );
+            case "jenis_cuti":
+                return (
+                    <div>
+                        {user.jenis_izin === "c" ? "Tahunan" : user.jenis_izin === "s" ? "Sakit" : "Khusus"}
+                    </div>
+
+                );
             default:
                 const cellValue = user[columnKey];
                 return cellValue;
@@ -526,7 +545,7 @@ export default function absenCuti({ cutiData }) {
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-default-400 text-small">
-                        Total {user.length} users
+                        Total {user.length} record
                     </span>
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
@@ -537,6 +556,7 @@ export default function absenCuti({ cutiData }) {
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
+                            <option value="100">100</option>
                         </select>
                     </label>
                 </div>
@@ -599,10 +619,7 @@ export default function absenCuti({ cutiData }) {
                     isHeaderSticky
                     aria-label="Example table with custom cells, pagination and sorting"
                     bottomContent={bottomContent}
-                    bottomContentPlacement="outside"
-                    classNames={{
-                        wrapper: "max-h-[382px]",
-                    }}
+                    bottomContentPlacement="outside"         
                     selectedKeys={selectedKeys}
                     selectionMode="multiple"
                     sortDescriptor={sortDescriptor}
@@ -627,7 +644,7 @@ export default function absenCuti({ cutiData }) {
                         )}
                     </TableHeader>
                     <TableBody
-                        emptyContent={"No users found"}
+                        emptyContent={"Tidak Ada Data"}
                         items={sortedItems}
                     >
                         {(item) => (

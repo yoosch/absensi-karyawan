@@ -33,13 +33,16 @@ import { Head } from "@inertiajs/react";
       let alpha = 0;
 
       filteredData.forEach((record) => {
-        if (record.status === 'hadir' || (record.status === 'la' && !isOverNoonInUTC7)) {
+        if(record.hari === 'Minggu' || record.hari === 'Sabtu') {
+          hadir+=0;
+        }
+        else if (record.status === 'hadir' || (record.status === 'la' && !isOverNoonInUTC7)) {
           hadir++;
         }
-        if (record.status === 'c' || record.status === 's' || record.status === 'dl' || record.status === 'pending' || record.status === 'k') {
+        else if (record.status === 'c' || record.status === 's' || record.status === 'dl' || record.status === 'pending' || record.status === 'k') {
           izin++;
         }
-        if (record.status === 'alpha' || (record.status === 'la' && isOverNoonInUTC7)) {
+        else if (record.status === 'alpha' || (record.status === 'la' && isOverNoonInUTC7)) {
           alpha++;
         }
       });

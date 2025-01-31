@@ -58,7 +58,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
     }, []);
 
     const handleFileUpload = (file) => {
-        const maxFileSize = 5 * 1024 * 1024;
+        const maxFileSize = 30 * 1024 * 1024;
         setIsUploading(true);
 
         setTimeout(() => {
@@ -67,7 +67,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                     setFileInfo(file.name);
                     setError("");
                 } else {
-                    setError("Ukuran file maksimal 5MB.");
+                    setError("Ukuran file maksimal 30 MB.");
                     setFileInfo(null);
                 }
             } else {
@@ -272,7 +272,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
             <Head title="Dashboard" />
             <div className="mt-6 md:px-32">
                 <div className="ml-8 flex justify-left items-center">
-                    <h1 className="animate-typing text-xl font-bold text-gray-800 whitespace-nowrap animate-marquee">
+                    <h1 className="animate-typing text-xs font-bold text-gray-800 whitespace-nowrap animate-marquee">
                         <span ref={textElementRef}></span>
                         <span
                             className="text-2xl"
