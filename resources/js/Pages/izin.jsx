@@ -3,8 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useDropzone } from 'react-dropzone';
 import { DateRangePicker, DatePicker, TimeInput } from "@nextui-org/react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Input, Textarea } from "@nextui-org/react";
-import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
-import {Spinner} from "@nextui-org/react";
+import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { Inertia } from '@inertiajs/inertia';
 import { Head } from "@inertiajs/react";
 

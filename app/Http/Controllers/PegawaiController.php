@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Shift;
 use Inertia\Inertia;
 
 class PegawaiController extends Controller
@@ -21,10 +22,12 @@ class PegawaiController extends Controller
             $item->avatar = 'https://i.pravatar.cc/150?u=a042581f4e29026024d';
         }
 
+        $shift = Shift::all();
+
         // dd($data);
 
         
-        return Inertia::render('Admin/adminPegawai', ['data' => $data]);
+        return Inertia::render('Admin/adminPegawai', ['data' => $data, 'shift' => $shift]);
     }
 
     /**

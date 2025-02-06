@@ -16,13 +16,13 @@ import {
     TableRow,
     Paper,
     alpha,
-} from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
+} from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import { Spinner, Button } from "@nextui-org/react";
-import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx';
-import { Toaster, toast } from 'sonner';
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
+import { Toaster, toast } from "sonner";
 
 import axios from "axios";
 
@@ -49,9 +49,6 @@ const ExportTable = ({ filteredRows, loading }) => {
         </div>
     );
 };
-
-
-
 
 export default function rekap({ data, absen }) {
     const [value, setValue] = useState("Select option...");
@@ -87,7 +84,9 @@ export default function rekap({ data, absen }) {
     });
 
     const year = new Date().getFullYear();
-    const month = new Date().getMonth();
+    const month = new Date().toLocaleDateString("en-GB", {
+        month: "2-digit",
+    });
     const years = Array.from({ length: 4 }, (_, i) => year - 3 + i);
 
     const [selectedNik, setSelectedNik] = useState(null);
@@ -129,7 +128,9 @@ export default function rekap({ data, absen }) {
     const handleFilter = () => {
         setLoading(true); // Start loading
         axios
-            .get(`/rekap-individu/${selectedNik.nik}/${selectedBulan}/${selectedPeriode}`)
+            .get(
+                `/rekap-individu/${selectedNik.nik}/${selectedBulan}/${selectedPeriode}`
+            )
             .then((response) => {
                 console.log(response.data);
                 setFilteredRows(response.data.dataAbsen);
@@ -143,12 +144,11 @@ export default function rekap({ data, absen }) {
             .finally(() => {
                 setLoading(false); // Stop loading
             });
-
     };
-
 
     return (
         <AdminLayout>
+            <Head title="Rekap Individu" />
             <div className="mt-[3%] mx-[5%]">
                 <div className="w-full border-b-2">
                     <h1 className="font-bold">FILTER</h1>
@@ -247,18 +247,18 @@ export default function rekap({ data, absen }) {
                             value={selectedBulan}
                             onChange={handleBulanChange}
                         >
-                            <option value="january">January</option>
-                            <option value="february">February</option>
-                            <option value="march">March</option>
-                            <option value="april">April</option>
-                            <option value="may">May</option>
-                            <option value="june">June</option>
-                            <option value="july">July</option>
-                            <option value="august">August</option>
-                            <option value="september">September</option>
-                            <option value="october">October</option>
-                            <option value="november">November</option>
-                            <option value="december">December</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
                         </select>
                     </div>
                 </div>
@@ -289,98 +289,181 @@ export default function rekap({ data, absen }) {
                                             Tanggal
                                         </TableCell>
                                         <TableCell align="center">In</TableCell>
-                                        <TableCell align="center">Out</TableCell>
-                                        <TableCell align="center">Masuk</TableCell>
-                                        <TableCell align="center">Telat</TableCell>
-                                        <TableCell align="center">Alpha</TableCell>
+                                        <TableCell align="center">
+                                            Out
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            Masuk
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            Telat
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            Alpha
+                                        </TableCell>
                                         <TableCell align="center">DL</TableCell>
                                         <TableCell align="center">C</TableCell>
                                         <TableCell align="center">S</TableCell>
                                         <TableCell align="center">LA</TableCell>
                                         <TableCell align="center">WK</TableCell>
                                         <TableCell align="center">KJ</TableCell>
+                                        <TableCell align="center">L</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {loading && <Spinner />}
-                                    {filteredRows.length > 0 ? (
+                                    {!loading && filteredRows.length > 0 ? (
                                         filteredRows.map((row, index) => (
-                                            <TableRow key={index}
-                                                className={`${row.hari === "Sabtu" || row.hari === "Minggu" ? "bg-green-200" : ""
-                                                    }`}>
-                                                <TableCell align="center">{row.hari}</TableCell>
-                                                <TableCell align="center">{row.tanggal}</TableCell>
-                                                <TableCell align="center">{row.inn}</TableCell>
-                                                <TableCell align="center">{row.out}</TableCell>
+                                            <TableRow
+                                                key={index}
+                                                className={`${
+                                                    row.hari === "Sabtu" ||
+                                                    row.hari === "Minggu"
+                                                        ? "bg-green-200"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <TableCell align="center">
+                                                    {row.hari}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.formatted_tanggal}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.inn}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.out}
+                                                </TableCell>
                                                 <TableCell align="center">
                                                     {row.masuk && (
                                                         <div>
-                                                            <CheckIcon style={{ color: 'green' }} />
-                                                            <span className="hidden">✓</span>
+                                                            <CheckIcon
+                                                                style={{
+                                                                    color: "green",
+                                                                }}
+                                                            />
+                                                            <span className="hidden">
+                                                                ✓
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {row.telat && (
                                                         <div>
-                                                            <CheckIcon style={{ color: 'green' }} />
-                                                            <span className="hidden">✓</span>
+                                                            <CheckIcon
+                                                                style={{
+                                                                    color: "green",
+                                                                }}
+                                                            />
+                                                            <span className="hidden">
+                                                                ✓
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {row.alpha && (
                                                         <div>
-                                                            <CheckIcon style={{ color: 'green' }} />
-                                                            <span className="hidden">✓</span>
+                                                            <CheckIcon
+                                                                style={{
+                                                                    color: "green",
+                                                                }}
+                                                            />
+                                                            <span className="hidden">
+                                                                ✓
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {row.dl && (
                                                         <div>
-                                                            <CheckIcon style={{ color: 'green' }} />
-                                                            <span className="hidden">✓</span>
+                                                            <CheckIcon
+                                                                style={{
+                                                                    color: "green",
+                                                                }}
+                                                            />
+                                                            <span className="hidden">
+                                                                ✓
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {row.c && (
                                                         <div>
-                                                            <CheckIcon style={{ color: 'green' }} />
-                                                            <span className="hidden">✓</span>
+                                                            <CheckIcon
+                                                                style={{
+                                                                    color: "green",
+                                                                }}
+                                                            />
+                                                            <span className="hidden">
+                                                                ✓
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {row.s && (
                                                         <div>
-                                                            <CheckIcon style={{ color: 'green' }} />
-                                                            <span className="hidden">✓</span>
+                                                            <CheckIcon
+                                                                style={{
+                                                                    color: "green",
+                                                                }}
+                                                            />
+                                                            <span className="hidden">
+                                                                ✓
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     {row.la && (
                                                         <div>
-                                                            <CheckIcon style={{ color: 'green' }} />
-                                                            <span className="hidden">✓</span>
+                                                            <CheckIcon
+                                                                style={{
+                                                                    color: "green",
+                                                                }}
+                                                            />
+                                                            <span className="hidden">
+                                                                ✓
+                                                            </span>
                                                         </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                    {row.hari === 'Sabtu' || row.hari === 'Minggu' ? null : row.wk}
+                                                    {row.hari === "Sabtu" ||
+                                                    row.hari === "Minggu"
+                                                        ? null
+                                                        : row.wk}
                                                 </TableCell>
 
-                                                <TableCell align="center">{row.hari === 'Sabtu' || row.hari === 'Minggu' ? null : row.kj}</TableCell>
-
-
+                                                <TableCell align="center">
+                                                    {row.hari === "Sabtu" ||
+                                                    row.hari === "Minggu"
+                                                        ? null
+                                                        : row.kj}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.hari === "Sabtu" ||
+                                                    row.hari === "Minggu"
+                                                        ? null
+                                                        : row.lembur}
+                                                </TableCell>
                                             </TableRow>
                                         ))
                                     ) : (
                                         <TableRow>
-                                            <TableCell align="center" colSpan={13}>
-                                                Tidak ada Data
+                                            <TableCell
+                                                align="center"
+                                                colSpan={13}
+                                            >
+                                                {loading ? (
+                                                    <Spinner />
+                                                ) : (
+                                                    "Tidak ada data"
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     )}
@@ -391,8 +474,12 @@ export default function rekap({ data, absen }) {
                 </div>
             </div>
             {/* Export to XLSX Button */}
-            <div className='flex mx-[5%] justify-end'>
-                <IndividuRecord filteredRows={filteredRows} isDownloadable={isDownloadable} user={dataUser} />
+            <div className="flex mx-[5%] justify-end">
+                <IndividuRecord
+                    filteredRows={filteredRows}
+                    isDownloadable={isDownloadable}
+                    user={dataUser}
+                />
             </div>
         </AdminLayout>
     );

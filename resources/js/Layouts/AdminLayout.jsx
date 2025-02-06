@@ -42,7 +42,7 @@ export default function AdminLayout({ header, children }) {
     // Render the main admin layout for desktop users
     return (
         <div className="flex h-screen overflow-x-hidden bg-gray-50">
-            <Sidebar aria-label="Sidebar with logo branding example" className='min-h-fit bg-[#f9fafb]'>
+            <Sidebar aria-label="Sidebar with logo branding example" className='min-h-fit bg-[#f9fafb] w-[15%]'>
                 <div className="flex justify-center my-4">
                     <Link href='/' className='w-[80%]'>
                         <img src="putech.png"  alt="" />
@@ -78,10 +78,12 @@ export default function AdminLayout({ header, children }) {
                             icon={ HiDocumentText} 
                             label="Laporan" 
                             className={'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
-                            open={isActive('/rekap-individu')}
+                            open={isActive('/rekap-individu') || isActive('/laporan-bulanan')}
                         >
                             <Sidebar.Item as={Link} href="/rekap-individu" className={isActive('/rekap-individu') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                             >Rekap Individu</Sidebar.Item>
+                            <Sidebar.Item as={Link} href="/laporan-bulanan" className={isActive('/laporan-bulanan') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
+                            >Laporan Bulanan</Sidebar.Item>
                         </Sidebar.Collapse>
                         <Sidebar.Item as={Link} href='/location' icon={HiLocationMarker} className={isActive('/location') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
                         >
@@ -95,7 +97,7 @@ export default function AdminLayout({ header, children }) {
                 </Sidebar.Items>
             </Sidebar>
 
-            <div className="flex flex-col w-screen">
+            <div className="flex flex-col w-[85%]">
                 <nav className="py-2 pr-4 bg-[#04042A] border-[#FECE00] border-b-4">
                     <div className="hidden sm:flex sm:items-center sm:justify-end">
                         <div className="flex items-center space-x-4">

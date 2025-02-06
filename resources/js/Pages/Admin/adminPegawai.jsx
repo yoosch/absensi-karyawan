@@ -26,6 +26,7 @@ import {
 import AdminLayout from "@/Layouts/AdminLayout";
 import { Toaster,toast } from "sonner";
 import { Inertia } from "@inertiajs/inertia";
+import { Head } from "@inertiajs/react"
 import axios from "axios";
 
 export const columns = [
@@ -154,7 +155,7 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "nik", "actions"];
 
-export default function adminPegawai({ data }) {
+export default function adminPegawai({ data, shift }) {
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState(
@@ -492,6 +493,7 @@ export default function adminPegawai({ data }) {
 
     return (
         <AdminLayout>
+            <Head title="Pegawai" />
             <div className="m-4 px-4 py-3 rounded-lg bg-white">
                 <Table
                     isCompact
@@ -615,12 +617,11 @@ export default function adminPegawai({ data }) {
                                                 }
                                                 className="h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20 text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0 w-full mt-1 p-2 rounded"
                                             >
-                                                <option value="Pagi">
-                                                    Pagi
-                                                </option>
-                                                <option value="Siang">
-                                                    Siang
-                                                </option>
+                                                {
+                                                    shift.map((shift) => (
+                                                        <option key={shift.id} value={shift.id}>{shift.nama}</option>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
                                     </div>

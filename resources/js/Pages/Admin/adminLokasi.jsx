@@ -26,6 +26,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaf
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import { Inertia } from "@inertiajs/inertia";
+import { Head } from "@inertiajs/react";
 
 export const columns = [
     { name: "ID", uid: "id", sortable: true },
@@ -484,6 +485,7 @@ export default function adminLokasi({ data }) {
 
     return (
         <AdminLayout>
+            <Head title="Lokasi" />
             <div className="m-4 px-4 py-3 rounded-lg bg-white">
                 <Table
                     isCompact

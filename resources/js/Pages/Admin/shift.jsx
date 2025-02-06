@@ -21,13 +21,13 @@ import {
     ModalFooter,
     useDisclosure,
     TimeInput,
+    Tooltip
 } from "@nextui-org/react";
 import { Toaster, toast } from "sonner";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
-import L from "leaflet";
-import 'leaflet/dist/leaflet.css';
+import { Head } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 import axios from "axios";
+import { Time } from "@internationalized/date";
 
 export const columns = [
     { name: "ID", uid: "id", sortable: true },
@@ -36,6 +36,7 @@ export const columns = [
     { name: "TP", uid: "turning_point" },
     { name: "JAM KELUAR", uid: "jam_keluar" },
     { name: "DURASI ISTIRAHAT (MENIT)", uid: "durasi_istirahat" },
+    { name: "ACTIONS", uid: "actions" },
 ];
 
 export function capitalize(s) {
@@ -163,36 +164,89 @@ export default function adminShift({ data }) {
     const [durasiIstirahat, setDurasiIstirahat] = useState(60);
     const [durasiIstirahatJumat, setDurasiIstirahatJumat] = useState(90);
 
+
+    //edit
+    const [isEdit, setIsEdit] = useState(false);
+    const [editNama, setEditNama] = useState("");
+    const [editJamMasuk, setEditJamMasuk] = useState("");
+    const [editMulaiJamMasuk, setEditMulaiJamMasuk] = useState("");
+    const [editTurningPoint, setEditTurningPoint] = useState("");
+    const [editJamKerja, setEditJamKerja] = useState(0);
+    const [editJamKeluar, setEditJamKeluar] = useState("");
+    const [editSelesaiJamKeluar, setEditSelesaiJamKeluar] = useState("");
+    const [editDurasiIstirahat, setEditDurasiIstirahat] = useState(60);
+    const [editDurasiIstirahatJumat, setEditDurasiIstirahatJumat] = useState(90);
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        const data = {
-            nama: nama,
-            jamMasuk: jamMasuk,
-            mulaiJamMasuk: mulaiJamMasuk,
-            turningPoint: turningPoint,
-            jamKerja: jamKerja,
-            jamKeluar: jamKeluar,
-            selesaiJamKeluar: selesaiJamKeluar,
-            durasiIstirahat: durasiIstirahat ? durasiIstirahat : 60,
-            durasiIstirahatJumat: durasiIstirahatJumat ? durasiIstirahatJumat : 90,
+        if(isEdit) {
+            const data = {
+                nama: editNama,
+                jamMasuk: editJamMasuk,
+                mulaiJamMasuk: editMulaiJamMasuk,
+                turningPoint: editTurningPoint,
+                jamKerja: editJamKerja,
+                jamKeluar: editJamKeluar,
+                selesaiJamKeluar: editSelesaiJamKeluar,
+                durasiIstirahat: editDurasiIstirahat ? editDurasiIstirahat : 60,
+                durasiIstirahatJumat: editDurasiIstirahatJumat ? editDurasiIstirahatJumat : 90,
+            }
+            console.log("Submitting:", { data });
+            axios.put(`/shift/${selectedShift.id}`, data)
+                .then((response) => {
+                    console.log(response);
+                    toast.success("Berhasil mengedit Shift"), {
+                        duration: 3000
+                    };
+                });
+        }else{
+            const data = {
+                nama: nama,
+                jamMasuk: jamMasuk,
+                mulaiJamMasuk: mulaiJamMasuk,
+                turningPoint: turningPoint,
+                jamKerja: jamKerja,
+                jamKeluar: jamKeluar,
+                selesaiJamKeluar: selesaiJamKeluar,
+                durasiIstirahat: durasiIstirahat ? durasiIstirahat : 60,
+                durasiIstirahatJumat: durasiIstirahatJumat ? durasiIstirahatJumat : 90,
+            }
+            console.log("Submitting:", { data });
+            axios.post('/shift', data)
+                .then((response) => {
+                    console.log(response);
+                    toast.success("Berhasil menambahkan Shift"), {
+                        duration: 3000
+                    };
+                });
         }
-        console.log("Submitting:", { data });
-        axios.post('/shift', data)
-            .then((response) => {
-                console.log(response);
-                toast.success("Berhasil menambahkan Shift"), {
-                    duration: 3000
-                };
-            });
 
         onOpenChange(false);
-    };
+    };  
 
     const handleDeleteClick = (shift) => {
-        setSelectedShift(shift);
         setIsModalDeleteOpen(true);
+        setSelectedShift(shift);
+
     };
+
+    const handleEditClick = (shift) => {
+        console.log(shift);
+        setSelectedShift(shift);
+        setEditNama(shift.nama);
+        setEditJamMasuk(new Time(...((shift.jam_masuk).split(":").map(Number))));
+        setEditMulaiJamMasuk(new Time(...((shift.mulai_jam_masuk).split(":").map(Number))));
+        setEditTurningPoint(new Time(...((shift.turning_point).split(":").map(Number))));
+        setEditJamKerja(shift.jam_kerja);
+        setEditJamKeluar(new Time(...((shift.jam_keluar).split(":").map(Number))));
+        setEditSelesaiJamKeluar(new Time(...((shift.selesai_jam_keluar).split(":").map(Number))));
+        setEditDurasiIstirahat(shift.durasi_istirahat);
+        setEditDurasiIstirahatJumat(shift.durasi_istirahat_jumat);
+        setIsEdit(true);
+        onOpenChange(true);
+
+    };    
 
     const handleCloseModal = () => {
         setIsModalDeleteOpen(false);
@@ -221,6 +275,28 @@ export default function adminShift({ data }) {
     }, [jamMasuk, jamKeluar, durasiIstirahat]);
 
 
+    useEffect(() => {
+        console.log("edit jamMasuk", editJamMasuk);
+        console.log("edit jamKeluar", editJamKeluar);
+        console.log("edit durasi", editDurasiIstirahat);
+        const calculateJamKerja = () => {
+            if (!editJamMasuk || !editJamKeluar || !editDurasiIstirahat) return 0;
+
+            const jamMasukInMinutes = editJamMasuk.hour * 60 + editJamMasuk.minute;
+            const jamKeluarInMinutes = editJamKeluar.hour * 60 + editJamKeluar.minute;
+
+
+            const totalMinutes = jamKeluarInMinutes - jamMasukInMinutes - durasiIstirahat;
+
+            const totalHours = (totalMinutes / 60).toFixed(1);
+            return totalHours;
+        };
+
+        // Update state with the calculated value
+        setEditJamKerja(calculateJamKerja());
+    }, [editJamMasuk, editJamKeluar, editDurasiIstirahat]);
+
+
 
 
 
@@ -233,7 +309,7 @@ export default function adminShift({ data }) {
         });
 
         setIsModalOpen(false);
-        selectedShift(null);
+        selectedShift(null);    
     };
 
     const [selectedShift, setSelectedShift] = useState(null);
@@ -321,7 +397,7 @@ export default function adminShift({ data }) {
                             <DropdownMenu>
                                 <DropdownItem
                                     key="edit"
-                                    onPress={() => handleEditPegawai(shift)}
+                                    onPress={() => handleEditClick(shift)}
                                 >
                                     Edit
                                 </DropdownItem>
@@ -554,15 +630,25 @@ export default function adminShift({ data }) {
                 </Table>
             </div>
 
-            <Modal isOpen={isOpen} onClose={() => onOpenChange(false)} placement="top-center">
+            <Modal isOpen={isOpen} onClose={() => {
+                                                    onOpenChange(false);
+                                                    setIsEdit(false);
+                                                }} placement="top-center">
                 <ModalContent>
                     <ModalHeader>{"Tambah Shift"}</ModalHeader>
                     <ModalBody>
                         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
                             <div className="col-span-2 mb-4">
                                 <Input
-                                    value={nama}
-                                    onChange={(e) => setNama(e.target.value)}
+                                    isRequired
+                                    value={isEdit ? editNama : nama}
+                                    onChange={(e) => {
+                                        if (isEdit) {
+                                            setEditNama(e.target.value);
+                                        } else {
+                                            setNama(e.target.value);
+                                        }
+                                    }}
                                     placeholder="Suhadi"
                                     label="Nama"
                                     labelPlacement="outside"
@@ -577,9 +663,10 @@ export default function adminShift({ data }) {
                             </div>
                             <div className="mb-4">
                                 <TimeInput
-                                    value={jamMasuk}
+                                    isRequired
+                                    value={isEdit ? editJamMasuk : jamMasuk}
                                     className=""
-                                    onChange={(time) => setJamMasuk(time)}
+                                    onChange={(time) => {isEdit ? setEditJamMasuk(time) : setJamMasuk(time)}}
                                     name="jamMasuk"
                                     hourCycle={24}
                                     label="Jam Masuk"
@@ -589,9 +676,9 @@ export default function adminShift({ data }) {
                             </div>
                             <div className="mb-4">
                                 <TimeInput
-                                    value={mulaiJamMasuk}
+                                    value={isEdit ? editMulaiJamMasuk : mulaiJamMasuk}
                                     className=""
-                                    onChange={(time) => setMulaiJamMasuk(time)}
+                                    onChange={(time) => {isEdit ? setEditMulaiJamMasuk(time) : setMulaiJamMasuk(time)}}
                                     name="mulaiJamMasuk"
                                     hourCycle={24}
                                     label="Mulai Jam Masuk"
@@ -600,9 +687,10 @@ export default function adminShift({ data }) {
                             </div>
                             <div className="mb-4">
                                 <TimeInput
-                                    value={jamKeluar}
+                                    isRequired
+                                    value={isEdit ? editJamKeluar : jamKeluar}
                                     className=""
-                                    onChange={(time) => setJamKeluar(time)}
+                                    onChange={(time) => {isEdit ? setEditJamKeluar(time) : setJamKeluar(time)}}
                                     name="setJamKeluar"
                                     hourCycle={24}
                                     label="Jam Keluar"
@@ -612,9 +700,9 @@ export default function adminShift({ data }) {
                             </div>
                             <div className="mb-4">
                                 <TimeInput
-                                    value={selesaiJamKeluar}
+                                    value={isEdit ? editSelesaiJamKeluar : selesaiJamKeluar}
                                     className=""
-                                    onChange={(time) => setSelesaiJamKeluar(time)}
+                                    onChange={(time) => {isEdit ? setEditSelesaiJamKeluar(time) : setSelesaiJamKeluar(time)}}
                                     name="setSelesaiJamKeluar"
                                     hourCycle={24}
                                     label="Selesai Jam Keluar"
@@ -623,19 +711,20 @@ export default function adminShift({ data }) {
                             </div>
                             <div className="mb-4">
                                 <TimeInput
-                                    value={turningPoint}
+                                    isRequired
+                                    value={isEdit ? editTurningPoint : turningPoint}
                                     className=""
-                                    onChange={(time) => setTurningPoint(time)}
+                                    onChange={(time) => {isEdit ? setEditTurningPoint(time) : setTurningPoint(time)}}
                                     name="setTurningPoint"
                                     hourCycle={24}
-                                    label="Turning Point"
+                                    label="Turning Point 🛈"
                                     labelPlacement="outside"
                                 />
                             </div>
                             <div className="mb-4">
                                 <Input
                                     isReadOnly
-                                    value={jamKerja}
+                                    value={isEdit ? editJamKerja : jamKerja}
                                     className=""
                                     name="setJamKerja"
                                     label="Jam Kerja"
@@ -650,8 +739,8 @@ export default function adminShift({ data }) {
                             </div>
                             <div className="mb-4">
                                 <Input
-                                    value={durasiIstirahat}
-                                    onChange={(e) => setDurasiIstirahat(e.target.value)}
+                                    value={isEdit ? editDurasiIstirahat : durasiIstirahat}
+                                    onChange={(e) => {isEdit ? setEditDurasiIstirahat(e.target.value) : setDurasiIstirahat(e.target.value)}}
                                     name="setDurasiIstirahat"
                                     label="Durasi Istirahat (menit)"
                                     labelPlacement="outside"
@@ -665,8 +754,8 @@ export default function adminShift({ data }) {
                             </div>
                             <div className="mb-4">
                                 <Input
-                                    value={durasiIstirahatJumat}
-                                    onChange={(e) => setDurasiIstirahatJumat(e.target.value)}
+                                    value={isEdit ? editDurasiIstirahatJumat : durasiIstirahatJumat}
+                                    onChange={(e) => {isEdit ? setEditDurasiIstirahatJumat(e.target.value) : setDurasiIstirahatJumat(e.target.value)}}
                                     name="setDurasiIstirahatJumat"
                                     label="Durasi Istirahat Jumat"
                                     labelPlacement="outside"
@@ -686,7 +775,7 @@ export default function adminShift({ data }) {
                 </ModalContent>
             </Modal>
 
-            {isModalDeleteOpen && selectedLocation && (
+            {isModalDeleteOpen && selectedShift && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="relative p-4 w-full max-w-md max-h-full">
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
@@ -704,9 +793,9 @@ export default function adminShift({ data }) {
                                     ></path>
                                 </svg>
                                 <p className="mb-4 text-gray-500 dark:text-gray-300">
-                                    Apakah anda yakin ingin menghapus lokasi{" "}
+                                    Apakah anda yakin ingin menghapus Shift {" "}
                                     <span className="font-bold">
-                                        {selectedLocation.name}
+                                        {selectedShift.nama}
                                     </span>
                                     ?
                                 </p>
@@ -721,7 +810,7 @@ export default function adminShift({ data }) {
                                     <button
                                         onClick={() =>
                                             handleDeleteConfirm(
-                                                selectedLocation.id
+                                                selectedShift.id
                                             )
                                         }
                                         className="py-2 px-3 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"

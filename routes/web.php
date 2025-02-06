@@ -9,6 +9,7 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\LaporanController;
 
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DashboardController;
@@ -62,13 +63,20 @@ Route::middleware(['auth','verified'])->group(function () {
         //Shift
         Route::get('/shift', [ShiftController::class, 'index']);
         Route::resource('/shift', ShiftController::class);
+
+        //laporam bulanan
+        Route::get('/laporan-bulanan', function () {
+            return Inertia::render('Admin/laporanBulanan');
+        })->name('laporan-bulanan.index');
+
+        Route::get('laporan-bulanan/{bulan}/{tahun}', [AdminAbsenController::class, 'laporanBulanan']);
     
     });
 
     Route::middleware(pegawaiMiddleware::class)->group(function () {
         
-        //store Laporan Bulanan
-        Route::post('/dashboard/store', [DashboardController::class, 'store'])->name('dashboard.store');
+        // //store Laporan Bulanan
+        // Route::post('/dashboard/store', [DashboardController::class, 'store'])->name('dashboard.store');
 
         //Absen 
         Route::get('/absen', [AbsenController::class, 'index'])->name('absen.index');
@@ -80,6 +88,11 @@ Route::middleware(['auth','verified'])->group(function () {
 
         //Riwayat
         Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+        Route::post('/riwayat', [RiwayatController::class, 'filter']);
+
+        //Laporan Bulanan
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::post('/laporan/store', [LaporanController::class, 'store'])->name('laporan.store');
     });
 
    

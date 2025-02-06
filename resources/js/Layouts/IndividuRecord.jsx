@@ -65,8 +65,7 @@ const IndividuRecord = ({ filteredRows, isDownloadable, user }) => {
               <th rowSpan={2}>{`   Tanggal   `}</th>
               <th colSpan={2}>Absensi</th>
               <th colSpan={7}>Kehadiran</th>
-              <th colSpan={3}>Lembur</th>
-              <th colSpan={2}>Summary</th>
+              <th colSpan={3}>Summary</th>
               <th rowSpan={2}>Keterangan</th>
             </tr>
             <tr>
@@ -79,11 +78,9 @@ const IndividuRecord = ({ filteredRows, isDownloadable, user }) => {
               <th>C</th>
               <th>S</th>
               <th>LA</th>
-              <th>L1</th>
-              <th>L2</th>
-              <th>L3</th>
               <th>WK</th>
               <th>KJ</th>
+              <th>L</th>
             </tr>
           </thead>
           <tbody>
@@ -102,11 +99,9 @@ const IndividuRecord = ({ filteredRows, isDownloadable, user }) => {
                     <td>{row.c ? '✔' : ''}</td>
                     <td>{row.s ? '✔' : ''}</td>
                     <td>{row.la ? '✔' : ''}</td>
-                    <td>{row.l1}</td>
-                    <td>{row.l2}</td>
-                    <td>{row.l3}</td>
                     <td>{row.wk}</td>
                     <td>{row.kj}</td>
+                    <td>{row.lembur}</td>
                     <td>{row.keterangan}</td>
                   </tr>
                 ))}
@@ -118,12 +113,10 @@ const IndividuRecord = ({ filteredRows, isDownloadable, user }) => {
                   <td>{filteredRows.filter(row => row.dl).length}</td>
                   <td>{filteredRows.filter(row => row.c).length}</td>
                   <td>{filteredRows.filter(row => row.s).length}</td>
-                  <td>{filteredRows.reduce((sum, row) => sum + (row.la || 0), 0)}</td>
-                  <td>{filteredRows.reduce((sum, row) => sum + (row.l1 || 0), 0)}</td>
-                  <td>{filteredRows.reduce((sum, row) => sum + (row.l2 || 0), 0)}</td>
-                  <td>{filteredRows.reduce((sum, row) => sum + (row.l3 || 0), 0)}</td>
+                  <td>{filteredRows.filter(row => row.la).length}</td>
                   <td>{filteredRows.reduce((sum, row) => sum + (row.wk || 0), 0)}</td>
                   <td>{filteredRows.reduce((sum, row) => sum + (row.kj || 0), 0)}</td>
+                  <td>{filteredRows.reduce((sum, row) => sum + (row.lembur || 0), 0)}</td>
                   <td></td>
                 </tr>
               </>

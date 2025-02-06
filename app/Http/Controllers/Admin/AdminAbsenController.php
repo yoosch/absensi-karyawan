@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Models\Izin;
 use App\Models\User;
 use App\Models\Absen;
+use App\Models\Laporan_Bulanan;
 
 class AdminAbsenController extends Controller
 {
@@ -46,6 +47,23 @@ class AdminAbsenController extends Controller
         // dd($lupaAbsenData);
 
         return Inertia::render('Admin/absenLupaAbsen', ['lupaAbsenData' => $lupaAbsenData]);
+    }
+
+    public function LaporanBulanan($bulan, $tahun) {
+
+
+        $Pegawai = User::where('role', 'pegawai')->get(); 
+        
+        foreach ($Pegawai as $pegawai) {
+            $pegawai->laporan = 'belum';
+            $pegawai->laporan = Laporan_Bulanan::where('nik', $pegawai->nik)->where('tahun', $tahun)->where('bulan', $bulan)->first();
+            // $pegawai->laporan = url("/preview/" . urlencode($pegawai->laporan->file_laporan));
+            if($pegawai->laporan){
+                $pegawai->laporan = url("/preview/" . urlencode($pegawai->laporan->file_laporan));
+            }
+        }
+        return response()->json($Pegawai);  
+        
     }
 
     public function approvalIzin($id,$status){

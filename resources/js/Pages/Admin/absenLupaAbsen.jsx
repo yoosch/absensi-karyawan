@@ -26,8 +26,7 @@ import {
 import axios from "axios";
 import { Toaster, toast } from 'sonner'
 import { Inertia } from "@inertiajs/inertia";
-import { Link } from "lucide-react";
-import { inertia } from "framer-motion";
+import { Head } from "@inertiajs/react";
 
 export const columns = [
   { name: "NAMA", uid: "nama", sortable: true },
@@ -499,6 +498,7 @@ export default function LupaAbsen({ lupaAbsenData }) {
 
   return (
     <AdminLayout>
+      <Head title="Absen Lupa Absen" />
       <div className="mt-[3%] mx-[5%]">
         <Table
           isHeaderSticky

@@ -1,38 +1,17 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-    CardFooter,
-    Image,
-    Button,
-} from "@heroui/react";
 
 import { Inertia } from "@inertiajs/inertia";
 import { useState, useCallback, usePage } from "react";
-import { Spinner } from "@nextui-org/react";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    useDisclosure,
-    Chip,
-    Progress,
-} from "@nextui-org/react";
+import { Chip } from "@nextui-org/react";
 import { Toaster, toast } from "sonner";
 import React, { useEffect, useRef } from "react";
+import { GoHeartFill } from "react-icons/go";
 
 export default function Dashboard({ user, laporan_bulanan, absen }) {
     const [fileInfo, setFileInfo] = useState(null);
     const [error, setError] = useState("");
     const [isUploading, setIsUploading] = useState(false);
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     const [isSmallerScreen, setIsSmallerScreen] = useState(false);
@@ -104,109 +83,19 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
     const { name } = user;
 
     const UserLives = ({ user }) => {
-        const imageSrc = "/heart.png";
-
-        const imageAlt = "Life Icon";
         return (
             <>
-                {Array(user.nyawa)
-                    .fill()
-                    .map((_, index) => (
-                        <img
-                            key={index}
-                            src={imageSrc}
-                            alt={imageAlt}
-                            className="life-icon h-6"
-                        />
-                    ))}
+                {Array.from({ length: 3 }).map((_, index) => (
+                    <GoHeartFill
+                        key={index}
+                        className={`h-6 w-6 ${
+                            index < user.nyawa
+                                ? "text-red-600"
+                                : "text-gray-600"
+                        }`}
+                    />
+                ))}
             </>
-        );
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(event.target);
-        const file = formData.get("file_laporan");
-
-        if (!file) {
-            setError("File belum diunggah.");
-            return;
-        }
-
-        Inertia.post(route("dashboard.store"), formData, {
-            onSuccess: () => {
-                toast.success("Event has been created");
-            },
-            onError: (errors) => {
-                console.log("Terjadi kesalahan:", errors);
-                toast.error("Gagal mengunggah file");
-            },
-        });
-    };
-
-    const FileUploadHistoryModal = ({ isOpen, onOpenChange }) => {
-        return (
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-                <ModalContent className="max-w-2xl">
-                    <ModalHeader className="flex flex-col gap-1">
-                        Histori Unggahan File Anda
-                    </ModalHeader>
-                    <ModalBody>
-                        {laporan_bulanan && laporan_bulanan.length > 0 ? (
-                            <ul>
-                                {laporan_bulanan.map((laporan, index) => (
-                                    <li key={index}>
-                                        <p>
-                                            <strong>File Anda: </strong>
-                                            {laporan.file_laporan
-                                                .split("/")
-                                                .pop()}
-                                        </p>
-                                        <p>
-                                            <strong>Bulan: </strong>
-                                            {laporan.bulan}
-                                        </p>
-                                        <p>
-                                            <strong>Tahun: </strong>
-                                            {laporan.tahun}
-                                        </p>
-                                        <p>
-                                            <strong>Last Uploaded: </strong>
-                                            {new Date(
-                                                laporan.updated_at
-                                            ).toLocaleString("id-ID", {
-                                                timeZone: "Asia/Jakarta",
-                                            })}
-                                        </p>
-
-                                        <div className="mt-3">
-                                            <iframe
-                                                src={`/storage/${laporan.file_laporan}`}
-                                                width="100%"
-                                                height="400px"
-                                                title={`Preview for ${laporan.file_laporan}`}
-                                            />
-                                        </div>
-                                        <hr />
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>Tidak ada file yang diunggah.</p>
-                        )}
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button
-                            color="danger"
-                            variant="light"
-                            onPress={() => onOpenChange(false)}
-                        >
-                            Close
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
         );
     };
 
@@ -447,117 +336,30 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                             </div>
                         </Link>
 
-                        <Card className="py-4 mb-4 mt-6">
-                            <CardHeader className="pb-3 pt-2 px-4 flex flex-row items-center justify-center relative">
-                                <div className="flex flex-col justify-center items-center">
-                                    <p className="text-tiny-800 font-bold text-center">
-                                        Unggah Laporan Bulanan
-                                    </p>
-                                    <small className="text-default-500 italic text-center">
-                                        Silahkan unggah file .pdf Anda di sini
-                                    </small>
-                                </div>
-                                <Button
-                                    onPress={onOpen}
-                                    className="absolute left-4 bottom-4"
-                                    isIconOnly={isSmallScreen}
-                                >
-                                    {isSmallScreen ? (
-                                        <svg
-                                            class="w-6 h-6 text-gray-800 dark:text-white"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke="currentColor"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"
-                                            />
-                                        </svg>
-                                    ) : (
-                                        <span>Recent Upload</span>
-                                    )}
-                                </Button>
-
-                                <FileUploadHistoryModal
-                                    isOpen={isOpen}
-                                    onOpenChange={onOpenChange}
-                                />
-                            </CardHeader>
-
-                            <CardBody>
-                                <form
-                                    onSubmit={handleSubmit}
-                                    className="overflow-visible py-2 items-center"
-                                    onDrop={handleDrop}
-                                    onDragOver={handleDragOver}
-                                >
-                                    <label
-                                        htmlFor="file-upload"
-                                        className="cursor-pointer flex flex-col items-center bg-gray-100 border-2 border-dashed border-gray-500 rounded-lg py-10 px-6 hover:bg-gray-300 transition-colors duration-300 w-full"
+                        <Link href="/laporan" as="button">
+                            <div className="flex items-center mt-6 px-2 text-black rounded-md bg-w overflow-hidden shadow-lg border-l-2 border-[#fdb714]">
+                                <div className="flex justify-between flex-grow px-6 py-6">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                            width="40"
+                                            height="40"
+                                        fill="currentColor"
+                                        class="bi bi-file-earmark-arrow-up-fill"
+                                        viewBox="0 0 16 16"
                                     >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            fill="currentColor"
-                                            className="bi bi-upload"
-                                            viewBox="0 0 16 16"
-                                        >
-                                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                                            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
-                                        </svg>
-                                        <p className="mt-2 text-gray-600">
-                                            Drag & drop atau klik untuk unggah
-                                            file
-                                        </p>
-                                        <input
-                                            id="file-upload"
-                                            type="file"
-                                            name="file_laporan"
-                                            accept=".pdf"
-                                            onChange={(e) =>
-                                                handleFileUpload(
-                                                    e.target.files[0]
-                                                )
-                                            }
-                                            className="hidden"
-                                        />
-                                        {isUploading && (
-                                            <Spinner
-                                                color="warning"
-                                                label="Loading..."
-                                            />
-                                        )}
-                                    </label>
-                                    {fileInfo && (
-                                        <p className="mt-4 text-center text-green-600">
-                                            File berhasil diunggah: {fileInfo}
-                                        </p>
-                                    )}
-                                    {error && (
-                                        <p className="mt-4 text-center text-red-600">
-                                            {error}
-                                        </p>
-                                    )}
-
-                                    <div className="mt-6">
-                                        <Button
-                                            type="submit"
-                                            className="w-full bg-[#213468] text-white"
-                                        >
-                                            Submit Laporan
-                                        </Button>
+                                        <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707z" />
+                                    </svg>
+                                    <div className="flex flex-col">
+                                        <h2 className="font-semibold text-lg text-end">
+                                            Laporan Bulanan
+                                        </h2>
+                                        <h3 className="font-light text-xs text-end ">
+                                            Pengunggahan Laporan Bulanan
+                                        </h3>
                                     </div>
-                                </form>
-                            </CardBody>
-                        </Card>
+                                </div>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </div>

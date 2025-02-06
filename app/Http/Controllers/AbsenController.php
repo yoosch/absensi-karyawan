@@ -134,8 +134,10 @@ class AbsenController extends Controller
 
         $user = User::where('nik', $nik)->first();
         $bulan = (int) $bulan;
-        $startDate = Carbon::createFromDate($tahun, Carbon::parse($bulan)->format('m'), 1);
+        $startDate = Carbon::createFromDate($tahun, $bulan, 1);
         $endDate = $startDate->copy()->endOfMonth();
+
+        // return response()->json(['startDate' => $startDate->format('Y-m-d'), 'endDate' => $endDate->format('Y-m-d')]);
 
         $shiftUser = Shift::where('id', $user->shift)->first();
 
@@ -164,7 +166,7 @@ class AbsenController extends Controller
 
         $absen = Absen::where('nik', $nik)
             ->whereYear('tanggal', $tahun)
-            ->whereMonth('tanggal', Carbon::parse($bulan)->format('m'))
+            ->whereMonth('tanggal',$bulan)
             ->get();
 
         $isDownloadable = true;
@@ -203,7 +205,7 @@ class AbsenController extends Controller
                 $jamKerja = $shiftUser->jam_kerja;
 
                 //jamtelat = userShift->jam_masuk + 30 menit
-                $jamTelat = Carbon::parse($shiftUser->mulai_jam_masuk)->addMinutes(30)->format('H:i:s');
+                $jamTelat = Carbon::parse($shiftUser->jam_masuk)->addMinutes(30)->format('H:i:s');
 
                 
     
@@ -215,6 +217,7 @@ class AbsenController extends Controller
                         $item->kj = ($jamKerja - $item->waktu_kerja)*60;
                     }else{
                         $item->lembur = ($item->waktu_kerja - $jamKerja)*60;
+                        $item->waktu_kerja = $jamKerja;
                     }
     
                     $item->telat = $item->waktu_masuk > $jamTelat && $item->waktu_masuk != null;
@@ -231,9 +234,9 @@ class AbsenController extends Controller
                 $item['out'] = $match->waktu_keluar;
                 $item['status'] = $match->status;
                 $item['masuk'] = $match->waktu_masuk != null;
-                $item['wk'] = ceil($match->waktu_kerja);
-                $item['kj'] = floor($match->kj);
-                $item['lembur'] = $match->lembur;
+                $item['wk'] = number_format($match->waktu_kerja, 1);
+                $item['kj'] = number_format($match->kj,1);
+                $item['lembur'] = number_format($match->lembur,1);
                 $item['telat'] = $match->telat;
                 $item['alpha'] = $match->status == 'alpha';
                 $item['dl'] = $match->status == 'dl';
