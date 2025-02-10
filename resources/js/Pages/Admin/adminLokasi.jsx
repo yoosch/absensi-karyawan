@@ -410,7 +410,7 @@ export default function adminLokasi({ data }) {
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
                         <select
-                            className="bg-transparent text-default-400 text-small "
+                            className="rounded outline-none px-1 text-default-400 text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0"
                             onChange={onRowsPerPageChange}
                         >
                             <option value="5">5</option>
@@ -567,6 +567,12 @@ export default function adminLokasi({ data }) {
                                         onChange={(e) => setNama(e.target.value)}
                                         placeholder="Nama"
                                         required
+                                        classNames={{
+                                            mainWrapper: "h-full",
+                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                            inputWrapper:
+                                                "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                        }}
                                     />
                                 </div>
                                 <div style={{ marginBottom: "15px" }}>
@@ -576,6 +582,12 @@ export default function adminLokasi({ data }) {
                                         onChange={(e) => setRadius(e.target.value)}
                                         placeholder="Radius (KM)"
                                         required
+                                        classNames={{
+                                            mainWrapper: "h-full",
+                                            input: "text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0",
+                                            inputWrapper:
+                                                "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                                        }}
                                     />
                                 </div>
                                 <ModalFooter style={{ justifyContent: "center" }}>

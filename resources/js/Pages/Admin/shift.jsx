@@ -338,7 +338,7 @@ export default function adminShift({ data }) {
 
         if (hasSearchFilter) {
             filteredShifts = filteredShifts.filter((shift) =>
-                shift.name.toLowerCase().includes(filterValue.toLowerCase())
+                shift.nama.toLowerCase().includes(filterValue.toLowerCase())
             );
         }
 
@@ -493,7 +493,7 @@ export default function adminShift({ data }) {
                     <label className="flex items-center text-default-400 text-small">
                         Rows per page:
                         <select
-                            className="bg-transparent text-default-400 text-small "
+                            className="rounded outline-none px-1 text-default-400 text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0"
                             onChange={onRowsPerPageChange}
                         >
                             <option value="5">5</option>
@@ -636,7 +636,7 @@ export default function adminShift({ data }) {
                                             setNama(e.target.value);
                                         }
                                     }}
-                                    placeholder="Suhadi"
+                                    placeholder="Nama Shift ex: Pagi"
                                     label="Nama"
                                     labelPlacement="outside"
                                     required

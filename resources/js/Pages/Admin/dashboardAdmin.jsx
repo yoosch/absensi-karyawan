@@ -62,7 +62,7 @@ export default function DashboardAdmin({absenData}) {
                 <div className="font-bold text-3xl">
                     <RealTimeDate /> {/* Call the RealTimeDate component */}
                 </div>
-                <div className="bg-white mt-[5%] border-2 border-gray-300">
+                <div className="bg-white mt-[5%] border-2 rounded-xl border-gray-300">
                     <div className="py-[1%] pl-[1%]">
                         <h1>Kehadiran karyawan hari ini</h1>
                     </div>

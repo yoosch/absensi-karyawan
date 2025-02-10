@@ -193,20 +193,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                                 <div className="md:hidden my-3 gap-2 flex-col align items-start">
                                     <p>Shift : {user.shift.nama}</p>
                                     <Chip color="warning" variant="dot">
-                                        {user.shift.nama === "Pagi" &&
-                                        !["Jumat", "Sabtu", "Minggu"].includes(
-                                            Hari()
-                                        ) ? (
-                                            <p className="text-white">
-                                                {`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}
-                                            </p>
-                                        ) : user.shift.nama === "Pagi" &&
-                                          ["Jumat"].includes(Hari()) ? (
-                                            <p className="text-white">
-                                               {`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}
-                                            </p>
-                                        ) : user.shift.nama == "Siang" &&
-                                          !["Sabtu", "Minggu"].includes(
+                                        {!["Sabtu", "Minggu"].includes(
                                               Hari()
                                           ) ? (
                                             <p className="text-white">
@@ -226,16 +213,7 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                         <div className="hidden md:flex my-3 mx-5 gap-2 flex-col align items-start">
                             <p>Shift : {user.shift.nama}</p>
                             <Chip color="warning" variant="dot">
-                                {user.shift.nama === "Pagi" &&
-                                !["Jumat", "Sabtu", "Minggu"].includes(
-                                    Hari()
-                                ) ? (
-                                    <p className="text-white">{`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}</p>
-                                ) : user.shift.nama === "Pagi" &&
-                                  ["Jumat"].includes(Hari()) ? (
-                                    <p className="text-white">{`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}</p>
-                                ) : user.shift == "Siang" &&
-                                  !["Sabtu", "Minggu"].includes(Hari()) ? (
+                                {!["Sabtu", "Minggu"].includes(Hari()) ? (
                                     <p className="text-white">{`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}</p>
                                 ) : ["Sabtu", "Minggu"].includes(Hari()) ? (
                                     <p className="text-white">Hari Libur</p>

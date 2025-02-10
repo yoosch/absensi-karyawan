@@ -262,7 +262,7 @@ export default function rekap({ data, absen }) {
                     </div>
                 </div>
                 <div className="mt-[3%]">
-                    <PrimaryButton onClick={handleFilter}>
+                    <PrimaryButton onClick={handleFilter}  disabled={selectedNik === null}>
                         Tampilkan
                     </PrimaryButton>
                 </div>
