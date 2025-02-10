@@ -210,7 +210,6 @@ export default function App({ dinasData }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [urlIzin, setUrlIzin] = React.useState("");
   const [user, setUser] = React.useState(dinasData);
-  console.log(user);
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -260,11 +259,8 @@ export default function App({ dinasData }) {
   }, [sortDescriptor, items]);
 
   const approvral = (id, approv) => {
-    console.log(id)
-    console.log(approv)
     axios.get(`/approval-cuti/${id}/${approv}`)
       .then((response) => {
-        console.log(response.data);
         toast.success("Berhasil mengubah status persetujuan")
 
         setUser((prevUsers) =>
@@ -529,7 +525,7 @@ export default function App({ dinasData }) {
               </TableColumn>
             )}
           </TableHeader>
-          <TableBody emptyContent={"No user found"} items={sortedItems}>
+          <TableBody emptyContent={"Tidak ada data Pegawai"} items={sortedItems}>
             {(item) => (
               <TableRow key={item.id}>
                 {(columnKey) => <TableCell>

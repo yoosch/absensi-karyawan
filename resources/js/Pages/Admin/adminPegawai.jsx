@@ -206,7 +206,6 @@ export default function adminPegawai({ data, shift }) {
     const handleEditPegawai = (pegawai) => {
         setSelectedPegawai(pegawai);
         setIsModalEditOpen(true);
-        // console.log(pegawai);
     };
 
     const handleSubmit = (e) => {
@@ -220,11 +219,9 @@ export default function adminPegawai({ data, shift }) {
             shift: e.target.shift.value,
         };
 
-        console.log(formData);
 
         axios.put(`/pegawai/${id}`, formData)
         .then((response) => {
-            console.log("Success:", response.data);
             toast.success("Pegawai berhasil diedit", {
                 duration: 3000,
             });
@@ -234,7 +231,6 @@ export default function adminPegawai({ data, shift }) {
             }, 3000); 
         })
         .catch((error) => {
-            console.error("Error submitting absence:", error);
             toast.error(error.response.data.message, {
                 duration: 3000,
             });
@@ -255,7 +251,6 @@ export default function adminPegawai({ data, shift }) {
     };
 
     const handleDeleteConfirm = (id) => {
-        // console.log('Deleting pegawai with email : ${selectedPegawai.email}');
 
         Inertia.delete(route("pegawai.destroy", id), {
             onSuccess: () => alert("Item deleted successfully"),
@@ -723,12 +718,9 @@ export default function adminPegawai({ data, shift }) {
                                                 name="shift"
                                                 className="h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20 text-small focus:outline-none border-transparent focus:border-transparent focus:ring-0 w-full mt-1 p-2 rounded"
                                             >
-                                                <option value="Pagi">
-                                                    Pagi
-                                                </option>
-                                                <option value="Siang">
-                                                    Siang
-                                                </option>
+                                                {shift.map((shift) => (
+                                                    <option key={shift.id} value={shift.id}>{shift.nama}</option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>

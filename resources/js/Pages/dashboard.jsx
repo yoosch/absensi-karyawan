@@ -189,28 +189,28 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                                 <h2 className="font-semibold text-lg">
                                     {name}
                                 </h2>
-                                <p className="text-sm">1236682443452</p>
+                                <p className="text-sm">{user.nik}</p>
                                 <div className="md:hidden my-3 gap-2 flex-col align items-start">
-                                    <p>Shift : {user.shift}</p>
+                                    <p>Shift : {user.shift.nama}</p>
                                     <Chip color="warning" variant="dot">
-                                        {user.shift === "Pagi" &&
+                                        {user.shift.nama === "Pagi" &&
                                         !["Jumat", "Sabtu", "Minggu"].includes(
                                             Hari()
                                         ) ? (
                                             <p className="text-white">
-                                                07.30 - 16.00
+                                                {`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}
                                             </p>
-                                        ) : user.shift === "Pagi" &&
+                                        ) : user.shift.nama === "Pagi" &&
                                           ["Jumat"].includes(Hari()) ? (
                                             <p className="text-white">
-                                                07.30 - 16.30
+                                               {`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}
                                             </p>
-                                        ) : user.shift == "Siang" &&
+                                        ) : user.shift.nama == "Siang" &&
                                           !["Sabtu", "Minggu"].includes(
                                               Hari()
                                           ) ? (
                                             <p className="text-white">
-                                                14.00 - 21.00
+                                                {`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}
                                             </p>
                                         ) : ["Sabtu", "Minggu"].includes(
                                               Hari()
@@ -224,19 +224,19 @@ export default function Dashboard({ user, laporan_bulanan, absen }) {
                             </div>
                         </div>
                         <div className="hidden md:flex my-3 mx-5 gap-2 flex-col align items-start">
-                            <p>Shift : {user.shift}</p>
+                            <p>Shift : {user.shift.nama}</p>
                             <Chip color="warning" variant="dot">
-                                {user.shift === "Pagi" &&
+                                {user.shift.nama === "Pagi" &&
                                 !["Jumat", "Sabtu", "Minggu"].includes(
                                     Hari()
                                 ) ? (
-                                    <p className="text-white">07.30 - 16.00</p>
-                                ) : user.shift === "Pagi" &&
+                                    <p className="text-white">{`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}</p>
+                                ) : user.shift.nama === "Pagi" &&
                                   ["Jumat"].includes(Hari()) ? (
-                                    <p className="text-white">07.30 - 16.30</p>
+                                    <p className="text-white">{`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}</p>
                                 ) : user.shift == "Siang" &&
                                   !["Sabtu", "Minggu"].includes(Hari()) ? (
-                                    <p className="text-white">14.00 - 21.00</p>
+                                    <p className="text-white">{`${user.shift.jam_masuk.slice(0, 5)}-${user.shift.jam_keluar.slice(0, 5)}`}</p>
                                 ) : ["Sabtu", "Minggu"].includes(Hari()) ? (
                                     <p className="text-white">Hari Libur</p>
                                 ) : null}

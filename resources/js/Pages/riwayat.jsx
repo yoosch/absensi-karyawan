@@ -109,8 +109,6 @@ const Riwayat = ({ dataAbsen }) => {
                 tahun: selectedYear,
             })
             .then((response) => {
-                console.log('iki data anyar');
-                console.log(response.data);
                 setDataAbsensi(response.data);
             })
             .catch((error) => {
@@ -340,43 +338,43 @@ const Riwayat = ({ dataAbsen }) => {
                                             aria-label="Static Actions"
                                             variant="faded"
                                             onAction={(key) =>
-                                                setSelectedMonth(key)
+                                                setSelectedMonth(parseInt(key) + 1)
                                             }
                                         >
-                                            <DropdownItem key="0" value="0">
+                                            <DropdownItem key={0} value="0">
                                                 Januari
                                             </DropdownItem>
-                                            <DropdownItem key="1" value="1">
+                                            <DropdownItem key={1} value="1">
                                                 Februari
                                             </DropdownItem>
-                                            <DropdownItem key="2" value="2">
+                                            <DropdownItem key={2} value="2">
                                                 Maret
                                             </DropdownItem>
-                                            <DropdownItem key="3" value="3">
+                                            <DropdownItem key={3} value="3">
                                                 April
                                             </DropdownItem>
-                                            <DropdownItem key="4" value="4">
+                                            <DropdownItem key={4} value="4">
                                                 Mei
                                             </DropdownItem>
-                                            <DropdownItem key="5" value="5">
+                                            <DropdownItem key={5} value="5">
                                                 Juni
                                             </DropdownItem>
-                                            <DropdownItem key="6" value="6">
+                                            <DropdownItem key={6} value="6">
                                                 Juli
                                             </DropdownItem>
-                                            <DropdownItem key="7" value="7">
+                                            <DropdownItem key={7} value="7">
                                                 Agustus
                                             </DropdownItem>
-                                            <DropdownItem key="8" value="8">
+                                            <DropdownItem key={8} value="8">
                                                 September
                                             </DropdownItem>
-                                            <DropdownItem key="9" value="9">
+                                            <DropdownItem key={9} value="9">
                                                 Oktober
                                             </DropdownItem>
-                                            <DropdownItem key="10" value="10">
+                                            <DropdownItem key={10} value="10">
                                                 November
                                             </DropdownItem>
-                                            <DropdownItem key="11" value="11">
+                                            <DropdownItem key={11} value="11">
                                                 Desember
                                             </DropdownItem>
                                         </DropdownMenu>

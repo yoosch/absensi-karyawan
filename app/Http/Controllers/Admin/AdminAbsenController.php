@@ -51,8 +51,8 @@ class AdminAbsenController extends Controller
 
     public function LaporanBulanan($bulan, $tahun) {
 
-
-        $Pegawai = User::where('role', 'pegawai')->get(); 
+        //get all pegawai order by name for a to z
+        $Pegawai = User::where('role', 'pegawai')->orderBy('name', 'asc')->get();
         
         foreach ($Pegawai as $pegawai) {
             $pegawai->laporan = 'belum';

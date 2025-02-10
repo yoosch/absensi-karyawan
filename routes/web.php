@@ -13,8 +13,6 @@ use App\Http\Controllers\LaporanController;
 
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Admin\AbsenCutiController;
-use App\Http\Controllers\Admin\AbsenDinasController;
 use App\Http\Controllers\Admin\AdminAbsenController;
 use App\Http\Controllers\Admin\FileController;
 
@@ -75,9 +73,6 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::middleware(pegawaiMiddleware::class)->group(function () {
         
-        // //store Laporan Bulanan
-        // Route::post('/dashboard/store', [DashboardController::class, 'store'])->name('dashboard.store');
-
         //Absen 
         Route::get('/absen', [AbsenController::class, 'index'])->name('absen.index');
         Route::post('/absen/store', [AbsenController::class, 'store']);

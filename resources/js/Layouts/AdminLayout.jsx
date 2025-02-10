@@ -1,11 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { HiArrowSmRight, HiChartPie, HiInbox,HiPencilAlt, HiDocumentText, HiShoppingBag, HiTable, HiUser, HiLocationMarker, HiViewBoards, HiOutlineIdentification } from "react-icons/hi";
+import React, { useEffect, useState } from "react";
+import ApplicationLogo from "@/Components/ApplicationLogo";
+import Dropdown from "@/Components/Dropdown";
+import NavLink from "@/Components/NavLink";
+import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import {
+    HiArrowSmRight,
+    HiChartPie,
+    HiInbox,
+    HiPencilAlt,
+    HiDocumentText,
+    HiShoppingBag,
+    HiTable,
+    HiUser,
+    HiLocationMarker,
+    HiViewBoards,
+    HiOutlineIdentification,
+} from "react-icons/hi";
 import { Sidebar } from "flowbite-react";
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage } from "@inertiajs/react";
 
 export default function AdminLayout({ header, children }) {
     const user = usePage().props.auth.user;
@@ -20,10 +32,10 @@ export default function AdminLayout({ header, children }) {
             setIsDesktop(window.innerWidth > 1024);
         };
 
-        window.addEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
 
         return () => {
-            window.removeEventListener('resize', handleResize);
+            window.removeEventListener("resize", handleResize);
         };
     }, []);
 
@@ -32,8 +44,13 @@ export default function AdminLayout({ header, children }) {
         return (
             <div className="flex items-center justify-center h-screen bg-gray-100">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-gray-800">This application is only accessible on desktop screens.</h1>
-                    <p className="mt-2 text-gray-600">Please switch to a larger screen to use this application.</p>
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        This application is only accessible on desktop screens.
+                    </h1>
+                    <p className="mt-2 text-gray-600">
+                        Please switch to a larger screen to use this
+                        application.
+                    </p>
                 </div>
             </div>
         );
@@ -42,56 +59,157 @@ export default function AdminLayout({ header, children }) {
     // Render the main admin layout for desktop users
     return (
         <div className="flex h-screen overflow-x-hidden bg-gray-50">
-            <Sidebar aria-label="Sidebar with logo branding example" className='min-h-fit bg-[#f9fafb] w-[15%]'>
+            <Sidebar
+                aria-label="Sidebar with logo branding example"
+                className="min-h-fit bg-[#f9fafb] w-[15%]"
+            >
                 <div className="flex justify-center my-4">
-                    <Link href='/' className='w-[80%]'>
-                        <img src="putech.png"  alt="" />
+                    <Link href="/" className="w-[80%]">
+                        <img src="putech.png" alt="" />
                     </Link>
                 </div>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
-                        <Sidebar.Item href="/dashboard" as={Link} icon={HiChartPie} className={isActive('/dashboard') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}>
+                        <Sidebar.Item
+                            href="/dashboard"
+                            as={Link}
+                            icon={HiChartPie}
+                            className={
+                                isActive("/dashboard")
+                                    ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                    : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                            }
+                        >
                             Dashboard
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/pegawai' icon={HiUser} className={isActive('/pegawai') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}>
+                        <Sidebar.Item
+                            as={Link}
+                            href="/pegawai"
+                            icon={HiUser}
+                            className={
+                                isActive("/pegawai")
+                                    ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                    : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                            }
+                        >
                             Pegawai
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/log-presensi' icon={HiPencilAlt} className={isActive('/log-presensi') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}>
-                            Presensi 
+                        <Sidebar.Item
+                            as={Link}
+                            href="/log-presensi"
+                            icon={HiPencilAlt}
+                            className={
+                                isActive("/log-presensi")
+                                    ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                    : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                            }
+                        >
+                            Presensi
                         </Sidebar.Item>
-                        <Sidebar.Collapse 
-                            icon={HiInbox} 
-                            label="Perizinan" 
-                            className={'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
+                        <Sidebar.Collapse
+                            icon={HiInbox}
+                            label="Perizinan"
+                            className={
+                                "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                            }
                             //open when in sidebar item
-                            open={isActive('/absen-dinas') || isActive('/absen-cuti') || isActive('/absen-lupa-absen')}
-                            
+                            open={
+                                isActive("/absen-dinas") ||
+                                isActive("/absen-cuti") ||
+                                isActive("/absen-lupa-absen")
+                            }
                         >
-                            <Sidebar.Item as={Link} href="/absen-dinas" className={isActive('/absen-dinas') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
-                            >Dinas</Sidebar.Item>
-                            <Sidebar.Item as={Link} href="/absen-cuti" className={isActive('/absen-cuti') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
-                            >Cuti</Sidebar.Item>
-                            <Sidebar.Item as={Link} href="/absen-lupa-absen" className={isActive('/absen-lupa-absen') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
-                            >Lupa Absen</Sidebar.Item>
+                            <Sidebar.Item
+                                as={Link}
+                                href="/absen-dinas"
+                                className={
+                                    isActive("/absen-dinas")
+                                        ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                        : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                                }
+                            >
+                                Dinas
+                            </Sidebar.Item>
+                            <Sidebar.Item
+                                as={Link}
+                                href="/absen-cuti"
+                                className={
+                                    isActive("/absen-cuti")
+                                        ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                        : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                                }
+                            >
+                                Cuti
+                            </Sidebar.Item>
+                            <Sidebar.Item
+                                as={Link}
+                                href="/absen-lupa-absen"
+                                className={
+                                    isActive("/absen-lupa-absen")
+                                        ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                        : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                                }
+                            >
+                                Lupa Absen
+                            </Sidebar.Item>
                         </Sidebar.Collapse>
-                        <Sidebar.Collapse 
-                            icon={ HiDocumentText} 
-                            label="Laporan" 
-                            className={'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
-                            open={isActive('/rekap-individu') || isActive('/laporan-bulanan')}
+                        <Sidebar.Collapse
+                            icon={HiDocumentText}
+                            label="Laporan"
+                            className={
+                                "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                            }
+                            open={
+                                isActive("/rekap-individu") ||
+                                isActive("/laporan-bulanan")
+                            }
                         >
-                            <Sidebar.Item as={Link} href="/rekap-individu" className={isActive('/rekap-individu') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
-                            >Rekap Individu</Sidebar.Item>
-                            <Sidebar.Item as={Link} href="/laporan-bulanan" className={isActive('/laporan-bulanan') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
-                            >Laporan Bulanan</Sidebar.Item>
+                            <Sidebar.Item
+                                as={Link}
+                                href="/rekap-individu"
+                                className={
+                                    isActive("/rekap-individu")
+                                        ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                        : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                                }
+                            >
+                                Rekap Individu
+                            </Sidebar.Item>
+                            <Sidebar.Item
+                                as={Link}
+                                href="/laporan-bulanan"
+                                className={
+                                    isActive("/laporan-bulanan")
+                                        ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                        : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                                }
+                            >
+                                Laporan Bulanan
+                            </Sidebar.Item>
                         </Sidebar.Collapse>
-                        <Sidebar.Item as={Link} href='/location' icon={HiLocationMarker} className={isActive('/location') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
+                        <Sidebar.Item
+                            as={Link}
+                            href="/location"
+                            icon={HiLocationMarker}
+                            className={
+                                isActive("/location")
+                                    ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                    : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                            }
                         >
-                            Lokasi 
+                            Lokasi
                         </Sidebar.Item>
-                        <Sidebar.Item as={Link} href='/shift' icon={HiOutlineIdentification} className={isActive('/shift') ? 'bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]' : 'hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white'}
+                        <Sidebar.Item
+                            as={Link}
+                            href="/shift"
+                            icon={HiOutlineIdentification}
+                            className={
+                                isActive("/shift")
+                                    ? "bg-[#fdb714] border border-[#fdb714] rounded-lg font-bold text-white hover:translate-x-2 transition-all hover:bg-[#fdb714]"
+                                    : "hover:translate-x-2 transition-all hover:bg-[#fdb714] hover:text-white"
+                            }
                         >
-                            Shift 
+                            Shift
                         </Sidebar.Item>
                     </Sidebar.ItemGroup>
                 </Sidebar.Items>
@@ -112,11 +230,6 @@ export default function AdminLayout({ header, children }) {
                                             type="button"
                                             className="inline-flex items-center rounded-full border border-transparent bg-white p-1 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                         >
-                                            <img
-                                                src="https://ui-avatars.com/api/?name=John+Doe&color=7F9CF5&background=EBF4FF"
-                                                alt=""
-                                                className="h-8 w-8 rounded-full object-cover"
-                                            />
                                             <svg
                                                 className="-me-0.5 ms-2 h-4 w-4"
                                                 xmlns="http://www.w3.org/2000/svg"

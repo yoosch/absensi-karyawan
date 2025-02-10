@@ -208,7 +208,6 @@ export default function LupaAbsen({ lupaAbsenData }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [urlIzin, setUrlIzin] = React.useState("");
   const [user, setUser] = React.useState(lupaAbsenData);
-  console.log(user);
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -258,8 +257,6 @@ export default function LupaAbsen({ lupaAbsenData }) {
   }, [sortDescriptor, items]);
 
   const approvral = (id, approv) => {
-    console.log(id)
-    console.log(approv)
     axios.get(`/approval-cuti/${id}/${approv}`)
       .then((response) => {
         console.log(response.data);

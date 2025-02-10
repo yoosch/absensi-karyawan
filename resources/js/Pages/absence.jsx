@@ -30,8 +30,7 @@ const Absence = ({lokasi}) => {
                     videoRef.current.srcObject = stream;
                 }
             })
-            .catch((error) => {
-                console.error("Camera access error:", error);
+            .catch((error) => {S
                 setMessage("Unable to access camera.");
             });
     };
@@ -70,7 +69,6 @@ const Absence = ({lokasi}) => {
     
 
     const getCoordinates = () => {
-        console.log("Getting coordinates...");
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -80,7 +78,6 @@ const Absence = ({lokasi}) => {
                     });
                 },
                 (error) => {
-                    console.error("Geolocation error:", error);
                     setMessage("Unable to access location.");
                 }
             );
@@ -99,7 +96,6 @@ const Absence = ({lokasi}) => {
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         const distance = R * c; // Distance in kilometers
-        // console.log("Distance:", distance);
         return distance;
     };
 
@@ -121,8 +117,6 @@ const Absence = ({lokasi}) => {
 
     //check is now page is in absen, if not absen stopCamera with useEffect
     useEffect(() => {
-        console.log(url);
-        console.log(url.url);
         if (url.url === '/absen') {
             startCamera();
         } else {
@@ -159,11 +153,8 @@ const Absence = ({lokasi}) => {
             waktu_keluar : new Date(new Date().getTime() + 7 * 60 * 60 * 1000).toISOString().substr(11, 8),
         };
 
-        console.log(absenceData);
-
         axios.post("/absen/store", absenceData)
         .then((response) => {
-            console.log("Success:", response.data);
             toast.success("Absen Berhasil", {
                 duration: 3000,
             });
@@ -174,7 +165,6 @@ const Absence = ({lokasi}) => {
             }, 3000); 
         })
         .catch((error) => {
-            console.error("Error submitting absence:", error);
             toast.error(error.response.data.message, {
                 duration: 3000,
             });

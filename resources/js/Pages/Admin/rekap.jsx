@@ -132,7 +132,6 @@ export default function rekap({ data, absen }) {
                 `/rekap-individu/${selectedNik.nik}/${selectedBulan}/${selectedPeriode}`
             )
             .then((response) => {
-                console.log(response.data);
                 setFilteredRows(response.data.dataAbsen);
                 // Set fetched data
                 setIsDownloadable(response.data.isDownloadable);

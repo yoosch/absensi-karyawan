@@ -192,10 +192,8 @@ export default function adminShift({ data }) {
                 durasiIstirahat: editDurasiIstirahat ? editDurasiIstirahat : 60,
                 durasiIstirahatJumat: editDurasiIstirahatJumat ? editDurasiIstirahatJumat : 90,
             }
-            console.log("Submitting:", { data });
             axios.put(`/shift/${selectedShift.id}`, data)
                 .then((response) => {
-                    console.log(response);
                     toast.success("Berhasil mengedit Shift"), {
                         duration: 3000
                     };
@@ -212,10 +210,8 @@ export default function adminShift({ data }) {
                 durasiIstirahat: durasiIstirahat ? durasiIstirahat : 60,
                 durasiIstirahatJumat: durasiIstirahatJumat ? durasiIstirahatJumat : 90,
             }
-            console.log("Submitting:", { data });
             axios.post('/shift', data)
                 .then((response) => {
-                    console.log(response);
                     toast.success("Berhasil menambahkan Shift"), {
                         duration: 3000
                     };
@@ -232,7 +228,6 @@ export default function adminShift({ data }) {
     };
 
     const handleEditClick = (shift) => {
-        console.log(shift);
         setSelectedShift(shift);
         setEditNama(shift.nama);
         setEditJamMasuk(new Time(...((shift.jam_masuk).split(":").map(Number))));
@@ -254,9 +249,6 @@ export default function adminShift({ data }) {
     };
 
     useEffect(() => {
-        console.log("jamMasuk", jamMasuk);
-        console.log("jamKeluar", jamKeluar);
-        console.log("durasi", durasiIstirahat);
         const calculateJamKerja = () => {
             if (!jamMasuk || !jamKeluar || !durasiIstirahat) return 0;
 
@@ -276,9 +268,6 @@ export default function adminShift({ data }) {
 
 
     useEffect(() => {
-        console.log("edit jamMasuk", editJamMasuk);
-        console.log("edit jamKeluar", editJamKeluar);
-        console.log("edit durasi", editDurasiIstirahat);
         const calculateJamKerja = () => {
             if (!editJamMasuk || !editJamKeluar || !editDurasiIstirahat) return 0;
 
@@ -302,7 +291,6 @@ export default function adminShift({ data }) {
 
 
     const handleDeleteConfirm = (id) => {
-        // console.log('Deleting pegawai with email : ${selectedPegawai.email}');
 
         Inertia.delete(route("shift.destroy", id), {
             onSuccess: () => alert("Item deleted successfully"),
@@ -560,8 +548,6 @@ export default function adminShift({ data }) {
                 "border-divider",
             ],
             td: [
-                // changing the rows border radius
-                // first
                 "group-data-[first=true]/tr:first:before:rounded-none",
                 "group-data-[first=true]/tr:last:before:rounded-none",
                 // middle
@@ -576,6 +562,7 @@ export default function adminShift({ data }) {
 
     return (
         <AdminLayout>
+            <Head title="Shift" />
             <div className="m-4 px-4 py-3 rounded-lg bg-white">
                 <Table
                     isCompact

@@ -16,10 +16,10 @@ import {
     TableRow,
     Paper,
     alpha,
-} from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import { 
+} from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import {
     Spinner,
     Button,
     Drawer,
@@ -28,29 +28,70 @@ import {
     DrawerBody,
     DrawerFooter,
     useDisclosure,
-    Chip, } from "@nextui-org/react";
-import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx';
-import { Toaster, toast } from 'sonner';
+    Chip,
+} from "@nextui-org/react";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
+import { Toaster, toast } from "sonner";
 
 import axios from "axios";
 
-export const EyeIcon = ({ fill = "currentColor", size, height, width, ...props }) => {
+export const EyeIcon = ({
+    fill = "currentColor",
+    size,
+    height,
+    width,
+    ...props
+}) => {
     return (
-      <svg class="w-6 h-6 text-[#FDB714]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-        <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
-      </svg>
+        <svg
+            class="w-6 h-6 text-[#FDB714]"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path
+                fill-rule="evenodd"
+                d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                clip-rule="evenodd"
+            />
+        </svg>
     );
-  };
-  
-  export const DownloadIcon = ({ fill = "currentColor", size, height, width, ...props }) => {
-      return (
-          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z" clip-rule="evenodd"/>
-          <path fill-rule="evenodd" d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" clip-rule="evenodd"/>
-        </svg>      
-      );
-  };
+};
+
+export const DownloadIcon = ({
+    fill = "currentColor",
+    size,
+    height,
+    width,
+    ...props
+}) => {
+    return (
+        <svg
+            class="w-6 h-6 text-gray-800 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path
+                fill-rule="evenodd"
+                d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z"
+                clip-rule="evenodd"
+            />
+            <path
+                fill-rule="evenodd"
+                d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z"
+                clip-rule="evenodd"
+            />
+        </svg>
+    );
+};
 
 export default function laporan_bulanan() {
     const [value, setValue] = useState("Select option...");
@@ -67,8 +108,6 @@ export default function laporan_bulanan() {
 
         return textValue.slice(0, inputValue.length) === inputValue;
     };
-
-
 
     const year = new Date().getFullYear();
     const month = new Date().toLocaleDateString("en-GB", {
@@ -87,13 +126,12 @@ export default function laporan_bulanan() {
     const handlePeriodeChange = (event) =>
         setSelectedPeriode(event.target.value);
     const handleBulanChange = (event) => setSelectedBulan(event.target.value);
-    
+
     const handleFilter = () => {
         setLoading(true); // Start loading
         axios
             .get(`/laporan-bulanan/${selectedBulan}/${selectedPeriode}`)
             .then((response) => {
-                console.log(response.data);
                 setFilteredRows(response.data);
             })
             .catch((error) => {
@@ -102,7 +140,6 @@ export default function laporan_bulanan() {
             .finally(() => {
                 setLoading(false); // Stop loading
             });
-
     };
 
     return (
@@ -113,7 +150,6 @@ export default function laporan_bulanan() {
                     <h1 className="font-bold">FILTER</h1>
                 </div>
                 <div className=" gap-8">
-                    
                     <div className="mt-4">
                         <label
                             htmlFor="option"
@@ -188,57 +224,130 @@ export default function laporan_bulanan() {
                                         <TableCell align="center">
                                             Nama
                                         </TableCell>
-                                        <TableCell align="center">Laporan Bulanan</TableCell>
-                                        <TableCell align="center">Keterangan</TableCell>
+                                        <TableCell align="center">
+                                            Laporan Bulanan
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            Keterangan
+                                        </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {!loading && filteredRows.length > 0 ? (
                                         filteredRows.map((row, index) => (
                                             <TableRow key={index}>
-                                                <TableCell align="center">{row.nik}</TableCell>
-                                                <TableCell align="center">{row.name}</TableCell>
                                                 <TableCell align="center">
-                                                <div className="flex gap-2">
-                                                            <Button isIconOnly onPress={() => {
-                                                            onOpen();
-                                                            setUrlIzin(row.laporan);
-                                                            }}
-                                                            isDisabled={!row.laporan}
-                                                            variant="flat"
-                                                            size="sm">
-                                                            <EyeIcon />
-                                                            </Button>
-                                                            <Button isIconOnly isDisabled={!row.laporan} onPress={() => {
-                                                                                                fetch(row.laporan)
-                                                                                                    .then((response) => response.blob())
-                                                                                                    .then((blob) => {
-                                                                                                    const url = URL.createObjectURL(blob);
-                                                                                                    const link = document.createElement("a");
-                                                                                                    link.href = url;
-                                                                                                    link.download = row.laporan.split("/").pop(); // Extract the file name from the path
-                                                                                                    link.click();
-                                                                                                    URL.revokeObjectURL(url); // Clean up the object URL
-                                                                                                    })
-                                                                                                    .catch((error) => {
-                                                                                                    console.error("Error downloading the file:", error);
-                                                                                                    });
-                                                                                            }}
-                                                            variant="flat"
-                                                            size="sm">
-                                                            <DownloadIcon />
-                                                            </Button>
-                                                </div>
-
+                                                    {row.nik}
                                                 </TableCell>
-                                                <TableCell align="center" >{row.laporan?
-                                                    (<Chip size="sm" color="success" radius="full" variant="flat">Ada</Chip>) : (<Chip size="sm" color="danger" radius="full" variant="flat">Tidak Ada</Chip>)
-                                                }</TableCell>
+                                                <TableCell align="center">
+                                                    {row.name}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <div className="flex gap-2">
+                                                        <Button
+                                                            isIconOnly
+                                                            onPress={() => {
+                                                                onOpen();
+                                                                setUrlIzin(
+                                                                    row.laporan
+                                                                );
+                                                            }}
+                                                            isDisabled={
+                                                                !row.laporan
+                                                            }
+                                                            variant="flat"
+                                                            size="sm"
+                                                        >
+                                                            <EyeIcon />
+                                                        </Button>
+                                                        <Button
+                                                            isIconOnly
+                                                            isDisabled={
+                                                                !row.laporan
+                                                            }
+                                                            onPress={() => {
+                                                                fetch(
+                                                                    row.laporan
+                                                                )
+                                                                    .then(
+                                                                        (
+                                                                            response
+                                                                        ) =>
+                                                                            response.blob()
+                                                                    )
+                                                                    .then(
+                                                                        (
+                                                                            blob
+                                                                        ) => {
+                                                                            const url =
+                                                                                URL.createObjectURL(
+                                                                                    blob
+                                                                                );
+                                                                            const link =
+                                                                                document.createElement(
+                                                                                    "a"
+                                                                                );
+                                                                            link.href =
+                                                                                url;
+                                                                            link.download =
+                                                                                row.laporan
+                                                                                    .split(
+                                                                                        "/"
+                                                                                    )
+                                                                                    .pop(); // Extract the file name from the path
+                                                                            link.click();
+                                                                            URL.revokeObjectURL(
+                                                                                url
+                                                                            ); // Clean up the object URL
+                                                                        }
+                                                                    )
+                                                                    .catch(
+                                                                        (
+                                                                            error
+                                                                        ) => {
+                                                                            console.error(
+                                                                                "Error downloading the file:",
+                                                                                error
+                                                                            );
+                                                                        }
+                                                                    );
+                                                            }}
+                                                            variant="flat"
+                                                            size="sm"
+                                                        >
+                                                            <DownloadIcon />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    {row.laporan ? (
+                                                        <Chip
+                                                            size="sm"
+                                                            color="success"
+                                                            radius="full"
+                                                            variant="flat"
+                                                        >
+                                                            Ada
+                                                        </Chip>
+                                                    ) : (
+                                                        <Chip
+                                                            size="sm"
+                                                            color="danger"
+                                                            radius="full"
+                                                            variant="flat"
+                                                        >
+                                                            Tidak Ada
+                                                        </Chip>
+                                                    )}
+                                                </TableCell>
                                             </TableRow>
                                         ))
                                     ) : (
                                         <TableRow>
-                                            <TableCell align="center" colSpan={4}>
+                                            <TableCell
+                                                align="center"
+                                                colSpan={4}
+                                            >
                                                 {loading ? (
                                                     <Spinner />
                                                 ) : (
@@ -246,43 +355,44 @@ export default function laporan_bulanan() {
                                                 )}
                                             </TableCell>
                                         </TableRow>
-                                    )}{}
+                                    )}
+                                    {}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                                        {/* Drawer */}
-                <Drawer
-                    isOpen={isOpen}
-                    onOpenChange={onOpenChange}
-                    size="2xl"
-                    backdrop="blur"
-                >
-                    <DrawerContent>
-                        {(onClose) => (
-                            <>
-                                <DrawerHeader className="flex flex-col gap-1">
-                                    Detail Surat
-                                </DrawerHeader>
-                                <DrawerBody className="h-full">
-                                    <iframe
-                                        src={urlIzin}
-                                        className="w-full h-full"
-                                        style={{ border: "none" }}
-                                    ></iframe>
-                                </DrawerBody>
-                                <DrawerFooter>
-                                    <Button
-                                        color="danger"
-                                        variant="light"
-                                        onPress={onClose}
-                                    >
-                                        Close
-                                    </Button>
-                                </DrawerFooter>
-                            </>
-                        )}
-                    </DrawerContent>
-                </Drawer>
+                        {/* Drawer */}
+                        <Drawer
+                            isOpen={isOpen}
+                            onOpenChange={onOpenChange}
+                            size="2xl"
+                            backdrop="blur"
+                        >
+                            <DrawerContent>
+                                {(onClose) => (
+                                    <>
+                                        <DrawerHeader className="flex flex-col gap-1">
+                                            Detail Surat
+                                        </DrawerHeader>
+                                        <DrawerBody className="h-full">
+                                            <iframe
+                                                src={urlIzin}
+                                                className="w-full h-full"
+                                                style={{ border: "none" }}
+                                            ></iframe>
+                                        </DrawerBody>
+                                        <DrawerFooter>
+                                            <Button
+                                                color="danger"
+                                                variant="light"
+                                                onPress={onClose}
+                                            >
+                                                Close
+                                            </Button>
+                                        </DrawerFooter>
+                                    </>
+                                )}
+                            </DrawerContent>
+                        </Drawer>
                     </div>
                 </div>
             </div>

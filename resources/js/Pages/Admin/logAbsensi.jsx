@@ -208,7 +208,6 @@ export default function App({ logAbsen }) {
     tanggalSelesai: null,
   });
   const [user, setUser] = React.useState(logAbsen);
-  console.log(user);
 
   const hasSearchFilter = Boolean(filterValue);
 

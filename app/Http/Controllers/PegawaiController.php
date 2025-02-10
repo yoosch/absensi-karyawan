@@ -15,17 +15,9 @@ class PegawaiController extends Controller
     public function index()
     {
 
-        $data = User::all();
-
-
-        foreach($data as $item){
-            $item->avatar = 'https://i.pravatar.cc/150?u=a042581f4e29026024d';
-        }
+        $data = User::where('role', 'pegawai')->orderBy('name', 'asc')->get();
 
         $shift = Shift::all();
-
-        // dd($data);
-
         
         return Inertia::render('Admin/adminPegawai', ['data' => $data, 'shift' => $shift]);
     }

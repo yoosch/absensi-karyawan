@@ -88,7 +88,6 @@ const Izin = ({user}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(izin);
         setIsLoading(true);
     
         const tanggalMulai = new Date(izin.tanggalMulai);
@@ -98,17 +97,14 @@ const Izin = ({user}) => {
             izin.tanggalMulai = tanggalMulai.toISOString().split('T')[0];
             izin.tanggalSelesai = tanggalSelesai.toISOString().split('T')[0];
         } else {
-            console.error('Tanggal tidak valid');
             return;
         }
     
         Inertia.post(route('izin.store'), izin, {
             onSuccess: () => {
-                console.log('Izin berhasil diajukan');
                 setIsLoading(false);
             },
             onError: (errors) => {
-                console.log('Terjadi kesalahan:', errors);
                 setIsLoading(false);
             }
         });

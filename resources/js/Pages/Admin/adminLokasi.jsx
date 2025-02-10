@@ -158,7 +158,6 @@ export default function adminLokasi({ data }) {
                 setPosition([e.latlng.lat, e.latlng.lng]); // update state with clicked location
             },
         });
-        console.log(position);
         return null;
     };
     const [position, setPosition] = useState([-6.9772774, 110.4488306]); // Default position for the map
@@ -184,10 +183,8 @@ export default function adminLokasi({ data }) {
             latitude: position[0],
             longitude: position[1],
         }
-        console.log("Submitting:", { data });
         axios.post('/location', data)
             .then((response) => {
-                console.log(response);
                 toast.success("Berhasil menambahkan lokasi"), {
                     duration: 3000
                 };
@@ -211,7 +208,6 @@ export default function adminLokasi({ data }) {
     };
 
     const handleDeleteConfirm = (id) => {
-        // console.log('Deleting pegawai with email : ${selectedPegawai.email}');
 
         Inertia.delete(route("location.destroy", id), {
             onSuccess: () => alert("Item deleted successfully"),

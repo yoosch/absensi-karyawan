@@ -49,10 +49,6 @@ class RiwayatController extends Controller
             }
             return $item;
         });
-
-
-
-
         
         // dd($dataAbsen);
 

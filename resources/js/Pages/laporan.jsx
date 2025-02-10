@@ -185,11 +185,9 @@ export default function Laporan({ laporan_bulanan }) {
             },
         })
             .then(response => {
-                console.log(response.data);
                 toast.success("File berhasil diunggah");
             })
             .catch(error => {
-                console.log(error);
         });
         
     };

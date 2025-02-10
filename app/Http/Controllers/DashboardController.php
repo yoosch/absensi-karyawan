@@ -62,10 +62,10 @@ class DashboardController extends Controller
             
             $laporan_bulanan = Laporan_Bulanan::where('nik', $user->nik)->where('bulan',Carbon::now()->format('m'))->where('tahun',Carbon::now()->year)->get();
             // dd($laporan_bulanan);
-            $shift = Shift::where('id', $user->shift)->first();
+            $user->shift = Shift::where('id', $user->shift)->first();
             $user->jam_masuk = $shift->jam_masuk ?? '00:00:00';
             $user->jam_pulang = $shift->jam_pulang ?? '00:00:00';
-            $user->shift = $shift->nama ?? 'Tidak ada shift';
+            // $user->shift = $shift->nama ?? 'Tidak ada shift';
             return Inertia::render('dashboard',['user' => $user, 'laporan_bulanan' => $laporan_bulanan]);   
         }
     }
@@ -92,53 +92,6 @@ class DashboardController extends Controller
 
         return Inertia::render('Admin/dashboardAdmin',['user' => $user, 'absenData' => $absenData]);
     }
-
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'file_laporan' => 'required|file|mimes:pdf|max:30720',
-    //     ]);
-        
-        
-    //     $user = auth()->user();
-        
-    //     Carbon::setLocale('id');
-        
-    //     $bulan = Carbon::now()->format('m');
-    //     $tahun = Carbon::now()->format('Y');
-        
-    //     $existingReport = Laporan_Bulanan::where('nik', $user->nik)
-    //     ->where('bulan', $bulan)
-    //     ->where('tahun', $tahun)
-    //     ->first();
-        
-    //     if ($existingReport) {
-    //         $filePath = $request->file('file_laporan')->storeAs(
-    //             'Laporan_Bulanan/' . $user->nik . '_' . $user->name,
-    //             $request->file('file_laporan')->getClientOriginalName(),
-    //             'public'
-    //         );
-    //         $existingReport->update([
-    //             'file_laporan' => $filePath,
-    //         ]);
-    //     } else {
-    //         $filePath = $request->file('file_laporan')->storeAs(
-    //             'Laporan_Bulanan/' . $user->nik . '_' . $user->name,
-    //             $request->file('file_laporan')->getClientOriginalName(),
-    //             'public'
-    //         );
-
-    //         Laporan_Bulanan::create([
-    //             'nik' => $user->nik,
-    //             'nama' => $user->name,
-    //             'bulan' => $bulan,
-    //             'tahun' => $tahun,
-    //             'file_laporan' => $filePath,
-    //         ]);
-    //     }
-
-    //     return Inertia::render('dashboard');
-    // }
 
 }
 

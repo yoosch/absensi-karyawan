@@ -245,7 +245,6 @@ export default function absenCuti({ cutiData }) {
     });
 
     const [user, setUser] = React.useState(cutiData);
-    // console.log(users);
 
     const [page, setPage] = React.useState(1);
     const [urlIzin, setUrlIzin] = React.useState("");
@@ -313,12 +312,9 @@ export default function absenCuti({ cutiData }) {
     }, [sortDescriptor, items]);
 
     const approvral = (id, approv) => {
-        console.log(id);
-        console.log(approv);
         axios
             .get(`/approval-cuti/${id}/${approv}`)
             .then((response) => {
-                console.log(response.data);
                 toast.success("Berhasil mengubah status persetujuan");
 
                 setUser((prevUsers) =>
@@ -339,12 +335,6 @@ export default function absenCuti({ cutiData }) {
             ...prevState,
             [userId]: isApproved ? "approved" : "rejected",
         }));
-
-        console.log(
-            `User with ID ${userId} has been ${
-                isApproved ? "approved" : "rejected"
-            }.`
-        );
     };
 
     const renderCell = React.useCallback((user, columnKey) => {
