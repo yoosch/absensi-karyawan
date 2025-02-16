@@ -194,7 +194,8 @@ export default function Laporan({ laporan_bulanan }) {
     return (
         <div>
             <AuthenticatedLayout>
-                <Toaster richColors />
+                <Head title="Laporan Bulanan" />
+                <Toaster richColors position="top-center" />
                 <div className="px-6 md:px-32">
                     <Card className="py-4 mb-4 mt-6">
                         <CardHeader className="pb-3 pt-2 px-4 flex flex-row items-center justify-center relative">
@@ -298,6 +299,7 @@ export default function Laporan({ laporan_bulanan }) {
                                     <Button
                                         type="submit"
                                         className="w-full bg-[#213468] text-white"
+                                        isDisabled={!fileInfo}
                                     >
                                         Submit Laporan
                                     </Button>
